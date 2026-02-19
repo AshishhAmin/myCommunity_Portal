@@ -1,0 +1,14 @@
+﻿Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": PostgreSQL database "arya_vyshya", schema "public" at "localhost:5432"
+
+Your database is now in sync with your Prisma schema. Done in 213ms
+
+Running generate... (Use --skip-generate to skip the generators)
+[2K[1A[2K[GRunning generate... - Prisma Client
+[2K[1A[2K[GEPERM: operation not permitted, rename 'C:\Users\ashish k 
+amin\Desktop\projects\Arya_Vyshya_Community_Portal\web\node_modules\.prisma\clie
+nt\query_engine-windows.dll.node.tmp16288' -> 'C:\Users\ashish k 
+amin\Desktop\projects\Arya_Vyshya_Community_Portal\web\node_modules\.prisma\clie
+nt\query_engine-windows.dll.node'
+

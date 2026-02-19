@@ -1,0 +1,154 @@
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { verifyJWT } from '@/lib/auth'
+import { cookies } from 'next/headers'
+
+export async function GET(req: Request) {
+    try {
+        const { searchParams } = new URL(req.url)
+        const requestedStatus = searchParams.get('status')
+        const filter = searchParams.get('filter') // 'upcoming', 'past', or 'all'
+
+        // Pagination logic
+        const page = parseInt(searchParams.get('page') || '1')
+        const limit = parseInt(searchParams.get('limit') || '15')
+        const skip = (page - 1) * limit
+
+        // Get current user if logged in
+        const cookieStore = await cookies()
+        const token = cookieStore.get('auth_token')?.value
+        let activeUserId = null
+        if (token) {
+            const payload = await verifyJWT(token)
+            if (payload) activeUserId = payload.sub as string
+        }
+
+        const queryConditions: any[] = []
+
+        // Status Logic
+        if (requestedStatus) {
+            queryConditions.push({ status: requestedStatus })
+        } else {
+            // Strict enforcement: Approved OR Mine
+            if (activeUserId) {
+                queryConditions.push({
+                    OR: [
+                        { status: 'approved' },
+                        { organizerId: activeUserId }
+                    ]
+                })
+            } else {
+                queryConditions.push({ status: 'approved' })
+            }
+        }
+
+        // Filter Logic (Server-side date filtering)
+        const now = new Date()
+        if (filter === 'upcoming') {
+            queryConditions.push({ date: { gte: now } })
+        } else if (filter === 'past') {
+            queryConditions.push({ date: { lt: now } })
+        }
+        // 'all' or undefined does nothing extra
+
+        // Get Total Count
+        const total = await prisma.event.count({
+            where: queryConditions.length > 0 ? { AND: queryConditions } : {}
+        })
+
+        const events = await prisma.event.findMany({
+            where: queryConditions.length > 0 ? { AND: queryConditions } : {},
+            include: {
+                organizer: {
+                    select: { name: true, email: true }
+                },
+                _count: {
+                    select: { attendees: true }
+                }
+            },
+            orderBy: { date: filter === 'past' ? 'desc' : 'asc' }, // Past events usually newest first? Or oldest? Actually user might want closest past event. 'desc' puts recent past first. 'asc' puts old past first.
+            skip,
+            take: limit
+        })
+
+        return NextResponse.json({
+            data: events,
+            pagination: {
+                total,
+                pages: Math.ceil(total / limit),
+                currentPage: page,
+                limit
+            }
+        })
+    } catch (error) {
+        console.error('Error fetching events:', error)
+        return NextResponse.json(
+            { message: 'Internal server error' },
+            { status: 500 }
+        )
+    }
+}
+
+export async function POST(req: Request) {
+    try {
+        console.log('Event POST request received')
+        const cookieStore = await cookies()
+        const token = cookieStore.get('auth_token')?.value
+
+        if (!token) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+        }
+
+        const payload = await verifyJWT(token)
+        if (!payload) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+        }
+
+        const userId = payload.sub as string
+        const userRole = payload.role as string
+
+        if (userRole !== 'admin') {
+            return NextResponse.json({ message: 'Forbidden: Admins only' }, { status: 403 })
+        }
+
+        const body = await req.json()
+        console.log('Event POST body:', body)
+
+        const { title, date, time, location, description, image, audience, registrationLink } = body
+
+        if (!title || !date || !time || !location || !description) {
+            return NextResponse.json(
+                { message: 'Missing required fields' },
+                { status: 400 }
+            )
+        }
+
+        // Combine date and time
+        const eventDate = new Date(`${date}T${time}:00`)
+
+        // Admin-created events are auto-approved
+        const eventStatus = userRole === 'admin' ? 'approved' : 'pending'
+
+        const newEvent = await prisma.event.create({
+            data: {
+                organizerId: userId,
+                title,
+                description,
+                date: eventDate,
+                location,
+                image: image || null,
+                audience: audience || 'public',
+                registrationLink: registrationLink || null,
+                status: eventStatus
+            }
+        })
+
+        return NextResponse.json(newEvent, { status: 201 })
+    } catch (error) {
+        console.error('Error creating event:', error)
+        return NextResponse.json(
+            { message: 'Internal server error' },
+            { status: 500 }
+        )
+    }
+}
