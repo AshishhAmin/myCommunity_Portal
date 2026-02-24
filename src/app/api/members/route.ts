@@ -1,30 +1,21 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { verifyFirebaseToken } from '@/lib/auth'
 
 export async function GET(req: Request) {
     try {
+        const user = await verifyFirebaseToken(req)
+
+        if (!user) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+        }
+
+        const currentUserId = user.id
         const { searchParams } = new URL(req.url)
         const search = searchParams.get('search') || ''
         const page = parseInt(searchParams.get('page') || '1')
         const limitParam = parseInt(searchParams.get('limit') || '20')
-        const limit = Math.min(Math.max(limitParam, 1), 50) // Clamp between 1 and 50
-
-        // Check if current user is authenticated
-        let currentUserId: string | null = null
-        const cookieStore = await cookies()
-        const token = cookieStore.get('auth_token')?.value
-
-        if (!token) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-
-        const payload = await verifyJWT(token)
-        if (!payload || !payload.sub) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-        currentUserId = payload.sub as string
+        const limit = Math.min(Math.max(limitParam, 1), 50)
 
         // Only show approved members, exclude current user
         const where: any = {

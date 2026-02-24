@@ -1,55 +1,65 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import bcrypt from 'bcryptjs'
+import { adminAuth } from '@/lib/firebase-admin'
 
 export async function POST(req: Request) {
     try {
-        const { name, email, password, mobile, gotra } = (await req.json()) as {
+        const body = await req.json()
+        const { name, email, password, mobile, gotra, firebaseUid } = body as {
             name?: string;
             email?: string;
             password?: string;
             mobile?: string;
             gotra?: string;
+            firebaseUid?: string;
         }
 
-        if (!email || !password || !mobile) {
+        if (!email || !mobile || !firebaseUid) {
             return NextResponse.json(
                 { message: 'Missing required fields' },
                 { status: 400 }
             )
         }
 
+        // Verify Firebase Token if provided
+        const authHeader = req.headers.get('Authorization')
+        if (authHeader?.startsWith('Bearer ')) {
+            const token = authHeader.split('Bearer ')[1]
+            const decodedToken = await adminAuth.verifyIdToken(token)
+            if (decodedToken.uid !== firebaseUid) {
+                return NextResponse.json({ message: 'Token mismatch' }, { status: 401 })
+            }
+        }
+
         const existingUser = await prisma.user.findFirst({
             where: {
                 OR: [
                     { email },
-                    { mobile }
+                    { mobile },
+                    { firebaseUid }
                 ]
             }
         })
 
         if (existingUser) {
             return NextResponse.json(
-                { message: 'User already exists with this email or mobile' },
+                { message: 'User already exists' },
                 { status: 409 }
             )
         }
-
-        const hashedPassword = await bcrypt.hash(password, 10)
 
         const user = await prisma.user.create({
             data: {
                 name,
                 email,
-                password: hashedPassword, // User provided password
+                password: 'FIREBASE_AUTH', // Placeholder
                 mobile,
                 gotra,
-                role: 'member', // Default role
-                // status: 'pending' // Default from schema
+                firebaseUid,
+                role: 'member',
             }
         })
 
-        // Remove password from response
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _p, ...userWithoutPassword } = user
 

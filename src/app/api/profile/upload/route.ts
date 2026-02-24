@@ -1,20 +1,14 @@
 import { NextResponse } from 'next/server'
-import { verifyJWT } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { cookies } from 'next/headers'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
+import { adminStorage } from '@/lib/firebase-admin'
+import { verifyFirebaseToken } from '@/lib/auth'
 
 export async function POST(req: Request) {
     try {
-        const cookieStore = await cookies()
-        const token = cookieStore.get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+        const user = await verifyFirebaseToken(req)
+        if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
-        const payload = await verifyJWT(token)
-        if (!payload) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const userId = payload.sub as string
+        const userId = user.id
 
         const formData = await req.formData()
         const file = formData.get('image') as File | null
@@ -31,21 +25,22 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'File too large. Maximum 5MB.' }, { status: 400 })
         }
 
-        // Create uploads directory
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'profiles')
-        await mkdir(uploadDir, { recursive: true })
-
         // Generate unique filename
         const ext = file.name.split('.').pop() || 'jpg'
-        const filename = `${userId}-${Date.now()}.${ext}`
-        const filepath = path.join(uploadDir, filename)
+        const filename = `profiles/${userId}-${Date.now()}.${ext}`
 
-        // Write file
+        // Upload to Firebase Storage
+        const bucket = adminStorage.bucket()
+        const blob = bucket.file(filename)
+
         const bytes = await file.arrayBuffer()
-        await writeFile(filepath, Buffer.from(bytes))
+        await blob.save(Buffer.from(bytes), {
+            contentType: file.type,
+            public: true
+        })
 
         // Update user profile image in database
-        const imageUrl = `/uploads/profiles/${filename}`
+        const imageUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`
         await prisma.user.update({
             where: { id: userId },
             data: { profileImage: imageUrl },

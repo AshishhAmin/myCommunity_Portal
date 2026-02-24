@@ -1,21 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
-import { writeFile } from "fs/promises"
-import { join } from "path"
-import { verifyJWT } from "@/lib/auth"
-import { cookies } from "next/headers"
+import { adminAuth, adminStorage } from "@/lib/firebase-admin"
 
 export async function POST(req: NextRequest) {
     try {
-        // Enforce Authentication
-        const cookieStore = await cookies()
-        const token = cookieStore.get('auth_token')?.value
-
-        if (!token) {
+        // Enforce Authentication via Firebase token
+        const authHeader = req.headers.get('Authorization')
+        if (!authHeader?.startsWith('Bearer ')) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
         }
 
-        const payload = await verifyJWT(token)
-        if (!payload) {
+        const token = authHeader.split('Bearer ')[1]
+        const decodedToken = await adminAuth.verifyIdToken(token)
+        if (!decodedToken) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
         }
 
@@ -37,14 +33,25 @@ export async function POST(req: NextRequest) {
         // Create a unique filename
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
         const filename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
-        const finalFilename = `${uniqueSuffix}-${filename}`
+        const finalFilename = `uploads/${uniqueSuffix}-${filename}`
 
-        // Write to public/uploads
-        const path = join(process.cwd(), 'public', 'uploads', finalFilename)
-        await writeFile(path, buffer)
+        // Upload to Firebase Storage
+        const bucket = adminStorage.bucket()
+        const blob = bucket.file(finalFilename)
 
-        // Return path for the DB
-        return NextResponse.json({ url: `/uploads/${finalFilename}` })
+        await blob.save(buffer, {
+            contentType: file.type,
+            public: true, // Make it publicly accessible
+            metadata: {
+                firebaseStorageDownloadTokens: uniqueSuffix, // Optional, but good for some SDKs
+            }
+        })
+
+        // Construct the public URL
+        // Typically: https://storage.googleapis.com/[BUCKET_NAME]/[FILE_PATH]
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${finalFilename}`
+
+        return NextResponse.json({ url: publicUrl })
     } catch (error) {
         console.error("Error uploading file:", error)
         return NextResponse.json({ message: "Internal server error" }, { status: 500 })

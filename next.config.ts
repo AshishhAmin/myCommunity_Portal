@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'mail.google.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
       }
     ],
   },

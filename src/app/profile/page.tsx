@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils"
 import { validateRequired, validateMinLength, validateMaxLength, validatePhone, collectErrors } from "@/lib/validation"
 
 export default function ProfilePage() {
-    const { user, refreshUser } = useAuth()
+    const { user, refreshUser, changePassword, isPasswordUser } = useAuth()
     const [isEditing, setIsEditing] = useState(false)
     const [loading, setLoading] = useState(false)
     const [uploading, setUploading] = useState(false)
@@ -24,6 +24,16 @@ export default function ProfilePage() {
     const [activityLoading, setActivityLoading] = useState(true)
     const [activeTab, setActiveTab] = useState("posts")
     const [filterType, setFilterType] = useState<string>("all")
+
+    // Password Form State
+    const [passwordData, setPasswordData] = useState({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+    })
+    const [passwordError, setPasswordError] = useState("")
+    const [passwordSuccess, setPasswordSuccess] = useState("")
+    const [passwordLoading, setPasswordLoading] = useState(false)
 
     // Form State
     const [formData, setFormData] = useState({
@@ -104,6 +114,32 @@ export default function ProfilePage() {
         } finally {
             setLoading(false)
         }
+    }
+
+    const handlePasswordChange = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setPasswordError("")
+        setPasswordSuccess("")
+
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            setPasswordError("Passwords do not match.")
+            return
+        }
+
+        if (passwordData.newPassword.length < 6) {
+            setPasswordError("New password must be at least 6 characters.")
+            return
+        }
+
+        setPasswordLoading(true)
+        const result = await changePassword(passwordData.currentPassword, passwordData.newPassword)
+        if (result.success) {
+            setPasswordSuccess("Password changed successfully!")
+            setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" })
+        } else {
+            setPasswordError(result.message || "Failed to change password.")
+        }
+        setPasswordLoading(false)
     }
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -265,7 +301,17 @@ export default function ProfilePage() {
                                 >
                                     Recent Activity
                                 </button>
-                                {/* Future tabs: Followers, Following */}
+                                <button
+                                    onClick={() => setActiveTab("security")}
+                                    className={cn(
+                                        "pb-3 text-sm font-medium transition-colors border-b-2 px-4",
+                                        activeTab === "security"
+                                            ? "border-maroon text-maroon font-bold"
+                                            : "border-transparent text-muted-foreground hover:text-maroon"
+                                    )}
+                                >
+                                    Security
+                                </button>
                             </div>
                         </div>
 
@@ -453,6 +499,84 @@ export default function ProfilePage() {
                                         })()}
                                     </div>
                                 )}
+                            </div>
+                        )}
+
+                        {activeTab === "security" && (
+                            <div className="max-w-md mx-auto space-y-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-maroon">Account Security</CardTitle>
+                                        <CardDescription>
+                                            Update your password to keep your account secure.
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        {isPasswordUser ? (
+                                            <form onSubmit={handlePasswordChange} className="space-y-4">
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="currentPassword">Current Password</Label>
+                                                    <Input
+                                                        id="currentPassword"
+                                                        type="password"
+                                                        value={passwordData.currentPassword}
+                                                        onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="newPassword">New Password</Label>
+                                                    <Input
+                                                        id="newPassword"
+                                                        type="password"
+                                                        value={passwordData.newPassword}
+                                                        onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                                                    <Input
+                                                        id="confirmPassword"
+                                                        type="password"
+                                                        value={passwordData.confirmPassword}
+                                                        onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                                                        required
+                                                    />
+                                                </div>
+
+                                                {passwordError && (
+                                                    <p className="text-sm text-red-500 bg-red-50 p-2 rounded border border-red-100 italic">
+                                                        {passwordError}
+                                                    </p>
+                                                )}
+                                                {passwordSuccess && (
+                                                    <p className="text-sm text-green-600 bg-green-50 p-2 rounded border border-green-100 italic">
+                                                        {passwordSuccess}
+                                                    </p>
+                                                )}
+
+                                                <Button
+                                                    type="submit"
+                                                    className="w-full bg-maroon text-gold hover:bg-maroon/90"
+                                                    disabled={passwordLoading}
+                                                >
+                                                    {passwordLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                                                    Update Password
+                                                </Button>
+                                            </form>
+                                        ) : (
+                                            <div className="text-center py-6 bg-gold/5 rounded-lg border border-dashed border-gold/20">
+                                                <p className="text-sm text-muted-foreground italic mb-2">
+                                                    Your account is managed via Google.
+                                                </p>
+                                                <p className="text-xs text-maroon/70">
+                                                    Password changes are handled by your Google Account settings.
+                                                </p>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
                             </div>
                         )}
                     </div>
