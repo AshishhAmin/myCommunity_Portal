@@ -7,7 +7,7 @@ import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Briefcase, MapPin, Clock, DollarSign, Calendar, ArrowLeft, Loader2, Mail, Phone, Globe, Edit, Trash2, Share2 } from "lucide-react"
+import { Briefcase, MapPin, Clock, DollarSign, Calendar, ArrowLeft, Loader2, Mail, Phone, Globe, Edit, Trash2, Share2, Shield } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ShareButton } from "@/components/ui/share-button"
 
@@ -113,7 +113,32 @@ export default function JobDetailsPage() {
         )
     }
 
+    const isAdmin = user?.role === 'admin'
     const isOwner = user?.id === job.posterId || user?.email === job.poster?.email
+    const isDeletedByAdmin = job.status === 'deleted_by_admin'
+
+    if (isDeletedByAdmin && !isAdmin) {
+        return (
+            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+                <Navbar />
+                <div className="flex-1 container mx-auto px-4 py-20 flex flex-col items-center justify-center text-center">
+                    <div className="bg-red-50 p-6 rounded-full mb-6 border border-red-100 shadow-sm">
+                        <Shield className="h-16 w-16 text-red-600/40" />
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-red-900/80 mb-4">Post Unavailable</h1>
+                    <p className="text-xl text-red-700/60 max-w-2xl mb-8 leading-relaxed">
+                        This job posting has been deleted by an administrator for violating community guidelines.
+                    </p>
+                    <Link href="/career?tab=jobs">
+                        <Button className="bg-maroon text-gold hover:bg-maroon/90 px-8 h-12 text-lg">
+                            Back to Career Center
+                        </Button>
+                    </Link>
+                </div>
+                <Footer />
+            </div>
+        )
+    }
 
     const handleApply = () => {
         const to = job.contactEmail || job.poster?.email || '';
@@ -138,6 +163,15 @@ export default function JobDetailsPage() {
                         </Link>
 
                         <div className="max-w-4xl">
+                            {isDeletedByAdmin && isAdmin && (
+                                <div className="mb-6 bg-red-600/90 text-white p-4 rounded-lg flex items-center gap-3 border border-red-500 shadow-xl animate-pulse">
+                                    <Shield className="h-6 w-6" />
+                                    <div className="flex-1">
+                                        <p className="font-bold">This post has been deleted by an administrator.</p>
+                                        <p className="text-sm opacity-90 text-white/80">It is currently hidden from the public feed and directory.</p>
+                                    </div>
+                                </div>
+                            )}
                             <h1 className="text-5xl md:text-6xl font-serif font-bold mb-6 leading-tight flex items-center gap-4">
                                 {job.title}
                                 <ShareButton

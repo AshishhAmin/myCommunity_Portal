@@ -35,6 +35,9 @@ model User {
   reports            Report[]
   supportTickets     SupportTicket[]
   scholarships       Scholarship[]       @relation("UserScholarships")
+  likes              Like[]
+  comments           Comment[]
+  shares             Share[]
 }
 
 model Business {
@@ -60,7 +63,7 @@ model Event {
   description      String
   date             DateTime
   location         String
-  image            String?
+  images           String[]
   audience         String          @default("public")
   registrationLink String?
   status           String          @default("pending")
@@ -171,7 +174,7 @@ model Achievement {
   description String
   date        DateTime
   category    String
-  image       String?
+  images      String[]
   status      String   @default("pending")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -225,4 +228,39 @@ model Announcement {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Like {
+  id          String   @id @default(cuid())
+  userId      String
+  contentType String   // 'event', 'business', 'achievement'
+  contentId   String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentType, contentId])
+}
+
+model Comment {
+  id          String    @id @default(cuid())
+  userId      String
+  contentType String    // 'event', 'business', 'achievement'
+  contentId   String
+  content     String
+  parentId    String?
+  parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     Comment[] @relation("CommentReplies")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Share {
+  id          String   @id @default(cuid())
+  userId      String?
+  contentType String   // 'event', 'business', 'achievement'
+  contentId   String
+  platform    String?  // 'whatsapp', 'x', 'copy'
+  createdAt   DateTime @default(now())
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

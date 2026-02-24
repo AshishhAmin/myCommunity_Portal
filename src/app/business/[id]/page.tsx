@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
-import { MapPin, Phone, Mail, Globe, Clock, ArrowLeft, Star, Loader2, Share2 } from "lucide-react"
+import { MapPin, Phone, Mail, Globe, Clock, ArrowLeft, Star, Loader2, Share2, Shield } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ShareButton } from "@/components/ui/share-button"
 
@@ -58,6 +58,10 @@ export default function BusinessDetailsPage() {
         }
     }, [id])
 
+    const isAdmin = user?.role === 'admin'
+    const isOwner = user?.email === business?.owner?.email
+    const isDeletedByAdmin = business?.status === 'deleted_by_admin'
+
     if (loading) {
         return (
             <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
@@ -86,6 +90,29 @@ export default function BusinessDetailsPage() {
         )
     }
 
+    if (isDeletedByAdmin && !isAdmin) {
+        return (
+            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+                <Navbar />
+                <div className="flex-1 container mx-auto px-4 py-20 flex flex-col items-center justify-center text-center">
+                    <div className="bg-red-50 p-6 rounded-full mb-6 border border-red-100 shadow-sm">
+                        <Shield className="h-16 w-16 text-red-600/40" />
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-red-900/80 mb-4">Listing Unavailable</h1>
+                    <p className="text-xl text-red-700/60 max-w-2xl mb-8 leading-relaxed">
+                        This business listing has been deleted by an administrator for violating community guidelines.
+                    </p>
+                    <Link href="/business">
+                        <Button className="bg-maroon text-gold hover:bg-maroon/90 px-8 h-12 text-lg">
+                            Back to Directory
+                        </Button>
+                    </Link>
+                </div>
+                <Footer />
+            </div>
+        )
+    }
+
     return (
         <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
             <Navbar />
@@ -103,6 +130,15 @@ export default function BusinessDetailsPage() {
                     </div>
 
                     <div className="container mx-auto px-4 relative h-full flex flex-col justify-end pb-8 text-white">
+                        {isDeletedByAdmin && isAdmin && (
+                            <div className="mb-6 bg-red-600/90 text-white p-4 rounded-lg flex items-center gap-3 border border-red-500 shadow-xl animate-pulse">
+                                <Shield className="h-6 w-6" />
+                                <div className="flex-1">
+                                    <p className="font-bold">This post has been deleted by an administrator.</p>
+                                    <p className="text-sm opacity-90 text-white/80">It is currently hidden from the public feed and directory.</p>
+                                </div>
+                            </div>
+                        )}
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                             <div>
                                 <span className="bg-gold text-maroon text-xs font-bold px-3 py-1 rounded-full w-fit mb-4 inline-block">
@@ -183,6 +219,25 @@ export default function BusinessDetailsPage() {
                                     {business.description}
                                 </p>
                             </div>
+
+                            {/* Image Gallery */}
+                            {business.images && business.images.length > 1 && (
+                                <div className="bg-white rounded-lg p-8 shadow-md border border-gold/10">
+                                    <h2 className="text-2xl md:text-3xl font-bold text-maroon mb-6 font-serif">Photo Gallery</h2>
+                                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {business.images.slice(1).map((img, idx) => (
+                                            <div key={idx} className="relative aspect-square md:aspect-[4/3] rounded-lg overflow-hidden group border border-gray-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
+                                                    src={img}
+                                                    alt={`Gallery image ${idx + 2}`}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Sidebar Info */}

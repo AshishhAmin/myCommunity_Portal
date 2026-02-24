@@ -7,7 +7,9 @@ import {
     Flag, AlertTriangle, CheckCircle, XCircle, Loader2,
     Eye, Trash2, User, Mail, Calendar, ArrowRight, Shield
 } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { Pagination } from "@/components/ui/pagination"
+import { ConfirmModal } from "@/components/ui/confirm-modal"
 
 interface ReportData {
     id: string
@@ -52,6 +54,20 @@ export default function AdminReportsPage() {
     const [filterStatus, setFilterStatus] = useState<FilterStatus>('all')
     const [filterType, setFilterType] = useState<string>('all')
     const [actionLoading, setActionLoading] = useState<string | null>(null)
+
+    // Modal State
+    const [confirmProps, setConfirmProps] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        onConfirm: () => void;
+        variant?: "primary" | "destructive";
+    }>({
+        isOpen: false,
+        title: "",
+        description: "",
+        onConfirm: () => { }
+    })
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1)
@@ -127,51 +143,62 @@ export default function AdminReportsPage() {
     }
 
     const handleDelete = async (reportId: string) => {
-        if (!confirm('Are you sure you want to delete this report?')) return
-        setActionLoading(reportId)
-        try {
-            const res = await fetch(`/api/reports/${reportId}`, { method: 'DELETE' })
-            if (res.ok) {
-                setReports(prev => prev.filter(r => r.id !== reportId))
+        setConfirmProps({
+            isOpen: true,
+            title: "Delete Report",
+            description: "Are you sure you want to delete this report? This action cannot be undone.",
+            variant: "destructive",
+            onConfirm: async () => {
+                setConfirmProps(prev => ({ ...prev, isOpen: false }))
+                setActionLoading(reportId)
+                try {
+                    const res = await fetch(`/api/reports/${reportId}`, { method: 'DELETE' })
+                    if (res.ok) {
+                        setReports(prev => prev.filter(r => r.id !== reportId))
+                    }
+                } catch (error) {
+                    console.error('Failed to delete report:', error)
+                } finally {
+                    setActionLoading(null)
+                }
             }
-        } catch (error) {
-            console.error('Failed to delete report:', error)
-        } finally {
-            setActionLoading(null)
-        }
+        })
     }
 
     const handleDeleteContent = async (report: ReportData) => {
-        if (!confirm(`Are you sure you want to delete this ${report.contentType}? This action cannot be undone.`)) return
-        setActionLoading(report.id)
-        try {
-            // Map content type to API endpoint
-            const endpointMap: Record<string, string> = {
-                event: 'events',
-                business: 'business',
-                job: 'career/jobs',
-                scholarship: 'career/scholarships',
-                mentorship: 'career/mentorship',
-                help: 'help',
-            }
-            const endpoint = endpointMap[report.contentType]
-            if (!endpoint) return
+        setConfirmProps({
+            isOpen: true,
+            title: `Delete ${report.contentType}`,
+            description: `Are you sure you want to delete this ${report.contentType}? This action cannot be undone.`,
+            variant: "destructive",
+            onConfirm: async () => {
+                setConfirmProps(prev => ({ ...prev, isOpen: false }))
+                setActionLoading(report.id)
+                try {
+                    // Map content type to API endpoint
+                    const endpointMap: Record<string, string> = {
+                        event: 'events',
+                        business: 'business',
+                        job: 'career/jobs',
+                        scholarship: 'career/scholarships',
+                        mentorship: 'career/mentorship',
+                        help: 'help',
+                    }
+                    const endpoint = endpointMap[report.contentType.toLowerCase()]
+                    if (!endpoint) return
 
-            // This calls public or admin APIs? 
-            // Previous code used `api/events/...`. 
-            // If I changed `api/admin/events`, does `api/events` still exist? Yes.
-            // So this should still work.
-
-            const res = await fetch(`/api/${endpoint}/${report.contentId}`, { method: 'DELETE' })
-            if (res.ok) {
-                // Mark report as reviewed after deleting content
-                await handleUpdateStatus(report.id, 'reviewed')
+                    const res = await fetch(`/api/${endpoint}/${report.contentId}`, { method: 'DELETE' })
+                    if (res.ok) {
+                        // Mark report as reviewed after deleting content
+                        await handleUpdateStatus(report.id, 'reviewed')
+                    }
+                } catch (error) {
+                    console.error('Failed to delete content:', error)
+                } finally {
+                    setActionLoading(null)
+                }
             }
-        } catch (error) {
-            console.error('Failed to delete content:', error)
-        } finally {
-            setActionLoading(null)
-        }
+        })
     }
 
     const formatDate = (dateStr: string) => {
@@ -368,6 +395,15 @@ export default function AdminReportsPage() {
                     />
                 </div>
             )}
+            {/* Confirmation Modal */}
+            <ConfirmModal
+                isOpen={confirmProps.isOpen}
+                onClose={() => setConfirmProps(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={confirmProps.onConfirm}
+                title={confirmProps.title}
+                description={confirmProps.description}
+                variant={confirmProps.variant}
+            />
         </div>
     )
 }

@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         const userRole = payload.role as string
 
         const body = await req.json()
-        const { title, description, category, date, image } = body
+        const { title, description, category, date, images } = body
 
         if (!title || !description || !category || !date) {
             return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
                 description,
                 category,
                 date: new Date(date),
-                image,
+                images: images || [],
                 userId,
                 status: 'approved'
             }
@@ -80,15 +80,15 @@ export async function GET(req: Request) {
             })
         }
 
+        const viewMode = searchParams.get('filter') // 'all' or 'mine'
+
         // Status Logic
-        if (requestedStatus) {
+        if (viewMode === 'mine' && activeUserId) {
+            queryConditions.push({ userId: activeUserId })
+        } else if (requestedStatus) {
             queryConditions.push({ status: requestedStatus })
         } else {
-            // For public view, only show approved. 
-            // If user wants to see their own pending, they should probably use a specific "my-achievements" endpoint or we add logic here.
-            // For now, assuming public view = approved only, unless specific status requested by admin (which would need auth check ideally, but staying simple as per current scope).
-            // Actually, looking at current code: "Return all achievements (Self-moderated)" implies broad access.
-            // Let's stick to: if no status requested, return approved.
+            // For public view, only show approved.
             queryConditions.push({ status: 'approved' })
         }
 

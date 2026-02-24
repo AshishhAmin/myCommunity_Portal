@@ -8,11 +8,13 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { ShieldCheck, ArrowRight, Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import { validateRequired, validateMinLength, validateEmail, validatePhone, validatePassword, collectErrors } from "@/lib/validation"
 
 export default function JoinPage() {
     const router = useRouter()
     const { toast } = useToast()
     const [isLoading, setIsLoading] = useState(false)
+    const [errors, setErrors] = useState<Record<string, string>>({})
     const [formData, setFormData] = useState({
         name: "",
         mobile: "",
@@ -23,10 +25,25 @@ export default function JoinPage() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
+        if (errors[e.target.name]) {
+            setErrors(prev => { const n = { ...prev }; delete n[e.target.name]; return n })
+        }
+    }
+
+    const validate = (): boolean => {
+        const errs = collectErrors({
+            name: [validateRequired(formData.name, 'Full Name'), validateMinLength(formData.name, 2, 'Full Name')],
+            mobile: [validateRequired(formData.mobile, 'Mobile Number'), validatePhone(formData.mobile)],
+            email: [validateRequired(formData.email, 'Email'), validateEmail(formData.email)],
+            password: [validatePassword(formData.password)],
+        })
+        setErrors(errs)
+        return Object.keys(errs).length === 0
     }
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!validate()) return
         setIsLoading(true)
 
         try {
@@ -90,8 +107,9 @@ export default function JoinPage() {
                                     placeholder="Enter your full name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    required
+                                    className={errors.name ? 'border-red-500' : ''}
                                 />
+                                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
@@ -101,10 +119,15 @@ export default function JoinPage() {
                                         type="tel"
                                         placeholder="Mobile Number"
                                         value={formData.mobile}
-                                        onChange={handleChange}
-                                        required
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '').slice(0, 10)
+                                            setFormData({ ...formData, mobile: val })
+                                            if (errors.mobile) setErrors(prev => { const n = { ...prev }; delete n.mobile; return n })
+                                        }}
                                         maxLength={10}
+                                        className={errors.mobile ? 'border-red-500' : ''}
                                     />
+                                    {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-maroon">Email</label>
@@ -114,8 +137,9 @@ export default function JoinPage() {
                                         placeholder="Email Address"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        required
+                                        className={errors.email ? 'border-red-500' : ''}
                                     />
+                                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                                 </div>
                             </div>
 
@@ -134,12 +158,12 @@ export default function JoinPage() {
                                 <Input
                                     name="password"
                                     type="password"
-                                    placeholder="Create a password"
+                                    placeholder="Create a password (min 6 characters)"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    required
-                                    minLength={6}
+                                    className={errors.password ? 'border-red-500' : ''}
                                 />
+                                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                             </div>
 
                             <Button type="submit" className="w-full text-lg h-12 mt-4" disabled={isLoading}>

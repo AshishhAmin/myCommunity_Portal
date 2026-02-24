@@ -115,9 +115,9 @@ export async function DELETE(req: Request) {
         }
 
         if (type === 'achievements') {
-            await prisma.achievement.update({ where: { id }, data: { status: 'deleted' } })
+            await prisma.achievement.update({ where: { id }, data: { status: 'deleted_by_admin' } })
         } else if (type === 'help') {
-            await prisma.helpRequest.update({ where: { id }, data: { status: 'deleted' } })
+            await prisma.helpRequest.update({ where: { id }, data: { status: 'deleted_by_admin' } })
         } else {
             return NextResponse.json({ message: 'Invalid type' }, { status: 400 })
         }

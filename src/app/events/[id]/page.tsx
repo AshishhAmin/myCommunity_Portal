@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Calendar, MapPin, Clock, Star, User, Loader2, Share2 } from "lucide-react"
+import { ArrowLeft, Calendar, MapPin, Clock, Star, User, Loader2, Share2, Shield } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ShareButton } from "@/components/ui/share-button"
 
@@ -17,7 +17,7 @@ interface EventDetail {
     location: string
     description: string
     status: string
-    image?: string | null
+    images?: string[]
     audience?: string
     registrationLink?: string | null
     organizer: {
@@ -108,8 +108,9 @@ export default function EventDetailPage() {
         }
     }
 
-    const isOwner = user?.email === event?.organizer?.email
     const isAdmin = user?.role === 'admin'
+    const isOwner = user?.email === event?.organizer?.email
+    const isDeletedByAdmin = event?.status === 'deleted_by_admin'
 
     if (loading) {
         return (
@@ -138,6 +139,29 @@ export default function EventDetailPage() {
         )
     }
 
+    if (isDeletedByAdmin && !isAdmin) {
+        return (
+            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+                <Navbar />
+                <div className="flex-1 container mx-auto px-4 py-20 flex flex-col items-center justify-center text-center">
+                    <div className="bg-red-50 p-6 rounded-full mb-6 border border-red-100 shadow-sm">
+                        <Shield className="h-16 w-16 text-red-600/40" />
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-red-900/80 mb-4">Post Unavailable</h1>
+                    <p className="text-xl text-red-700/60 max-w-2xl mb-8 leading-relaxed">
+                        This event has been deleted by an administrator for violating community guidelines.
+                    </p>
+                    <Link href="/events">
+                        <Button className="bg-maroon text-gold hover:bg-maroon/90 px-8 h-12 text-lg">
+                            Back to Events
+                        </Button>
+                    </Link>
+                </div>
+                <Footer />
+            </div>
+        )
+    }
+
     return (
         <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
             <Navbar />
@@ -148,14 +172,23 @@ export default function EventDetailPage() {
                     <div
                         className="absolute inset-0 bg-cover bg-center"
                         style={{
-                            backgroundImage: event.image
-                                ? `url(${event.image})`
+                            backgroundImage: event.images && event.images.length > 0
+                                ? `url(${event.images[0]})`
                                 : 'linear-gradient(135deg, #800020 0%, #4a0012 50%, #2d000b 100%)'
                         }}
                     />
                     <div className="absolute inset-0 bg-black/50" />
 
                     <div className="container mx-auto px-4 relative h-full flex flex-col justify-end pb-8 text-white">
+                        {isDeletedByAdmin && isAdmin && (
+                            <div className="mb-6 bg-red-600/90 text-white p-4 rounded-lg flex items-center gap-3 border border-red-500 shadow-xl animate-pulse">
+                                <Shield className="h-6 w-6" />
+                                <div className="flex-1">
+                                    <p className="font-bold">This post has been deleted by an administrator.</p>
+                                    <p className="text-sm opacity-90 text-white/80">It is currently hidden from the public feed and directory.</p>
+                                </div>
+                            </div>
+                        )}
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                             <div>
                                 {event.status === 'approved' && (
@@ -281,6 +314,25 @@ export default function EventDetailPage() {
                                     {event.description}
                                 </p>
                             </div>
+
+                            {/* Photo Gallery */}
+                            {event.images && event.images.length > 1 && (
+                                <div className="bg-white rounded-lg shadow-sm border border-gold/20 p-6 md:p-8">
+                                    <h2 className="font-serif text-2xl md:text-3xl font-bold text-maroon mb-6">Event Gallery</h2>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {event.images.slice(1).map((img, idx) => (
+                                            <div key={idx} className="relative aspect-video rounded-lg overflow-hidden border border-gold/20 group hover:shadow-md transition-shadow">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
+                                                    src={img}
+                                                    alt={`Event gallery photo ${idx + 1}`}
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Sidebar */}

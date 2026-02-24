@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { ArrowLeft, Loader2 } from "lucide-react"
 import { AuthGuard } from "@/components/auth-guard"
 import { useAuth } from "@/lib/auth-context"
+import { validateRequired, validateMinLength, collectErrors } from "@/lib/validation"
 
 export default function EditMentorshipPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter()
@@ -63,10 +64,23 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
             ...prev,
             [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
         }))
+        if (errors[name]) {
+            setErrors(prev => { const n = { ...prev }; delete n[name]; return n })
+        }
+    }
+    const [errors, setErrors] = useState<Record<string, string>>({})
+
+    const validate = (): boolean => {
+        const errs = collectErrors({
+            bio: [validateRequired(formData.bio, 'About You'), validateMinLength(formData.bio, 20, 'About You')],
+        })
+        setErrors(errs)
+        return Object.keys(errs).length === 0
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!validate()) return
         setSaving(true)
         setError("")
 
@@ -134,7 +148,7 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
 
                                 <div>
                                     <label className="text-sm font-medium text-gray-700">About You & Mentoring Style</label>
-                                    <textarea name="bio" value={formData.bio} onChange={handleChange} required rows={10} className="w-full rounded-md border border-gold/40 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold" placeholder="Describe your experience..." />
+                                    <textarea name="bio" value={formData.bio} onChange={handleChange} rows={10} className="w-full rounded-md border border-gold/40 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold" placeholder="Describe your experience..." />
                                 </div>
 
                                 <div className="flex items-center space-x-2 py-2">

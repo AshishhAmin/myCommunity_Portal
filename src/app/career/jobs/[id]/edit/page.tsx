@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Loader2 } from "lucide-react"
 import { AuthGuard } from "@/components/auth-guard"
 import { useAuth } from "@/lib/auth-context"
+import { validateRequired, validateLength, validateEmail, validatePhone, validateFutureDate, collectErrors } from "@/lib/validation"
 
 export default function EditJobPage() {
     const router = useRouter()
@@ -71,10 +72,29 @@ export default function EditJobPage() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
+        if (errors[e.target.name]) {
+            setErrors(prev => { const n = { ...prev }; delete n[e.target.name]; return n })
+        }
+    }
+    const [errors, setErrors] = useState<Record<string, string>>({})
+
+    const validate = (): boolean => {
+        const errs = collectErrors({
+            title: [validateRequired(formData.title, 'Job Title'), validateLength(formData.title, 3, 100, 'Job Title')],
+            company: [validateRequired(formData.company, 'Company')],
+            location: [validateRequired(formData.location, 'Location')],
+            description: [validateRequired(formData.description, 'Description'), validateLength(formData.description, 20, 2000, 'Description')],
+            ...(formData.contactEmail ? { contactEmail: [validateEmail(formData.contactEmail)] } : {}),
+            ...(formData.contactPhone ? { contactPhone: [validatePhone(formData.contactPhone)] } : {}),
+            ...(formData.deadline ? { deadline: [validateFutureDate(formData.deadline, 'Deadline')] } : {}),
+        })
+        setErrors(errs)
+        return Object.keys(errs).length === 0
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!validate()) return
         setSaving(true)
         setError("")
 
@@ -130,16 +150,16 @@ export default function EditJobPage() {
 
                                 <div>
                                     <label className="text-sm font-medium text-gray-700">Job Title *</label>
-                                    <Input name="title" value={formData.title} onChange={handleChange} required placeholder="e.g. Senior React Developer" />
+                                    <Input name="title" value={formData.title} onChange={handleChange} placeholder="e.g. Senior React Developer" />
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-700">Company *</label>
-                                    <Input name="company" value={formData.company} onChange={handleChange} required placeholder="e.g. Vyshya Tech Solutions" />
+                                    <Input name="company" value={formData.company} onChange={handleChange} placeholder="e.g. Vyshya Tech Solutions" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="text-sm font-medium text-gray-700">Location *</label>
-                                        <Input name="location" value={formData.location} onChange={handleChange} required placeholder="e.g. Bangalore" />
+                                        <Input name="location" value={formData.location} onChange={handleChange} placeholder="e.g. Bangalore" />
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium text-gray-700">Job Type *</label>
@@ -163,7 +183,7 @@ export default function EditJobPage() {
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-700">Description *</label>
-                                    <textarea name="description" value={formData.description} onChange={handleChange} required rows={8} className="w-full rounded-md border border-gold/40 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold" placeholder="Job responsibilities, requirements, etc." />
+                                    <textarea name="description" value={formData.description} onChange={handleChange} rows={8} className="w-full rounded-md border border-gold/40 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold" placeholder="Job responsibilities, requirements, etc." />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Loader2 } from "lucide-react"
 import { AuthGuard } from "@/components/auth-guard"
+import { validateRequired, validateMinLength, collectErrors } from "@/lib/validation"
 
 export default function RegisterMentorPage() {
     const router = useRouter()
@@ -21,10 +22,23 @@ export default function RegisterMentorPage() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
+        if (errors[e.target.name]) {
+            setErrors(prev => { const n = { ...prev }; delete n[e.target.name]; return n })
+        }
+    }
+    const [errors, setErrors] = useState<Record<string, string>>({})
+
+    const validate = (): boolean => {
+        const errs = collectErrors({
+            bio: [validateRequired(formData.bio, 'About You'), validateMinLength(formData.bio, 20, 'About You')],
+        })
+        setErrors(errs)
+        return Object.keys(errs).length === 0
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!validate()) return
         setLoading(true)
         setError("")
 
@@ -78,7 +92,7 @@ export default function RegisterMentorPage() {
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-700">About You *</label>
-                                    <textarea name="bio" value={formData.bio} onChange={handleChange} required rows={5} className="w-full rounded-md border border-gold/40 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold" placeholder="Describe your experience, what you can mentor in, and your availability..." />
+                                    <textarea name="bio" value={formData.bio} onChange={handleChange} rows={5} className="w-full rounded-md border border-gold/40 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold" placeholder="Describe your experience, what you can mentor in, and your availability..." />
                                 </div>
 
                                 <div className="pt-4">

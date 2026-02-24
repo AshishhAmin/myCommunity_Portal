@@ -73,7 +73,7 @@ export async function DELETE(
 
         await prisma.event.update({
             where: { id },
-            data: { status: 'deleted' }
+            data: { status: 'deleted_by_admin' }
         })
 
         return NextResponse.json({ message: 'Event deleted successfully' })

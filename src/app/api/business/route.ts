@@ -9,6 +9,7 @@ export async function GET(req: Request) {
         const category = searchParams.get('category')
         const searchQuery = searchParams.get('search')
         const requestedStatus = searchParams.get('status')
+        const filter = searchParams.get('filter')
         const page = parseInt(searchParams.get('page') || '1')
         const limit = parseInt(searchParams.get('limit') || '15')
         const skip = (page - 1) * limit
@@ -24,14 +25,16 @@ export async function GET(req: Request) {
 
         const queryConditions: any[] = []
 
-        if (requestedStatus) {
+        if (filter === 'mine' && activeUserId) {
+            queryConditions.push({ ownerId: activeUserId })
+        } else if (requestedStatus) {
             queryConditions.push({ status: requestedStatus })
         } else {
             if (activeUserId) {
                 queryConditions.push({
                     OR: [
                         { status: 'approved' },
-                        { ownerId: activeUserId }
+                        { ownerId: activeUserId, status: { notIn: ['deleted', 'rejected', 'deleted_by_admin'] } }
                     ]
                 })
             } else {
@@ -117,7 +120,22 @@ export async function POST(req: Request) {
         }
 
         const userRole = authPayload.role as string
-        const initialStatus = userRole === 'admin' ? 'approved' : 'pending_payment'
+        let initialStatus = userRole === 'admin' ? 'approved' : 'pending_payment'
+
+        // Bypassing payment if the user already has a pending or approved business
+        if (userRole !== 'admin') {
+            const existingBusinessesCount = await prisma.business.count({
+                where: {
+                    ownerId: creatorId,
+                    status: {
+                        in: ['approved', 'pending']
+                    }
+                }
+            })
+            if (existingBusinessesCount > 0) {
+                initialStatus = 'pending' // Bypasses payment but still requires admin approval
+            }
+        }
 
         const createdBusiness = await prisma.business.create({
             data: {

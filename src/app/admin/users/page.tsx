@@ -18,6 +18,7 @@ import Link from "next/link"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
+import { useSearchParams } from "next/navigation"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Pagination } from "@/components/ui/pagination"
@@ -33,9 +34,12 @@ interface User {
 }
 
 export default function AdminUsersPage() {
+    const searchParams = useSearchParams()
+    const initialStatus = searchParams.get('status') as 'pending' | 'approved' | 'rejected' | null
+
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(true)
-    const [statusFilter, setStatusFilter] = useState<'pending' | 'approved' | 'rejected'>('pending')
+    const [statusFilter, setStatusFilter] = useState<'pending' | 'approved' | 'rejected'>(initialStatus || 'pending')
     const [searchQuery, setSearchQuery] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedIds, setSelectedIds] = useState<string[]>([])

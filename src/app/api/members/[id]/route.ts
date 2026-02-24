@@ -7,6 +7,21 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     try {
         const { id } = await params
 
+        // Check if current user is authenticated
+        let currentUserId: string | null = null
+        const cookieStore = await cookies()
+        const token = cookieStore.get('auth_token')?.value
+
+        if (!token) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+        }
+
+        const payload = await verifyJWT(token)
+        if (!payload || !payload.sub) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+        }
+        currentUserId = payload.sub as string
+
         const member = await prisma.user.findUnique({
             where: { id, status: 'approved' },
             select: {
@@ -32,25 +47,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         // Check follow status
-        let isFollowing = false
-        try {
-            const cookieStore = await cookies()
-            const token = cookieStore.get('auth_token')?.value
-            if (token) {
-                const payload = await verifyJWT(token)
-                if (payload) {
-                    const follow = await prisma.follow.findUnique({
-                        where: {
-                            followerId_followingId: {
-                                followerId: payload.sub as string,
-                                followingId: id,
-                            }
-                        }
-                    })
-                    isFollowing = !!follow
+        const follow = await prisma.follow.findUnique({
+            where: {
+                followerId_followingId: {
+                    followerId: currentUserId,
+                    followingId: id,
                 }
             }
-        } catch { }
+        })
+        const isFollowing = !!follow
 
         // Get approved postings
         const [jobs, businesses, events] = await Promise.all([

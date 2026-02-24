@@ -20,7 +20,7 @@ interface Achievement {
     category: string
     date: string
     description: string
-    image?: string
+    images: string[]
     status: string
     user: {
         name: string | null
@@ -32,9 +32,10 @@ export default function AchievementsPage() {
     const [achievements, setAchievements] = useState<Achievement[]>([])
     const [topAchievements, setTopAchievements] = useState<Achievement[]>([])
     const [loading, setLoading] = useState(true)
+    const [filter, setFilter] = useState<'all' | 'mine'>('all')
     const [search, setSearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
-    const { isAuthenticated } = useAuth()
+    const { user, isAuthenticated } = useAuth()
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1)
@@ -48,7 +49,7 @@ export default function AchievementsPage() {
             setCurrentPage(1) // Reset to page 1 on search
         }, 500)
         return () => clearTimeout(handler)
-    }, [search])
+    }, [search, filter])
 
     const fetchAchievements = async () => {
         setLoading(true)
@@ -62,6 +63,7 @@ export default function AchievementsPage() {
                 limit: limit.toString(),
                 search: debouncedSearch
             })
+            if (filter === 'mine') params.append('filter', 'mine')
 
             const [listRes, topRes] = await Promise.all([
                 fetch(`/api/achievements?${params.toString()}`),
@@ -110,6 +112,30 @@ export default function AchievementsPage() {
                         <h1 className="font-serif text-4xl md:text-5xl font-bold text-maroon">Community Achievements</h1>
                         <p className="text-lg md:text-xl text-muted-foreground mt-3 leading-relaxed max-w-2xl">Celebrating success, excellence, and the inspiring milestones of our community members.</p>
                     </div>
+
+                    {/* Filter Toggle (Authenticated Only) */}
+                    {isAuthenticated && (
+                        <div className="bg-cream/40 p-1.5 rounded-xl border border-gold/30 flex gap-1 shadow-inner">
+                            <button
+                                onClick={() => setFilter('all')}
+                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${filter === 'all'
+                                    ? "bg-maroon text-gold shadow-sm"
+                                    : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
+                                    }`}
+                            >
+                                All Posts
+                            </button>
+                            <button
+                                onClick={() => setFilter('mine')}
+                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${filter === 'mine'
+                                    ? "bg-maroon text-gold shadow-sm"
+                                    : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
+                                    }`}
+                            >
+                                My Posts
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {/* Hero Carousel - Always visible if data exists, independent of search */}
@@ -137,84 +163,91 @@ export default function AchievementsPage() {
                     )}
                 </div>
 
-                {loading ? (
-                    <div className="flex justify-center py-20">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maroon"></div>
-                    </div>
-                ) : achievements.length === 0 ? (
-                    <div className="text-center py-20 bg-white/50 rounded-2xl border border-gold/10">
-                        <Trophy className="h-16 w-16 text-gold mx-auto mb-4 opacity-30" />
-                        <h3 className="text-xl font-serif font-bold text-maroon">No achievements found</h3>
-                        <p className="text-muted-foreground mt-2">Try searching for something else or share your own achievement!</p>
-                    </div>
-                ) : (
-                    <>
-                        <div className="max-h-[1200px] overflow-y-auto custom-scrollbar pr-4 pb-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {achievements.map((item) => (
-                                    <Link href={`/achievements/${item.id}`} key={item.id} className="block group">
-                                        <Card className="hover:shadow-xl transition-all overflow-hidden border-gold/20 h-full flex flex-col group-hover:scale-[1.02] duration-300">
-                                            <div className="relative h-60 bg-gray-100">
-                                                {item.image ? (
-                                                    <Image src={item.image} alt={item.title} fill className="object-cover" />
-                                                ) : (
-                                                    <div className="flex items-center justify-center h-full bg-gold/10">
-                                                        <Trophy className="h-16 w-16 text-gold" />
-                                                    </div>
-                                                )}
-                                                <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
-                                                    <div className="bg-cream/80 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-bold text-maroon shadow-md border border-gold/30">
-                                                        {item.category}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <CardContent className="p-6 flex-1 flex flex-col">
-                                                <div className="flex items-center gap-2 mb-3">
-                                                    <div className="h-8 w-8 rounded-full bg-cream border border-gold flex items-center justify-center overflow-hidden relative text-sm font-bold text-maroon shadow-sm">
-                                                        {item.user.profileImage ? (
-                                                            <Image src={item.user.profileImage} alt={item.user.name || "User"} fill className="object-cover" />
-                                                        ) : (
-                                                            item.user.name?.charAt(0).toUpperCase() || "U"
+                {
+                    loading ? (
+                        <div className="flex justify-center py-20">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maroon"></div>
+                        </div>
+                    ) : achievements.length === 0 ? (
+                        <div className="text-center py-20 bg-white/50 rounded-2xl border border-gold/10">
+                            <Trophy className="h-16 w-16 text-gold mx-auto mb-4 opacity-30" />
+                            <h3 className="text-xl font-serif font-bold text-maroon">No achievements found</h3>
+                            <p className="text-muted-foreground mt-2">Try searching for something else or share your own achievement!</p>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="max-h-[1200px] overflow-y-auto custom-scrollbar pr-4 pb-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {achievements.map((item) => (
+                                        <Link href={`/achievements/${item.id}`} key={item.id} className="block group">
+                                            <Card className="hover:shadow-xl transition-all overflow-hidden border-gold/20 h-full flex flex-col group-hover:scale-[1.02] duration-300">
+                                                <div className="relative h-60 bg-gray-100">
+                                                    {item.images && item.images.length > 0 ? (
+                                                        <Image src={item.images[0]} alt={item.title} fill className="object-cover" />
+                                                    ) : (
+                                                        <div className="flex items-center justify-center h-full bg-gold/10">
+                                                            <Trophy className="h-16 w-16 text-gold" />
+                                                        </div>
+                                                    )}
+                                                    <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+                                                        <div className="bg-cream/80 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-bold text-maroon shadow-md border border-gold/30">
+                                                            {item.category}
+                                                        </div>
+                                                        {item.status === 'deleted_by_admin' && (
+                                                            <div className="bg-red-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg border border-red-400 animate-pulse">
+                                                                Deleted by Admin
+                                                            </div>
                                                         )}
                                                     </div>
-                                                    <span className="text-base font-bold text-gray-800">{item.user.name || "Anonymous"}</span>
                                                 </div>
-
-                                                <h3 className="font-serif font-bold text-2xl text-maroon mb-2 group-hover:text-gold transition-colors leading-tight">{item.title}</h3>
-                                                <p className="text-muted-foreground text-sm font-medium line-clamp-2 break-all mb-4 flex-1 leading-relaxed">{item.description}</p>
-
-                                                <div className="flex items-center justify-between text-sm font-bold text-maroon/60 mt-auto pt-4 border-t border-gold/10">
-                                                    <div className="flex items-center">
-                                                        <Calendar className="h-4 w-4 mr-2" />
-                                                        {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                                <CardContent className="p-6 flex-1 flex flex-col">
+                                                    <div className="flex items-center gap-2 mb-3">
+                                                        <div className="h-8 w-8 rounded-full bg-cream border border-gold flex items-center justify-center overflow-hidden relative text-sm font-bold text-maroon shadow-sm">
+                                                            {item.user.profileImage ? (
+                                                                <Image src={item.user.profileImage} alt={item.user.name || "User"} fill className="object-cover" />
+                                                            ) : (
+                                                                item.user.name?.charAt(0).toUpperCase() || "U"
+                                                            )}
+                                                        </div>
+                                                        <span className="text-base font-bold text-gray-800">{item.user.name || "Anonymous"}</span>
                                                     </div>
-                                                    <ShareButton
-                                                        url={`/achievements/${item.id}`}
-                                                        title={item.title}
-                                                        description={`Achievement by ${item.user.name || "Anonymous"}`}
-                                                        details={`🏆 *Achievement: ${item.title}*\nBy: ${item.user.name || "Anonymous"}\nCategory: ${item.category}\nDate: ${new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}\n\n${item.description}`}
-                                                        className="h-8 w-8 hover:bg-gold/10"
-                                                    />
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                ))}
+
+                                                    <h3 className="font-serif font-bold text-2xl text-maroon mb-2 group-hover:text-gold transition-colors leading-tight">{item.title}</h3>
+                                                    <p className="text-muted-foreground text-sm font-medium line-clamp-2 break-all mb-4 flex-1 leading-relaxed">{item.description}</p>
+
+                                                    <div className="flex items-center justify-between text-sm font-bold text-maroon/60 mt-auto pt-4 border-t border-gold/10">
+                                                        <div className="flex items-center">
+                                                            <Calendar className="h-4 w-4 mr-2" />
+                                                            {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                                        </div>
+                                                        <ShareButton
+                                                            url={`/achievements/${item.id}`}
+                                                            title={item.title}
+                                                            description={`Achievement by ${item.user.name || "Anonymous"}`}
+                                                            details={`🏆 *Achievement: ${item.title}*\nBy: ${item.user.name || "Anonymous"}\nCategory: ${item.category}\nDate: ${new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}\n\n${item.description}`}
+                                                            className="h-8 w-8 hover:bg-gold/10"
+                                                        />
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                        {totalPages > 1 && (
-                            <div className="py-8">
-                                <Pagination
-                                    currentPage={currentPage}
-                                    totalPages={totalPages}
-                                    onPageChange={handlePageChange}
-                                />
-                            </div>
-                        )}
-                    </>
-                )}
-            </main>
+                            {totalPages > 1 && (
+                                <div className="py-8">
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        totalPages={totalPages}
+                                        onPageChange={handlePageChange}
+                                    />
+                                </div>
+                            )}
+                        </>
+                    )
+                }
+            </main >
             <Footer />
-        </div>
+        </div >
     )
 }

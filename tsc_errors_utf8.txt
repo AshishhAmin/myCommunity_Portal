@@ -1,0 +1,2 @@
+src/components/social/CommentSection.tsx(184,56): error TS2304: Cannot find name 'cn'.
+src/components/social/CommentSection.tsx(223,68): error TS2304: Cannot find name 'cn'.

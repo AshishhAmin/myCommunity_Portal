@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Calendar, Trash2, Edit, CheckCircle, XCircle, Search, Loader2, MapPin, Eye } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { Pagination } from "@/components/ui/pagination"
+import { ConfirmModal } from "@/components/ui/confirm-modal"
 
 interface AdminEvent {
     id: string
@@ -23,13 +25,29 @@ interface AdminEvent {
 }
 
 export default function AdminEventsPage() {
+    const searchParams = useSearchParams()
+    const initialStatus = searchParams.get('status') as 'pending' | 'approved' | 'rejected' | 'deleted' | null
+
     const [events, setEvents] = useState<AdminEvent[]>([])
     const [loading, setLoading] = useState(true)
-    const [statusFilter, setStatusFilter] = useState<'pending' | 'approved' | 'rejected' | 'deleted'>('approved')
+    const [statusFilter, setStatusFilter] = useState<'pending' | 'approved' | 'rejected' | 'deleted'>(initialStatus || 'approved')
     const [searchQuery, setSearchQuery] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedIds, setSelectedIds] = useState<string[]>([])
     const { toast } = useToast()
+
+    // Modal State
+    const [confirmProps, setConfirmProps] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        id: string;
+    }>({
+        isOpen: false,
+        title: "",
+        description: "",
+        id: ""
+    })
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1)
@@ -108,8 +126,18 @@ export default function AdminEventsPage() {
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this event?")) return
+    const handleDeleteClick = (id: string) => {
+        setConfirmProps({
+            isOpen: true,
+            title: "Delete Event",
+            description: "Are you sure you want to delete this event? This action cannot be undone.",
+            id
+        })
+    }
+
+    const executeDelete = async () => {
+        const id = confirmProps.id
+        setConfirmProps(prev => ({ ...prev, isOpen: false }))
 
         try {
             const res = await fetch(`/api/admin/events/${id}`, {
@@ -313,7 +341,7 @@ export default function AdminEventsPage() {
                                                     size="sm"
                                                     variant="ghost"
                                                     className="h-8 w-8 p-0 text-muted-foreground hover:text-red-500"
-                                                    onClick={() => handleDelete(event.id)}
+                                                    onClick={() => handleDeleteClick(event.id)}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                     <span className="sr-only">Delete</span>
@@ -345,6 +373,16 @@ export default function AdminEventsPage() {
                     />
                 </div>
             )}
+            {/* Confirmation Modal */}
+            <ConfirmModal
+                isOpen={confirmProps.isOpen}
+                onClose={() => setConfirmProps(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={executeDelete}
+                title={confirmProps.title}
+                description={confirmProps.description}
+                variant="destructive"
+                confirmText="Delete"
+            />
         </div>
     )
 }

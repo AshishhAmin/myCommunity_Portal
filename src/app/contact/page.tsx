@@ -7,18 +7,40 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react"
+import { validateRequired, validateMinLength, validateEmail, validatePhone, collectErrors } from "@/lib/validation"
 
 export default function ContactPage() {
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [errors, setErrors] = useState<Record<string, string>>({})
+    const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value })
+        if (errors[e.target.name]) {
+            setErrors(prev => { const n = { ...prev }; delete n[e.target.name]; return n })
+        }
+    }
+
+    const validate = (): boolean => {
+        const errs = collectErrors({
+            name: [validateRequired(formData.name, 'Name'), validateMinLength(formData.name, 2, 'Name')],
+            phone: [validateRequired(formData.phone, 'Phone Number'), validatePhone(formData.phone)],
+            email: [validateRequired(formData.email, 'Email'), validateEmail(formData.email)],
+            message: [validateRequired(formData.message, 'Message'), validateMinLength(formData.message, 10, 'Message')],
+        })
+        setErrors(errs)
+        return Object.keys(errs).length === 0
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!validate()) return
         setIsSubmitting(true)
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1500))
         alert("Message sent successfully!")
         setIsSubmitting(false)
-        // Reset form logic here
+        setFormData({ name: '', phone: '', email: '', message: '' })
     }
 
     return (
@@ -89,27 +111,37 @@ export default function ContactPage() {
                                     <form onSubmit={handleSubmit} className="space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium text-gray-700">Your Name</label>
-                                                <Input placeholder="John Doe" required />
+                                                <label className="text-sm font-medium text-gray-700">Your Name *</label>
+                                                <Input name="name" placeholder="John Doe" value={formData.name} onChange={handleChange} className={errors.name ? 'border-red-500' : ''} />
+                                                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium text-gray-700">Phone Number</label>
-                                                <Input placeholder="+91 98765 43210" required />
+                                                <label className="text-sm font-medium text-gray-700">Phone Number *</label>
+                                                <Input name="phone" placeholder="9876543210" value={formData.phone} onChange={(e) => {
+                                                    const val = e.target.value.replace(/\D/g, '').slice(0, 10)
+                                                    setFormData({ ...formData, phone: val })
+                                                    if (errors.phone) setErrors(prev => { const n = { ...prev }; delete n.phone; return n })
+                                                }} maxLength={10} className={errors.phone ? 'border-red-500' : ''} />
+                                                {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                                             </div>
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium text-gray-700">Email Address</label>
-                                            <Input type="email" placeholder="john@example.com" required />
+                                            <label className="text-sm font-medium text-gray-700">Email Address *</label>
+                                            <Input name="email" type="email" placeholder="john@example.com" value={formData.email} onChange={handleChange} className={errors.email ? 'border-red-500' : ''} />
+                                            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium text-gray-700">Message</label>
+                                            <label className="text-sm font-medium text-gray-700">Message *</label>
                                             <textarea
-                                                className="w-full min-h-[150px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                                placeholder="How can we help you?"
-                                                required
+                                                name="message"
+                                                className={`w-full min-h-[150px] rounded-md border bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${errors.message ? 'border-red-500' : 'border-input'}`}
+                                                placeholder="How can we help you? (min 10 characters)"
+                                                value={formData.message}
+                                                onChange={handleChange}
                                             />
+                                            {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
                                         </div>
 
                                         <Button

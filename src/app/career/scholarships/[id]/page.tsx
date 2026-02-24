@@ -7,7 +7,7 @@ import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { GraduationCap, Calendar, ArrowLeft, Loader2, ExternalLink, Edit, Trash2, Info, CheckCircle, Share2 } from "lucide-react"
+import { GraduationCap, Calendar, ArrowLeft, Loader2, ExternalLink, Edit, Trash2, Info, CheckCircle, Share2, Shield } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ShareButton } from "@/components/ui/share-button"
 
@@ -110,7 +110,32 @@ export default function ScholarshipDetailsPage() {
         )
     }
 
+    const isAdmin = user?.role === 'admin'
     const isOwner = user?.id === scholarship.posterId || user?.email === scholarship.poster?.email
+    const isDeletedByAdmin = scholarship.status === 'deleted_by_admin'
+
+    if (isDeletedByAdmin && !isAdmin) {
+        return (
+            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+                <Navbar />
+                <div className="flex-1 container mx-auto px-4 py-20 flex flex-col items-center justify-center text-center">
+                    <div className="bg-red-50 p-6 rounded-full mb-6 border border-red-100 shadow-sm">
+                        <Shield className="h-16 w-16 text-red-600/40" />
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-red-900/80 mb-4">Post Unavailable</h1>
+                    <p className="text-xl text-red-700/60 max-w-2xl mb-8 leading-relaxed">
+                        This scholarship opportunity has been deleted by an administrator for violating community guidelines.
+                    </p>
+                    <Link href="/career?tab=scholarships">
+                        <Button className="bg-maroon text-gold hover:bg-maroon/90 px-8 h-12 text-lg">
+                            Back to Hub
+                        </Button>
+                    </Link>
+                </div>
+                <Footer />
+            </div>
+        )
+    }
 
     return (
         <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
@@ -131,6 +156,15 @@ export default function ScholarshipDetailsPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-8">
+                            {isDeletedByAdmin && isAdmin && (
+                                <div className="mb-0 bg-red-600/90 text-white p-4 rounded-lg flex items-center gap-3 border border-red-500 shadow-xl animate-pulse">
+                                    <Shield className="h-6 w-6" />
+                                    <div className="flex-1">
+                                        <p className="font-bold">This post has been deleted by an administrator.</p>
+                                        <p className="text-sm opacity-90 text-white/80">It is currently hidden from the public feed and directory.</p>
+                                    </div>
+                                </div>
+                            )}
                             <Card className="border-gold/20 shadow-xl overflow-hidden rounded-2xl">
                                 <CardHeader className="bg-cream/50 border-b border-gold/10 p-8 md:p-10">
                                     <div className="flex flex-wrap items-center gap-3 mb-4">

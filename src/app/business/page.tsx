@@ -32,6 +32,7 @@ export default function BusinessDirectoryPage() {
     const [searchTerm, setSearchTerm] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("All")
     const { user } = useAuth()
+    const [filter, setFilter] = useState<'all' | 'mine'>('all')
     const [businesses, setBusinesses] = useState<Business[]>([])
     const [loading, setLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
@@ -44,6 +45,7 @@ export default function BusinessDirectoryPage() {
                 const params = new URLSearchParams()
                 if (selectedCategory !== "All") params.append("category", selectedCategory)
                 if (searchTerm) params.append("search", searchTerm)
+                if (filter === 'mine') params.append('filter', 'mine')
                 params.append("page", currentPage.toString())
                 params.append("limit", "15")
 
@@ -73,12 +75,12 @@ export default function BusinessDirectoryPage() {
         }, 300)
 
         return () => clearTimeout(timeoutId)
-    }, [searchTerm, selectedCategory, currentPage])
+    }, [searchTerm, selectedCategory, currentPage, filter])
 
     // Reset pagination when filters change
     useEffect(() => {
         setCurrentPage(1)
-    }, [searchTerm, selectedCategory])
+    }, [searchTerm, selectedCategory, filter])
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page)
@@ -86,6 +88,8 @@ export default function BusinessDirectoryPage() {
     }
 
     const categories = ["All", "Retail", "Jewellery", "Technology", "Food", "Textiles", "Logistics", "Other"]
+
+    const cn = (...classes: any[]) => classes.filter(Boolean).join(' ')
 
     return (
         <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
@@ -108,6 +112,36 @@ export default function BusinessDirectoryPage() {
                         </Link>
                     )}
                 </div>
+
+                {/* Filter Toggle (Authenticated Only) */}
+                {user && (
+                    <div className="flex justify-center mb-6">
+                        <div className="bg-cream/40 p-1.5 rounded-xl border border-gold/30 flex gap-1 shadow-inner">
+                            <button
+                                onClick={() => setFilter('all')}
+                                className={cn(
+                                    "px-4 py-1.5 text-sm font-medium rounded-md transition-all",
+                                    filter === 'all'
+                                        ? "bg-maroon text-gold shadow-sm"
+                                        : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
+                                )}
+                            >
+                                All Posts
+                            </button>
+                            <button
+                                onClick={() => setFilter('mine')}
+                                className={cn(
+                                    "px-4 py-1.5 text-sm font-medium rounded-md transition-all",
+                                    filter === 'mine'
+                                        ? "bg-maroon text-gold shadow-sm"
+                                        : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
+                                )}
+                            >
+                                My Posts
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Search & Filter */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12 bg-cream/40 p-5 rounded-2xl border border-gold/20 shadow-sm backdrop-blur-sm">
@@ -174,6 +208,11 @@ export default function BusinessDirectoryPage() {
                                                     {business.status === 'pending' && (
                                                         <div className="bg-amber-500/90 text-white text-sm px-3 py-1 rounded flex items-center">
                                                             Pending Verification
+                                                        </div>
+                                                    )}
+                                                    {business.status === 'deleted_by_admin' && (
+                                                        <div className="bg-red-500/90 text-white text-sm px-3 py-1 rounded flex items-center">
+                                                            Deleted by Admin
                                                         </div>
                                                     )}
                                                 </div>

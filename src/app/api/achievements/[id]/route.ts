@@ -46,7 +46,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         const body = await req.json()
-        const { title, description, category, date, image } = body
+        const { title, description, category, date, images } = body
 
         const updated = await prisma.achievement.update({
             where: { id },
@@ -55,7 +55,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
                 description,
                 category,
                 date: date ? new Date(date) : achievement.date,
-                image: image !== undefined ? image : achievement.image,
+                images: images !== undefined ? images : achievement.images,
             }
         })
 
@@ -85,6 +85,14 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
         // Only owner or admin can delete
         if (achievement.userId !== userId && userRole !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+        }
+
+        if (userRole === 'admin') {
+            await prisma.achievement.update({
+                where: { id },
+                data: { status: 'deleted_by_admin' }
+            })
+            return NextResponse.json({ message: 'Achievement marked as deleted by admin' })
         }
 
         await prisma.achievement.delete({ where: { id } })

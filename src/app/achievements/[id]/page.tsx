@@ -17,7 +17,7 @@ interface AchievementDetail {
     category: string
     date: string
     description: string
-    image?: string
+    images?: string[]
     status: string
     userId: string
     user: {
@@ -117,10 +117,10 @@ export default function AchievementDetailsPage() {
             <main className="flex-1 pb-16">
                 {/* Hero / Header Section */}
                 <div className="relative h-[320px] w-full bg-maroon overflow-hidden">
-                    {achievement.image ? (
+                    {achievement.images && achievement.images.length > 0 ? (
                         <>
                             <Image
-                                src={achievement.image}
+                                src={achievement.images[0]}
                                 alt={achievement.title}
                                 fill
                                 className="object-cover opacity-60"
@@ -205,6 +205,28 @@ export default function AchievementDetailsPage() {
                                 <div className="text-gray-700 leading-relaxed text-lg whitespace-pre-line prose prose-maroon max-w-none break-all">
                                     {achievement.description}
                                 </div>
+
+                                {/* Photo Gallery */}
+                                {achievement.images && achievement.images.length > 1 && (
+                                    <div className="mt-12">
+                                        <h3 className="text-2xl font-serif font-bold text-maroon mb-6 flex items-center gap-3">
+                                            Achievement Gallery
+                                            <div className="h-px flex-1 bg-gold/20" />
+                                        </h3>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            {achievement.images.slice(1).map((img, idx) => (
+                                                <div key={idx} className="relative aspect-video rounded-lg overflow-hidden border border-gold/20 group hover:shadow-md transition-shadow">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img
+                                                        src={img}
+                                                        alt={`Achievement gallery photo ${idx + 1}`}
+                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {isOwner && (
                                     <div className="mt-12 pt-8 border-t border-gray-100 flex flex-wrap gap-4">

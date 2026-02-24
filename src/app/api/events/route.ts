@@ -24,17 +24,21 @@ export async function GET(req: Request) {
         }
 
         const queryConditions: any[] = []
+        const filterStatus = searchParams.get('filter') // 'upcoming', 'past', or 'all'
+        const viewMode = searchParams.get('mode') // 'all' or 'mine'
 
         // Status Logic
-        if (requestedStatus) {
+        if (viewMode === 'mine' && activeUserId) {
+            queryConditions.push({ organizerId: activeUserId })
+        } else if (requestedStatus) {
             queryConditions.push({ status: requestedStatus })
         } else {
-            // Strict enforcement: Approved OR Mine
+            // Strict enforcement: Approved OR Mine (but not deleted_by_admin in main feed)
             if (activeUserId) {
                 queryConditions.push({
                     OR: [
                         { status: 'approved' },
-                        { organizerId: activeUserId }
+                        { organizerId: activeUserId, status: { notIn: ['deleted', 'rejected', 'deleted_by_admin'] } }
                     ]
                 })
             } else {
@@ -114,7 +118,7 @@ export async function POST(req: Request) {
         const body = await req.json()
         console.log('Event POST body:', body)
 
-        const { title, date, time, location, description, image, audience, registrationLink } = body
+        const { title, date, time, location, description, images, audience, registrationLink } = body
 
         if (!title || !date || !time || !location || !description) {
             return NextResponse.json(
@@ -136,7 +140,7 @@ export async function POST(req: Request) {
                 description,
                 date: eventDate,
                 location,
-                image: image || null,
+                images: images || [],
                 audience: audience || 'public',
                 registrationLink: registrationLink || null,
                 status: eventStatus

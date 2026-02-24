@@ -158,11 +158,11 @@ export async function DELETE(req: Request) {
         }
 
         if (type === 'jobs') {
-            await prisma.job.update({ where: { id }, data: { status: 'deleted' } })
+            await prisma.job.update({ where: { id }, data: { status: 'deleted_by_admin' } })
         } else if (type === 'scholarships') {
-            await prisma.scholarship.update({ where: { id }, data: { status: 'deleted' } })
+            await prisma.scholarship.update({ where: { id }, data: { status: 'deleted_by_admin' } })
         } else if (type === 'mentorship') {
-            await prisma.mentorship.update({ where: { id }, data: { status: 'deleted' } })
+            await prisma.mentorship.update({ where: { id }, data: { status: 'deleted_by_admin' } })
         } else {
             return NextResponse.json({ message: 'Invalid type' }, { status: 400 })
         }

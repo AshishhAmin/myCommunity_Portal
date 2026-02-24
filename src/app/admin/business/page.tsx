@@ -9,9 +9,11 @@ import { useToast } from "@/components/ui/use-toast"
 import { Input } from "@/components/ui/input"
 import { Search, Trash2, CheckCircle, XCircle, Eye } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { Pagination } from "@/components/ui/pagination"
+import { ConfirmModal } from "@/components/ui/confirm-modal"
 
 interface Business {
     id: string
@@ -28,13 +30,29 @@ interface Business {
 }
 
 export default function AdminBusinessPage() {
+    const searchParams = useSearchParams()
+    const initialStatus = searchParams.get('status') as 'pending' | 'approved' | 'rejected' | 'deleted' | null
+
     const [businesses, setBusinesses] = useState<Business[]>([])
     const [loading, setLoading] = useState(true)
-    const [statusFilter, setStatusFilter] = useState<'pending' | 'approved' | 'rejected' | 'deleted'>('approved')
+    const [statusFilter, setStatusFilter] = useState<'pending' | 'approved' | 'rejected' | 'deleted'>(initialStatus || 'approved')
     const [searchQuery, setSearchQuery] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedIds, setSelectedIds] = useState<string[]>([])
     const { toast } = useToast()
+
+    // Modal State
+    const [confirmProps, setConfirmProps] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        id: string;
+    }>({
+        isOpen: false,
+        title: "",
+        description: "",
+        id: ""
+    })
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1)
@@ -115,8 +133,18 @@ export default function AdminBusinessPage() {
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this business?")) return
+    const handleDeleteClick = (id: string) => {
+        setConfirmProps({
+            isOpen: true,
+            title: "Delete Business",
+            description: "Are you sure you want to delete this business? This action cannot be undone.",
+            id
+        })
+    }
+
+    const executeDelete = async () => {
+        const id = confirmProps.id
+        setConfirmProps(prev => ({ ...prev, isOpen: false }))
 
         try {
             const res = await fetch(`/api/admin/business/${id}`, {
@@ -172,7 +200,9 @@ export default function AdminBusinessPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 border-b border-gold/20 pb-2">
                 <div className="flex gap-10">
                     {[
+                        { id: 'pending' as const, label: 'Pending Verification' },
                         { id: 'approved' as const, label: 'Active Listings' },
+                        { id: 'rejected' as const, label: 'Rejected' },
                         { id: 'deleted' as const, label: 'Deleted' }
                     ].map(tab => (
                         <button
@@ -324,7 +354,7 @@ export default function AdminBusinessPage() {
                                                     size="sm"
                                                     variant="ghost"
                                                     className="h-8 w-8 p-0 text-muted-foreground hover:text-red-500"
-                                                    onClick={() => handleDelete(business.id)}
+                                                    onClick={() => handleDeleteClick(business.id)}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                     <span className="sr-only">Delete</span>
@@ -356,6 +386,16 @@ export default function AdminBusinessPage() {
                     />
                 </div>
             )}
-        </div >
+            {/* Confirmation Modal */}
+            <ConfirmModal
+                isOpen={confirmProps.isOpen}
+                onClose={() => setConfirmProps(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={executeDelete}
+                title={confirmProps.title}
+                description={confirmProps.description}
+                variant="destructive"
+                confirmText="Delete"
+            />
+        </div>
     )
 }

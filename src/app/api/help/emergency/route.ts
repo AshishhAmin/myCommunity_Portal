@@ -8,7 +8,7 @@ export async function GET() {
         const emergencyRequests = await prisma.helpRequest.findMany({
             where: {
                 type: { in: ['Medical Emergency', 'Blood Requirement', 'Medical & Blood Help'] },
-                status: 'pending',
+                status: 'approved',
                 createdAt: { gte: twentyFourHoursAgo }
             },
             select: {

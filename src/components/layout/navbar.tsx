@@ -54,9 +54,11 @@ export function Navbar() {
                     <Link href="/" className={linkClass("/")}>
                         Home
                     </Link>
-                    <Link href="/about" className={linkClass("/about")}>
-                        About us
-                    </Link>
+                    {showAuth && isAuthenticated && (
+                        <Link href="/dashboard" className={linkClass("/dashboard")}>
+                            Dashboard
+                        </Link>
+                    )}
                     {/* Authenticated-only links — only render after mount */}
 
                     {showAuth && user?.role === "admin" && (
@@ -65,6 +67,9 @@ export function Navbar() {
                         </Link>
                     )}
                     {/* Public Links */}
+                    <Link href="/social" className={linkClass("/social")}>
+                        Social
+                    </Link>
                     <Link href="/events" className={linkClass("/events")}>
                         Events
                     </Link>
@@ -105,12 +110,6 @@ export function Navbar() {
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <Link href="/achievements" className={linkClass("/achievements")}>
-                        Achievements
-                    </Link>
-                    <Link href="/donations" className={linkClass("/donations")}>
-                        Donate
-                    </Link>
                 </div>
 
                 {/* Actions */}

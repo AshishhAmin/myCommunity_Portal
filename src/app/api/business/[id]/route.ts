@@ -62,6 +62,14 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
+        if (payload.role === 'admin') {
+            await prisma.business.update({
+                where: { id },
+                data: { status: 'deleted_by_admin' }
+            })
+            return NextResponse.json({ message: 'Business marked as deleted by admin' })
+        }
+
         await prisma.business.delete({
             where: { id }
         })

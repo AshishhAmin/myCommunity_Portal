@@ -32,7 +32,7 @@ export async function GET(req: Request) {
         } else if (userId) {
             where.OR = [
                 { status: 'approved' },
-                { posterId: userId }
+                { posterId: userId, status: { notIn: ['deleted', 'rejected', 'deleted_by_admin'] } }
             ]
         } else {
             where.status = 'approved'

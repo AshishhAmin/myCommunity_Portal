@@ -9,6 +9,7 @@ import {
     Loader2, ToggleLeft, ToggleRight
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, Cell } from 'recharts'
+import Link from 'next/link'
 
 type StatsView = 'total' | 'pending'
 type TimeRange = '7d' | '30d' | '90d' | '6m' | '1y'
@@ -53,25 +54,22 @@ export default function AdminDashboard() {
     const breakdown = stats?.stats?.breakdown || {}
 
     const totalCards = [
-        { label: "Total Members", value: stats?.stats?.totalUsers || 0, icon: Users, color: "text-maroon", bg: "bg-maroon/5", accent: "border-l-maroon" },
-        { label: "Events", value: totals.events || 0, icon: Calendar, color: "text-green-600", bg: "bg-green-50", accent: "border-l-green-500" },
-        { label: "Businesses", value: totals.businesses || 0, icon: Building2, color: "text-emerald-600", bg: "bg-emerald-50", accent: "border-l-emerald-500" },
-        { label: "Job Posts", value: totals.jobs || 0, icon: Briefcase, color: "text-blue-600", bg: "bg-blue-50", accent: "border-l-blue-500" },
-        { label: "Scholarships", value: totals.scholarships || 0, icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-50", accent: "border-l-purple-500" },
-        { label: "Mentorships", value: totals.mentorships || 0, icon: HeartHandshake, color: "text-pink-600", bg: "bg-pink-50", accent: "border-l-pink-500" },
-        { label: "Help Requests", value: totals.helpRequests || 0, icon: Heart, color: "text-red-600", bg: "bg-red-50", accent: "border-l-red-500" },
-        { label: "Donations", value: totals.donations || 0, icon: IndianRupee, color: "text-amber-600", bg: "bg-amber-50", accent: "border-l-amber-500", subtitle: `₹${(totals.donationAmount || 0).toLocaleString('en-IN')} total` },
+        { label: "Total Members", value: stats?.stats?.totalUsers || 0, icon: Users, color: "text-maroon", bg: "bg-maroon/5", accent: "border-l-maroon", link: "/admin/users?status=approved" },
+        { label: "Events", value: totals.events || 0, icon: Calendar, color: "text-green-600", bg: "bg-green-50", accent: "border-l-green-500", link: "/admin/events?status=approved" },
+        { label: "Businesses", value: totals.businesses || 0, icon: Building2, color: "text-emerald-600", bg: "bg-emerald-50", accent: "border-l-emerald-500", link: "/admin/business?status=approved" },
+        { label: "Job Posts", value: totals.jobs || 0, icon: Briefcase, color: "text-blue-600", bg: "bg-blue-50", accent: "border-l-blue-500", link: "/admin/career?type=jobs&status=approved" },
+        { label: "Scholarships", value: totals.scholarships || 0, icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-50", accent: "border-l-purple-500", link: "/admin/career?type=scholarships&status=approved" },
+        { label: "Mentorships", value: totals.mentorships || 0, icon: HeartHandshake, color: "text-pink-600", bg: "bg-pink-50", accent: "border-l-pink-500", link: "/admin/career?type=mentorship&status=approved" },
+        { label: "Help Requests", value: totals.helpRequests || 0, icon: Heart, color: "text-red-600", bg: "bg-red-50", accent: "border-l-red-500", link: "/admin/verification?tab=help" },
+        { label: "Donations", value: totals.donations || 0, icon: IndianRupee, color: "text-amber-600", bg: "bg-amber-50", accent: "border-l-amber-500", link: "/admin/donations", subtitle: `₹${(totals.donationAmount || 0).toLocaleString('en-IN')} total` },
     ]
 
     const pendingCards = [
-        { label: "Total Pending", value: stats?.stats?.totalPending || 0, icon: AlertTriangle, color: "text-orange-600", bg: "bg-orange-50", accent: "border-l-orange-500" },
-        { label: "Events", value: breakdown.pendingEvents || 0, icon: Calendar, color: "text-green-600", bg: "bg-green-50", accent: "border-l-green-500" },
-        { label: "Businesses", value: breakdown.pendingBusinesses || 0, icon: Building2, color: "text-emerald-600", bg: "bg-emerald-50", accent: "border-l-emerald-500" },
-        { label: "Job Posts", value: breakdown.pendingJobs || 0, icon: Briefcase, color: "text-blue-600", bg: "bg-blue-50", accent: "border-l-blue-500" },
-        { label: "Scholarships", value: breakdown.pendingScholarships || 0, icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-50", accent: "border-l-purple-500" },
-        { label: "Mentorships", value: breakdown.pendingMentorships || 0, icon: HeartHandshake, color: "text-pink-600", bg: "bg-pink-50", accent: "border-l-pink-500" },
-        { label: "Help Requests", value: breakdown.pendingHelpRequests || 0, icon: Heart, color: "text-red-600", bg: "bg-red-50", accent: "border-l-red-500" },
-        { label: "Members", value: stats?.stats?.totalUsers || 0, icon: Users, color: "text-maroon", bg: "bg-maroon/5", accent: "border-l-maroon", subtitle: "Registered users" },
+        { label: "Total Pending", value: stats?.stats?.totalPending || 0, icon: AlertTriangle, color: "text-orange-600", bg: "bg-orange-50", accent: "border-l-orange-500", link: "/admin/verification" },
+        { label: "Job Posts", value: breakdown.pendingJobs || 0, icon: Briefcase, color: "text-blue-600", bg: "bg-blue-50", accent: "border-l-blue-500", link: "/admin/verification?tab=jobs" },
+        { label: "Mentorships", value: breakdown.pendingMentorships || 0, icon: HeartHandshake, color: "text-pink-600", bg: "bg-pink-50", accent: "border-l-pink-500", link: "/admin/career?type=mentorship&status=pending" },
+        { label: "Help Requests", value: breakdown.pendingHelpRequests || 0, icon: Heart, color: "text-red-600", bg: "bg-red-50", accent: "border-l-red-500", link: "/admin/verification?tab=help" },
+        { label: "Members", value: stats?.stats?.totalUsers || 0, icon: Users, color: "text-maroon", bg: "bg-maroon/5", accent: "border-l-maroon", link: "/admin/users?status=pending", subtitle: "Registered users" },
     ]
 
     const activeCards = statsView === 'total' ? totalCards : pendingCards
@@ -86,10 +84,7 @@ export default function AdminDashboard() {
 
     const barChartData = statsView === 'pending'
         ? [
-            { name: 'Events', value: breakdown.pendingEvents || 0, fill: '#22c55e' },
-            { name: 'Business', value: breakdown.pendingBusinesses || 0, fill: '#10b981' },
             { name: 'Jobs', value: breakdown.pendingJobs || 0, fill: '#3b82f6' },
-            { name: 'Scholar.', value: breakdown.pendingScholarships || 0, fill: '#a855f7' },
             { name: 'Mentors', value: breakdown.pendingMentorships || 0, fill: '#ec4899' },
             { name: 'Help', value: breakdown.pendingHelpRequests || 0, fill: '#ef4444' },
         ]
@@ -157,22 +152,24 @@ export default function AdminDashboard() {
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {activeCards.map((card, i) => (
-                    <Card key={`${statsView}-${i}`} className={`border-gold/20 shadow-sm border-l-4 ${card.accent} hover:shadow-md transition-all`}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
-                                {card.label}
-                            </CardTitle>
-                            <div className={`p-2 rounded-md ${card.bg}`}>
-                                <card.icon className={`h-5 w-5 ${card.color}`} />
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className={`text-3xl font-bold ${card.color}`}>{card.value}</div>
-                            {card.subtitle && (
-                                <p className="text-xs text-muted-foreground mt-1 font-medium">{card.subtitle}</p>
-                            )}
-                        </CardContent>
-                    </Card>
+                    <Link key={`${statsView}-${i}`} href={card.link}>
+                        <Card className={`border-gold/20 shadow-sm border-l-4 ${card.accent} hover:shadow-md transition-all cursor-pointer h-full`}>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                                    {card.label}
+                                </CardTitle>
+                                <div className={`p-2 rounded-md ${card.bg}`}>
+                                    <card.icon className={`h-5 w-5 ${card.color}`} />
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className={`text-3xl font-bold ${card.color}`}>{card.value}</div>
+                                {card.subtitle && (
+                                    <p className="text-xs text-muted-foreground mt-1 font-medium">{card.subtitle}</p>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Link>
                 ))}
             </div>
 

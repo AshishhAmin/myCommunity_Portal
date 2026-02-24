@@ -238,7 +238,7 @@ function CareerSupportContent() {
                 </div>
 
                 {/* Filter Toggle (Authenticated Only) */}
-                {isAuthenticated && (
+                {isAuthenticated && activeTab !== "scholarships" && (
                     <div className="flex justify-center mb-6">
                         <div className="bg-cream/40 p-1.5 rounded-xl border border-gold/30 flex gap-1 shadow-inner">
                             <button
@@ -360,7 +360,7 @@ function CareerSupportContent() {
                                     </Button>
                                 </Link>
                             )}
-                            {activeTab === "scholarships" && (
+                            {activeTab === "scholarships" && user?.role === "admin" && (
                                 <Link href="/career/scholarships/add">
                                     <Button className="bg-maroon text-gold hover:bg-maroon/90">
                                         <Plus className="h-4 w-4 mr-2" /> Add Scholarship
@@ -405,6 +405,9 @@ function CareerSupportContent() {
                                                                 </Link>
                                                                 {job.status === 'pending' && (
                                                                     <span className="text-xs bg-gold/10 text-maroon/70 px-2 py-0.5 rounded-full border border-gold/20">Pending</span>
+                                                                )}
+                                                                {job.status === 'deleted_by_admin' && (
+                                                                    <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full border border-red-200">Deleted by Admin</span>
                                                                 )}
                                                             </div>
                                                             <p className="text-muted-foreground text-lg font-bold">{job.company}</p>
@@ -485,6 +488,9 @@ function CareerSupportContent() {
                                                         {item.status === 'pending' && (
                                                             <span className="text-xs bg-gold/10 text-maroon/70 px-2 py-0.5 rounded-full border border-gold/20">Pending</span>
                                                         )}
+                                                        {item.status === 'deleted_by_admin' && (
+                                                            <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full border border-red-200">Deleted by Admin</span>
+                                                        )}
                                                     </div>
                                                     <CardDescription className="text-lg mt-1">
                                                         <span className="font-bold text-green-700">{item.amount}</span> • Deadline: <span className="text-red-600/70 font-semibold">{formatDate(item.deadline)}</span>
@@ -552,6 +558,9 @@ function CareerSupportContent() {
                                                     <CardDescription>{m.mentor.email}</CardDescription>
                                                     {m.status === 'pending' && (
                                                         <span className="inline-block text-xs bg-gold/10 text-maroon/70 px-2 py-0.5 rounded-full mt-1 border border-gold/20">Pending</span>
+                                                    )}
+                                                    {m.status === 'deleted_by_admin' && (
+                                                        <span className="inline-block text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full mt-1 border border-red-200">Deleted by Admin</span>
                                                     )}
                                                 </CardHeader>
                                                 <CardContent className="text-center">

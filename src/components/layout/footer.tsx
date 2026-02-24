@@ -41,6 +41,7 @@ export function Footer() {
                 <div className="space-y-4">
                     <h4 className="font-serif text-xl font-bold text-maroon">Support</h4>
                     <ul className="space-y-3 text-base text-muted-foreground">
+                        <li><Link href="/about" className="hover:text-maroon">About Us</Link></li>
                         <li><Link href="/help" className="hover:text-maroon">Help Center</Link></li>
                         <li><Link href="/donations" className="hover:text-maroon">Make a Donation</Link></li>
                         <li><Link href="/contact" className="hover:text-maroon">Contact Us</Link></li>

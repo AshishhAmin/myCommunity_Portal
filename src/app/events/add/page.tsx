@@ -8,6 +8,7 @@ import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { ArrowLeft, Calendar, MapPin, Clock, Save, Loader2 } from "lucide-react"
 import { AuthGuard } from "@/components/auth-guard"
+import { validateRequired, validateLength, validateFutureDate, validateUrl, collectErrors } from "@/lib/validation"
 
 export default function AddEventPage() {
     const router = useRouter()
@@ -19,19 +20,89 @@ export default function AddEventPage() {
         location: "",
         description: "",
         category: "Community Meetup",
-        image: "",
+        images: [] as string[],
         organizer: "",
         audience: "public",
         registrationLink: ""
     })
     const [error, setError] = useState<string | null>(null)
+    const [errors, setErrors] = useState<Record<string, string>>({})
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
+        if (errors[e.target.name]) {
+            setErrors(prev => { const n = { ...prev }; delete n[e.target.name]; return n })
+        }
+    }
+
+    const validate = (): boolean => {
+        const errs = collectErrors({
+            title: [validateRequired(formData.title, 'Event Title'), validateLength(formData.title, 3, 100, 'Event Title')],
+            date: [validateFutureDate(formData.date, 'Event Date')],
+            time: [validateRequired(formData.time, 'Event Time')],
+            location: [validateRequired(formData.location, 'Location')],
+            description: [validateRequired(formData.description, 'Description'), validateLength(formData.description, 20, 2000, 'Description')],
+            ...(formData.audience === 'members_only' && formData.registrationLink
+                ? { registrationLink: [validateUrl(formData.registrationLink)] }
+                : {}),
+        })
+        setErrors(errs)
+        return Object.keys(errs).length === 0
+    }
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files
+        if (!files) return
+
+        setIsSubmitting(true)
+        setError(null)
+        try {
+            const uploadedUrls: string[] = []
+
+            for (let i = 0; i < files.length; i++) {
+                if (formData.images.length + uploadedUrls.length >= 5) {
+                    setError("Maximum 5 images allowed")
+                    break
+                }
+
+                const formDataUpload = new FormData()
+                formDataUpload.append("file", files[i])
+
+                const uploadRes = await fetch("/api/upload", {
+                    method: "POST",
+                    body: formDataUpload
+                })
+
+                if (!uploadRes.ok) {
+                    throw new Error("Failed to upload image")
+                }
+
+                const result = await uploadRes.json()
+                uploadedUrls.push(result.url)
+            }
+
+            setFormData(prev => ({
+                ...prev,
+                images: [...prev.images, ...uploadedUrls]
+            }))
+        } catch (err: any) {
+            setError(err.message || "Failed to upload images")
+            console.error(err)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
+    const removeImage = (indexToRemove: number) => {
+        setFormData(prev => ({
+            ...prev,
+            images: prev.images.filter((_, idx) => idx !== indexToRemove)
+        }))
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!validate()) return
         setIsSubmitting(true)
         setError(null)
 
@@ -87,14 +158,15 @@ export default function AddEventPage() {
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Event Title</label>
+                                <label className="text-sm font-medium text-gray-700">Event Title *</label>
                                 <Input
                                     name="title"
                                     placeholder="e.g. Annual Community Picnic"
                                     value={formData.title}
                                     onChange={handleChange}
-                                    required
+                                    className={errors.title ? 'border-red-500' : ''}
                                 />
+                                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -105,11 +177,11 @@ export default function AddEventPage() {
                                         <Input
                                             type="date"
                                             name="date"
-                                            className="pl-9"
+                                            className={`pl-9 ${errors.date ? 'border-red-500' : ''}`}
                                             value={formData.date}
                                             onChange={handleChange}
-                                            required
                                         />
+                                        {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
                                     </div>
                                 </div>
                                 <div className="space-y-2">
@@ -119,11 +191,11 @@ export default function AddEventPage() {
                                         <Input
                                             type="time"
                                             name="time"
-                                            className="pl-9"
+                                            className={`pl-9 ${errors.time ? 'border-red-500' : ''}`}
                                             value={formData.time}
                                             onChange={handleChange}
-                                            required
                                         />
+                                        {errors.time && <p className="text-red-500 text-xs mt-1">{errors.time}</p>}
                                     </div>
                                 </div>
                             </div>
@@ -134,12 +206,12 @@ export default function AddEventPage() {
                                     <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                                     <Input
                                         name="location"
-                                        className="pl-9"
+                                        className={`pl-9 ${errors.location ? 'border-red-500' : ''}`}
                                         placeholder="e.g. Community Hall, Jayanagar"
                                         value={formData.location}
                                         onChange={handleChange}
-                                        required
                                     />
+                                    {errors.location && <p className="text-red-500 text-xs mt-1">{errors.location}</p>}
                                 </div>
                             </div>
 
@@ -197,27 +269,63 @@ export default function AddEventPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Description</label>
+                                <label className="text-sm font-medium text-gray-700">Description *</label>
                                 <textarea
                                     name="description"
                                     rows={4}
-                                    className="w-full rounded-md border border-gold/40 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
-                                    placeholder="Describe the event, agenda, and expectations..."
+                                    className={`w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 ${errors.description ? 'border-red-500' : 'border-gold/40'}`}
+                                    placeholder="Describe the event, agenda, and expectations (min 20 characters)..."
                                     value={formData.description}
                                     onChange={handleChange}
-                                    required
                                 />
+                                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Event Image URL (optional)</label>
-                                <Input
-                                    name="image"
-                                    placeholder="Paste direct image link (e.g. ending in .jpg, .png)"
-                                    value={formData.image}
-                                    onChange={handleChange}
-                                />
-                                <p className="text-xs text-muted-foreground">Use a direct image URL, not a page link. Right-click an image → Copy image address.</p>
+                            <div className="space-y-3">
+                                <label className="text-sm font-medium text-gray-700 flex items-center justify-between">
+                                    <span>Event Photos (Max 5)</span>
+                                    <span className="text-xs text-muted-foreground">{formData.images.length} / 5</span>
+                                </label>
+
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                                    {formData.images.map((url, idx) => (
+                                        <div key={idx} className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeImage(idx)}
+                                                className="absolute top-1 right-1 bg-black/60 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    ))}
+
+                                    {formData.images.length < 5 && (
+                                        <div className="relative aspect-video flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group">
+                                            <Input
+                                                type="file"
+                                                accept="image/*"
+                                                multiple
+                                                onChange={handleImageUpload}
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                                                disabled={isSubmitting}
+                                            />
+                                            <div className="text-center">
+                                                <svg className="mx-auto h-8 w-8 text-gray-400 group-hover:text-maroon transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                <p className="mt-1 text-xs text-gray-500 font-medium">Click to upload</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Upload eye-catching images of your event location or posters. The first image will be used as the main banner.
+                                </p>
                             </div>
 
                             <div className="pt-4">

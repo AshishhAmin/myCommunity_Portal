@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Link from "next/link"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { validateRequired, validateMinLength, validateMaxLength, validatePhone, collectErrors } from "@/lib/validation"
 
 export default function ProfilePage() {
     const { user, refreshUser } = useAuth()
@@ -64,13 +65,29 @@ export default function ProfilePage() {
         fetchActivity()
     }, [user])
 
+    const [errors, setErrors] = useState<Record<string, string>>({})
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
         setFormData(prev => ({ ...prev, [name]: value }))
+        if (errors[name]) {
+            setErrors(prev => { const n = { ...prev }; delete n[name]; return n })
+        }
+    }
+
+    const validate = (): boolean => {
+        const errs = collectErrors({
+            name: [validateRequired(formData.name, 'Full Name'), validateMinLength(formData.name, 2, 'Full Name')],
+            ...(formData.mobile ? { mobile: [validatePhone(formData.mobile)] } : {}),
+            ...(formData.bio ? { bio: [validateMaxLength(formData.bio, 500, 'About Me')] } : {}),
+        })
+        setErrors(errs)
+        return Object.keys(errs).length === 0
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!validate()) return
         setLoading(true)
         try {
             const res = await fetch("/api/profile", {
@@ -194,8 +211,9 @@ export default function ProfilePage() {
                             <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto animate-in fade-in duration-300">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="name">Full Name</Label>
-                                        <Input id="name" name="name" value={formData.name} onChange={handleChange} />
+                                        <Label htmlFor="name">Full Name *</Label>
+                                        <Input id="name" name="name" value={formData.name} onChange={handleChange} className={errors.name ? 'border-red-500' : ''} />
+                                        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="gotra">Gotra</Label>
@@ -203,7 +221,12 @@ export default function ProfilePage() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="mobile">Mobile Number</Label>
-                                        <Input id="mobile" name="mobile" value={formData.mobile} onChange={handleChange} />
+                                        <Input id="mobile" name="mobile" value={formData.mobile} onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '').slice(0, 10)
+                                            setFormData(prev => ({ ...prev, mobile: val }))
+                                            if (errors.mobile) setErrors(prev => { const n = { ...prev }; delete n.mobile; return n })
+                                        }} maxLength={10} className={errors.mobile ? 'border-red-500' : ''} />
+                                        {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="location">Location</Label>
@@ -211,8 +234,9 @@ export default function ProfilePage() {
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="bio">About Me</Label>
-                                    <Textarea id="bio" name="bio" value={formData.bio} onChange={handleChange} placeholder="Share a brief introduction..." rows={3} />
+                                    <Label htmlFor="bio">About Me (max 500 chars)</Label>
+                                    <Textarea id="bio" name="bio" value={formData.bio} onChange={handleChange} placeholder="Share a brief introduction..." rows={3} className={errors.bio ? 'border-red-500' : ''} />
+                                    {errors.bio && <p className="text-red-500 text-xs mt-1">{errors.bio}</p>}
                                 </div>
                                 <div className="flex justify-end pt-2">
                                     <Button type="submit" className="bg-maroon text-gold hover:bg-maroon/90 w-full sm:w-auto" disabled={loading}>

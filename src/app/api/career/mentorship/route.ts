@@ -30,7 +30,7 @@ export async function GET(req: Request) {
         } else if (userId) {
             where.OR = [
                 { status: 'approved' },
-                { mentorId: userId }
+                { mentorId: userId, status: { notIn: ['deleted', 'rejected'] } }
             ]
         } else {
             where.status = 'approved'

@@ -58,6 +58,14 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
+        if (payload.role === 'admin') {
+            await prisma.event.update({
+                where: { id },
+                data: { status: 'deleted_by_admin' }
+            })
+            return NextResponse.json({ message: 'Event marked as deleted by admin' })
+        }
+
         await prisma.event.delete({
             where: { id }
         })
@@ -102,7 +110,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
-        const { title, date, time, location, description, image, audience, registrationLink } = body
+        const { title, date, time, location, description, images, audience, registrationLink } = body
 
         let eventDate = event.date
         if (date && time) {
@@ -121,7 +129,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
                 description,
                 date: eventDate,
                 location,
-                image: image !== undefined ? (image || null) : event.image,
+                images: images !== undefined ? (images || []) : event.images,
                 audience: audience !== undefined ? audience : event.audience,
                 registrationLink: registrationLink !== undefined ? (registrationLink || null) : event.registrationLink,
                 status: newStatus

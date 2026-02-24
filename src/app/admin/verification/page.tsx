@@ -6,16 +6,21 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2, Check, X, Building2, Calendar, Briefcase, HandHeart, CheckCircle2, CheckCircle, XCircle, Mail, Eye, Flag, Trash2, ShieldAlert, PlusCircle } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { Pagination } from "@/components/ui/pagination"
+import { ConfirmModal } from "@/components/ui/confirm-modal"
 
 type VerificationTab = 'jobs' | 'help' | 'support' | 'reports'
 
 export default function ModerationCenter() {
+    const searchParams = useSearchParams()
+    const initialTab = searchParams.get('tab') as VerificationTab | null
+
     const [loading, setLoading] = useState(true)
-    const [activeTab, setActiveTab] = useState<VerificationTab>("jobs")
+    const [activeTab, setActiveTab] = useState<VerificationTab>(initialTab || "jobs")
 
     // Data State
     const [items, setItems] = useState<any[]>([])
@@ -32,6 +37,21 @@ export default function ModerationCenter() {
     const [limit] = useState(20)
 
     const [selectedIds, setSelectedIds] = useState<string[]>([])
+
+    // Modal State
+    const [confirmProps, setConfirmProps] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        action: 'approved' | 'rejected' | 'deleted' | 'resolved';
+        ids: string[];
+    }>({
+        isOpen: false,
+        title: "",
+        description: "",
+        action: 'approved',
+        ids: []
+    })
 
     const fetchCounts = async () => {
         try {
@@ -106,11 +126,22 @@ export default function ModerationCenter() {
         setSelectedIds([])
     }, [activeTab, currentPage])
 
-    const handleAction = async (ids: string | string[], action: 'approved' | 'rejected' | 'deleted' | 'resolved') => {
+    const handleAction = (ids: string | string[], action: 'approved' | 'rejected' | 'deleted' | 'resolved') => {
         const targetIds = Array.isArray(ids) ? ids : [ids]
-        const type = activeTab
 
-        if (!confirm(`Are you sure you want to ${action} ${targetIds.length} items?`)) return
+        setConfirmProps({
+            isOpen: true,
+            title: `${action.charAt(0).toUpperCase() + action.slice(1)} Items`,
+            description: `Are you sure you want to ${action} ${targetIds.length} item(s)? This action cannot be undone.`,
+            action,
+            ids: targetIds
+        })
+    }
+
+    const executeAction = async () => {
+        const { ids: targetIds, action } = confirmProps
+        const type = activeTab
+        setConfirmProps(prev => ({ ...prev, isOpen: false }))
 
         try {
             await Promise.all(targetIds.map(async (id) => {
@@ -351,6 +382,17 @@ export default function ModerationCenter() {
                 </div>
             </Tabs>
             {totalPages > 1 && <div className="py-4"><Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} /></div>}
+
+            {/* Confirmation Modal */}
+            <ConfirmModal
+                isOpen={confirmProps.isOpen}
+                onClose={() => setConfirmProps(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={executeAction}
+                title={confirmProps.title}
+                description={confirmProps.description}
+                variant={confirmProps.action === 'deleted' || confirmProps.action === 'rejected' ? 'destructive' : 'primary'}
+                confirmText={confirmProps.action.charAt(0).toUpperCase() + confirmProps.action.slice(1)}
+            />
         </div>
     )
 }

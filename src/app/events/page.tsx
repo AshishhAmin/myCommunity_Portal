@@ -22,7 +22,7 @@ interface Event {
     location: string
     description: string
     status: string
-    image?: string | null
+    images?: string[]
     organizer?: {
         name: string
         email: string
@@ -59,6 +59,7 @@ export default function EventsPage() {
     // Pagination state
     const [upcomingPagination, setUpcomingPagination] = useState<PaginationState>({ currentPage: 1, totalPages: 1, limit: 6 })
     const [pastPagination, setPastPagination] = useState<PaginationState>({ currentPage: 1, totalPages: 1, limit: 6 })
+    const [viewMode, setViewMode] = useState<'all' | 'mine'>('all')
 
     const [loading, setLoading] = useState(true)
     const [newAnnouncement, setNewAnnouncement] = useState("")
@@ -68,7 +69,14 @@ export default function EventsPage() {
     // Fetch Helper
     const fetchEvents = async (filter: 'upcoming' | 'past', page: number) => {
         try {
-            const res = await fetch(`/api/events?filter=${filter}&page=${page}&limit=${filter === 'upcoming' ? upcomingPagination.limit : pastPagination.limit}`)
+            const params = new URLSearchParams({
+                filter,
+                page: page.toString(),
+                limit: (filter === 'upcoming' ? upcomingPagination.limit : pastPagination.limit).toString()
+            })
+            if (viewMode === 'mine') params.append('mode', 'mine')
+
+            const res = await fetch(`/api/events?${params.toString()}`)
             if (res.ok) {
                 const { data, pagination } = await res.json()
                 if (filter === 'upcoming') {
@@ -87,9 +95,20 @@ export default function EventsPage() {
     const fetchData = async () => {
         setLoading(true)
         try {
+            const params = new URLSearchParams({ page: '1' })
+            if (viewMode === 'mine') params.append('mode', 'mine')
+
+            const upcomingParams = new URLSearchParams(params)
+            upcomingParams.append('filter', 'upcoming')
+            upcomingParams.append('limit', upcomingPagination.limit.toString())
+
+            const pastParams = new URLSearchParams(params)
+            pastParams.append('filter', 'past')
+            pastParams.append('limit', pastPagination.limit.toString())
+
             const [upcomingRes, pastRes, rsvpsRes, announceRes] = await Promise.all([
-                fetch(`/api/events?filter=upcoming&page=1&limit=${upcomingPagination.limit}`),
-                fetch(`/api/events?filter=past&page=1&limit=${pastPagination.limit}`),
+                fetch(`/api/events?${upcomingParams.toString()}`),
+                fetch(`/api/events?${pastParams.toString()}`),
                 isAuthenticated ? fetch("/api/events/my-rsvps") : Promise.resolve(null),
                 fetch("/api/announcements")
             ])
@@ -124,7 +143,7 @@ export default function EventsPage() {
 
     useEffect(() => {
         fetchData()
-    }, [isAuthenticated])
+    }, [isAuthenticated, viewMode])
 
     const handleUpcomingPageChange = (page: number) => {
         fetchEvents('upcoming', page)
@@ -231,7 +250,7 @@ export default function EventsPage() {
                     </div>
 
                     <div className="flex flex-col gap-3 items-end">
-                        {(user?.role === "admin" || user?.role === "member") && (
+                        {user?.role === "admin" && (
                             <Link href="/events/add">
                                 <Button className="bg-maroon text-gold hover:bg-maroon/90 w-full sm:w-auto">
                                     <Plus className="mr-2 h-4 w-4" /> Organize Event
@@ -266,46 +285,104 @@ export default function EventsPage() {
                     </div>
                 </div>
 
+                {/* Filter Toggle (Authenticated Only) */}
+                {isAuthenticated && (
+                    <div className="flex justify-center mb-12">
+                        <div className="bg-cream/40 p-1.5 rounded-xl border border-gold/30 flex gap-1 shadow-inner">
+                            <button
+                                onClick={() => setViewMode('all')}
+                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${viewMode === 'all'
+                                    ? "bg-maroon text-gold shadow-sm"
+                                    : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
+                                    }`}
+                            >
+                                All Events
+                            </button>
+                            <button
+                                onClick={() => setViewMode('mine')}
+                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${viewMode === 'mine'
+                                    ? "bg-maroon text-gold shadow-sm"
+                                    : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
+                                    }`}
+                            >
+                                My Events
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {/* Announcement Banner */}
                 {announcements.length > 0 && (
-                    <div className="mb-12 animate-slide-up">
-                        <div className="bg-gradient-to-r from-maroon/5 via-gold/10 to-maroon/5 border-y border-gold/20 relative overflow-hidden h-48 flex items-center">
-                            {/* Fixed Label */}
-                            <div className="flex flex-col justify-center items-center gap-2 px-4 h-full z-20 bg-[#FAF3E0]/95 backdrop-blur-sm border-r border-gold/20 shrink-0 shadow-sm text-center min-w-[120px]">
-                                <Megaphone className="h-6 w-6 text-maroon animate-pulse" />
-                                <span className="font-serif font-bold text-maroon uppercase tracking-wider text-xs sm:text-sm">Announcements</span>
+                    <div className="mb-16 animate-slide-up relative group/banner">
+                        {/* Decorative Gold Trim Ornaments */}
+                        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent z-30" />
+                        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent z-30" />
+
+                        <div className="bg-white/40 backdrop-blur-md border-y border-gold/20 relative overflow-hidden h-40 flex items-center shadow-[0_4px_20px_-4px_rgba(128,0,0,0.1)]">
+                            {/* Static Decorative Background Elements */}
+                            <div className="absolute top-0 left-0 w-32 h-32 bg-maroon/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+                            <div className="absolute bottom-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+
+                            {/* Premium Fixed Label */}
+                            <div className="flex flex-col justify-center items-center gap-3 px-6 h-full z-20 bg-white/80 backdrop-blur-sm border-r border-gold/30 shrink-0 shadow-[4px_0_15px_-3px_rgba(0,0,0,0.05)] text-center min-w-[140px]">
+                                <div className="relative">
+                                    <Megaphone className="h-7 w-7 text-maroon" />
+                                    <div className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-white animate-pulse shadow-sm" />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="font-serif font-black text-maroon uppercase tracking-tighter text-xs">Community</span>
+                                    <span className="font-serif font-bold text-gold uppercase tracking-[0.2em] text-[10px] -mt-1">Bulletin</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 mt-1 bg-maroon/5 px-2 py-0.5 rounded-full">
+                                    <div className="h-1.5 w-1.5 bg-red-500 rounded-full animate-pulse" />
+                                    <span className="text-[9px] font-bold text-maroon tracking-widest uppercase">Live</span>
+                                </div>
                             </div>
 
-                            {/* Vertical Scrolling Container */}
+                            {/* Vertical Scrolling Bulletin Container */}
                             <div className="flex-1 h-full overflow-hidden relative">
-                                <div className="absolute w-full animate-vertical-scroll pause-on-hover flex flex-col">
+                                <div className="absolute w-full animate-vertical-scroll pause-on-hover flex flex-col pt-4">
                                     {/* Duplicate list for seamless loop */}
                                     {[...announcements, ...announcements].map((ann, index) => (
-                                        <div key={`${ann.id}-${index}`} className="min-h-[3.5rem] py-2 flex items-center justify-between px-6 w-full group transition-colors hover:bg-white/40 border-b border-gold/5 border-dashed">
-                                            <p className="text-sm font-medium text-gray-800 line-clamp-2 pr-4 flex-1">
-                                                {ann.content}
-                                            </p>
-                                            <div className="flex flex-col items-end gap-1 shrink-0">
-                                                <span className="text-[10px] text-muted-foreground whitespace-nowrap opacity-70 group-hover:opacity-100 transition-opacity">
-                                                    {new Date(ann.createdAt).toLocaleDateString()}
-                                                </span>
-                                                {user?.role === "admin" && (
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            e.stopPropagation();
-                                                            handleDeleteAnnouncement(ann.id);
-                                                        }}
-                                                        className="opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700 p-1 hover:bg-red-50 rounded"
-                                                        title="Delete Announcement"
-                                                    >
-                                                        <Trash2 className="h-3 w-3" />
-                                                    </button>
-                                                )}
+                                        <div key={`${ann.id}-${index}`} className="group/item min-h-[4.5rem] py-3 flex items-center justify-between px-8 w-full transition-all hover:bg-white/60 relative">
+                                            {/* Left accent border on hover */}
+                                            <div className="absolute left-0 top-1 bottom-1 w-1 bg-gold scale-y-0 group-hover/item:scale-y-100 transition-transform duration-300" />
+
+                                            <div className="flex flex-col gap-1 pr-6 flex-1">
+                                                <p className="text-[15px] font-semibold text-gray-900 leading-snug drop-shadow-sm">
+                                                    {ann.content}
+                                                </p>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[10px] font-bold text-gold uppercase tracking-wider">
+                                                        Update
+                                                    </span>
+                                                    <span className="h-1 w-1 bg-gray-300 rounded-full" />
+                                                    <span className="text-[10px] font-medium text-muted-foreground">
+                                                        {new Date(ann.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
+                                                    </span>
+                                                </div>
                                             </div>
+
+                                            {user?.role === "admin" && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        handleDeleteAnnouncement(ann.id);
+                                                    }}
+                                                    className="opacity-0 group-hover/item:opacity-100 transition-all text-maroon hover:text-red-600 p-2 hover:bg-maroon/5 rounded-lg border border-transparent hover:border-maroon/10 shrink-0"
+                                                    title="Remove Bulletin"
+                                                >
+                                                    <X className="h-4 w-4" />
+                                                </button>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
+
+                                {/* Top/Bottom Fades for Depth */}
+                                <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-white/40 to-transparent pointer-events-none z-10" />
+                                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white/40 to-transparent pointer-events-none z-10" />
                             </div>
                         </div>
                     </div>
@@ -329,9 +406,9 @@ export default function EventsPage() {
                                             <Card key={event.id} className="overflow-hidden border-gold/30 hover:shadow-lg transition-shadow bg-white/50">
                                                 {/* Event Image */}
                                                 <div className="h-40 w-full bg-gold/5 relative overflow-hidden ring-1 ring-gold/10 group">
-                                                    {event.image ? (
+                                                    {event.images && event.images.length > 0 ? (
                                                         <img
-                                                            src={event.image}
+                                                            src={event.images[0]}
                                                             alt={event.title}
                                                             className="h-full w-full object-cover"
                                                             onError={(e) => {
@@ -341,7 +418,7 @@ export default function EventsPage() {
                                                             }}
                                                         />
                                                     ) : null}
-                                                    <div className={`fallback absolute inset-0 flex items-center justify-center text-muted-foreground/50 font-serif text-sm ${event.image ? 'hidden' : ''}`}>
+                                                    <div className={`fallback absolute inset-0 flex items-center justify-center text-muted-foreground/50 font-serif text-sm ${(event.images && event.images.length > 0) ? 'hidden' : ''}`}>
                                                         Event Image
                                                     </div>
                                                 </div>
@@ -353,6 +430,11 @@ export default function EventsPage() {
                                                         {event.status === 'pending' && (
                                                             <span className="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border border-amber-200">
                                                                 Pending
+                                                            </span>
+                                                        )}
+                                                        {event.status === 'deleted_by_admin' && (
+                                                            <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border border-red-200">
+                                                                Deleted by Admin
                                                             </span>
                                                         )}
                                                         <span className="text-xs text-muted-foreground font-semibold flex items-center gap-1">

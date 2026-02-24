@@ -36,7 +36,7 @@ export async function GET(req: Request) {
                 queryConditions.push({
                     OR: [
                         { status: 'approved' },
-                        { posterId: activeUserId }
+                        { posterId: activeUserId, status: { notIn: ['deleted', 'rejected', 'deleted_by_admin'] } }
                     ]
                 })
             } else {

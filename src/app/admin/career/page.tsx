@@ -6,10 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Search, Loader2, CheckCircle, XCircle, Briefcase, GraduationCap, UserCheck, Trash2, Eye } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/components/ui/use-toast"
 import { Pagination } from "@/components/ui/pagination"
+import { ConfirmModal } from "@/components/ui/confirm-modal"
 
 type CareerType = "jobs" | "scholarships" | "mentorship"
 type StatusFilter = "pending" | "approved" | "rejected" | "deleted"
@@ -27,14 +29,34 @@ interface CareerItem {
 }
 
 export default function AdminCareerPage() {
-    const [activeType, setActiveType] = useState<CareerType>("jobs")
-    const [statusFilter, setStatusFilter] = useState<StatusFilter>("pending")
+    const searchParams = useSearchParams()
+    const initialType = searchParams.get('type') as CareerType | null
+    const initialStatus = searchParams.get('status') as StatusFilter | null
+
+    const [activeType, setActiveType] = useState<CareerType>(initialType || "jobs")
+    const [statusFilter, setStatusFilter] = useState<StatusFilter>(initialStatus || "pending")
     const [searchTerm, setSearchTerm] = useState("")
     const [items, setItems] = useState<CareerItem[]>([])
     const [loading, setLoading] = useState(true)
     const [actionLoading, setActionLoading] = useState<string | null>(null)
     const [selectedIds, setSelectedIds] = useState<string[]>([])
     const { toast } = useToast()
+
+    // Modal State
+    const [confirmProps, setConfirmProps] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        id: string;
+        action: 'delete' | 'status';
+        status?: StatusFilter;
+    }>({
+        isOpen: false,
+        title: "",
+        description: "",
+        id: "",
+        action: 'delete'
+    })
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1)
@@ -106,13 +128,24 @@ export default function AdminCareerPage() {
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this item?")) return
-        setActionLoading(id)
+    const handleDeleteClick = (id: string) => {
+        setConfirmProps({
+            isOpen: true,
+            title: `Delete ${activeType.slice(0, -1)}`,
+            description: `Are you sure you want to delete this ${activeType.slice(0, -1)}? This action cannot be undone.`,
+            id,
+            action: 'delete'
+        })
+    }
+
+    const executeDelete = async () => {
+        const id = confirmProps.id
+        setConfirmProps(prev => ({ ...prev, isOpen: false }))
 
         try {
+            setActionLoading(id)
             const res = await fetch(`/api/admin/career?id=${id}&type=${activeType}`, {
-                method: 'DELETE'
+                method: "DELETE"
             })
 
             if (!res.ok) throw new Error("Failed to delete item")
@@ -389,7 +422,7 @@ export default function AdminCareerPage() {
                                                     size="sm"
                                                     variant="ghost"
                                                     className="h-8 w-8 p-0 text-muted-foreground hover:text-red-500"
-                                                    onClick={() => handleDelete(item.id)}
+                                                    onClick={() => handleDeleteClick(item.id)}
                                                     disabled={!!actionLoading}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
@@ -426,6 +459,16 @@ export default function AdminCareerPage() {
                     />
                 </div>
             )}
+            {/* Confirmation Modal */}
+            <ConfirmModal
+                isOpen={confirmProps.isOpen}
+                onClose={() => setConfirmProps(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={executeDelete}
+                title={confirmProps.title}
+                description={confirmProps.description}
+                variant="destructive"
+                confirmText="Delete"
+            />
         </div>
     )
 }
