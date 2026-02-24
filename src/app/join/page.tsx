@@ -73,6 +73,18 @@ export default function JoinPage() {
         }
     }
 
+    const handleGoogleLogin = async () => {
+        setIsLoading(true)
+        try {
+            const success = await loginWithGoogle()
+            if (success) {
+                router.push("/dashboard")
+            }
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
     return (
         <main className="min-h-screen flex items-center justify-center bg-[#FAF3E0] p-4">
             <div className="w-full max-w-md">
@@ -187,7 +199,7 @@ export default function JoinPage() {
                                 type="button"
                                 variant="outline"
                                 className="w-full border-gold/30 text-maroon hover:bg-gold/10 hover:text-maroon h-11"
-                                onClick={loginWithGoogle}
+                                onClick={handleGoogleLogin}
                                 disabled={isLoading}
                             >
                                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
