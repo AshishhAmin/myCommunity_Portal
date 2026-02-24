@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { getAuthUser } from '@/lib/auth'
 
 export async function GET(req: Request) {
     try {
@@ -14,14 +13,9 @@ export async function GET(req: Request) {
         const limit = parseInt(searchParams.get('limit') || '15')
         const skip = (page - 1) * limit
 
-        // Get current user if logged in
-        const cookieStore = await cookies()
-        const tokenValue = cookieStore.get('auth_token')?.value
-        let activeUserId = null
-        if (tokenValue) {
-            const authPayload = await verifyJWT(tokenValue)
-            if (authPayload) activeUserId = authPayload.sub as string
-        }
+        // Get current user if logged in (optional)
+        const activeUser = await getAuthUser(req)
+        const activeUserId = activeUser?.id || null
 
         const queryConditions: any[] = []
 
@@ -95,19 +89,13 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        const cookieStore = await cookies()
-        const tokenValue = cookieStore.get('auth_token')?.value
-
-        if (!tokenValue) {
+        const user = await getAuthUser(req)
+        if (!user) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
         }
 
-        const authPayload = await verifyJWT(tokenValue)
-        if (!authPayload) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-
-        const creatorId = authPayload.sub as string
+        const creatorId = user.id
+        const userRole = user.role
         const bodyContent = await req.json()
 
         const { name, description, category, contact, city, address, images } = bodyContent
@@ -119,7 +107,6 @@ export async function POST(req: Request) {
             )
         }
 
-        const userRole = authPayload.role as string
         let initialStatus = userRole === 'admin' ? 'approved' : 'pending_payment'
 
         // Bypassing payment if the user already has a pending or approved business

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
+import { getAuthUser } from '@/lib/auth'
 import { cookies } from 'next/headers'
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -31,19 +31,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-
-        if (!token) {
+        const user = await getAuthUser(req)
+        if (!user) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
         }
 
-        const payload = await verifyJWT(token)
-        if (!payload) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-
-        const userId = payload.sub as string
         const { id } = await params
 
         const event = await prisma.event.findUnique({
@@ -54,11 +46,11 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
             return NextResponse.json({ message: 'Event not found' }, { status: 404 })
         }
 
-        if (event.organizerId !== userId && payload.role !== 'admin') {
+        if (event.organizerId !== user.id && user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
-        if (payload.role === 'admin') {
+        if (user.role === 'admin') {
             await prisma.event.update({
                 where: { id },
                 data: { status: 'deleted_by_admin' }
@@ -82,19 +74,11 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-
-        if (!token) {
+        const user = await getAuthUser(req)
+        if (!user) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
         }
 
-        const payload = await verifyJWT(token)
-        if (!payload) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-
-        const userId = payload.sub as string
         const { id } = await params
         const body = await req.json()
 
@@ -106,7 +90,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
             return NextResponse.json({ message: 'Event not found' }, { status: 404 })
         }
 
-        if (event.organizerId !== userId && payload.role !== 'admin') {
+        if (event.organizerId !== user.id && user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
@@ -120,7 +104,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         // Admin edits stay approved; member edits reset to pending unless already approved
-        const newStatus = payload.role === 'admin' || event.status === 'approved' ? event.status : 'pending'
+        const newStatus = user.role === 'admin' || event.status === 'approved' ? event.status : 'pending'
 
         const updatedEvent = await prisma.event.update({
             where: { id },

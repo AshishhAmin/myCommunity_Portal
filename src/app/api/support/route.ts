@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { verifyJWT } from '@/lib/auth'
+import { getAuthUser } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 export async function POST(req: Request) {
@@ -12,20 +11,14 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'Category, subject, and body are required' }, { status: 400 })
         }
 
-        const cookieStore = await cookies()
-        const token = cookieStore.get('auth_token')?.value
-
         let senderEmail = 'Guest'
         let senderName = 'Guest User'
         let userId: string | undefined = undefined
 
-        if (token) {
-            const payload = await verifyJWT(token)
-            if (payload) {
-                senderEmail = payload.email as string
-                senderName = (payload as any).name || senderEmail
-                userId = payload.userId as string
-            }
+        const user = await getAuthUser(req)
+        if (user) {
+            userId = user.id
+            senderName = user.name || senderEmail
         }
 
         // Save to Database
@@ -39,14 +32,10 @@ export async function POST(req: Request) {
             }
         })
 
-        // SIMULATION: In a real app, integrate with SendGrid, AWS SES, or Nodemailer
         console.log('--- SUPPORT TICKET SAVED & EMAIL SIMULATED ---')
         console.log(`Ticket ID: ${ticket.id}`)
-        console.log(`To: support@aryavyshya.com`)
-        console.log(`From: ${senderName} <${senderEmail}>`)
-        console.log(`Category: ${category}`)
-        console.log(`Subject: ${subject}`)
-        console.log(`Body: ${messageBody}`)
+        console.log(`From: ${senderName}`)
+        console.log(`Category: ${category} | Subject: ${subject}`)
         console.log('--------------------------------')
 
         return NextResponse.json({

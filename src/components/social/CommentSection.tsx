@@ -35,7 +35,7 @@ interface CommentSectionProps {
 }
 
 export function CommentSection({ postId, postType, onCommentAdded }: CommentSectionProps) {
-    const { user } = useAuth()
+    const { user, getToken } = useAuth()
     const [comments, setComments] = useState<Comment[]>([])
     const [loading, setLoading] = useState(true)
     const [newComment, setNewComment] = useState("")
@@ -72,9 +72,13 @@ export function CommentSection({ postId, postType, onCommentAdded }: CommentSect
             setSubmitting(true)
             setError(null)
 
+            const token = await getToken()
             const res = await fetch('/api/social/interactions', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify({
                     action: 'comment',
                     contentType: postType,
@@ -123,9 +127,13 @@ export function CommentSection({ postId, postType, onCommentAdded }: CommentSect
         }))
 
         try {
+            const token = await getToken()
             await fetch('/api/social/interactions', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify({
                     action: 'like',
                     contentType: 'comment',

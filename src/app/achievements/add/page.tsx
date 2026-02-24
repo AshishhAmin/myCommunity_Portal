@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -13,9 +12,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Loader2, ArrowLeft } from "lucide-react"
 import { validateRequired, validateLength, collectErrors } from "@/lib/validation"
+import { getIdToken } from "firebase/auth"
+import { auth } from "@/lib/firebase"
+import { useAuth } from "@/lib/auth-context"
 
 export default function AddAchievementPage() {
     const router = useRouter()
+    const { getToken } = useAuth()
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
         title: "",
@@ -65,8 +68,12 @@ export default function AddAchievementPage() {
                 const formDataUpload = new FormData()
                 formDataUpload.append("file", files[i])
 
+                const token = auth.currentUser ? await getIdToken(auth.currentUser) : ""
                 const uploadRes = await fetch("/api/upload", {
                     method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    },
                     body: formDataUpload
                 })
 
@@ -103,9 +110,13 @@ export default function AddAchievementPage() {
         setLoading(true)
 
         try {
+            const token = await getToken()
             const res = await fetch("/api/achievements", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify(formData)
             })
 

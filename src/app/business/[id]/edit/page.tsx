@@ -9,6 +9,8 @@ import { Footer } from "@/components/layout/footer"
 import { ArrowLeft, Save, Loader2 } from "lucide-react"
 import { AuthGuard } from "@/components/auth-guard"
 import { validateRequired, validateLength, collectErrors } from "@/lib/validation"
+import { getIdToken } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 export default function EditBusinessPage() {
     const router = useRouter()
@@ -90,8 +92,12 @@ export default function EditBusinessPage() {
                 const formDataUpload = new FormData()
                 formDataUpload.append("file", files[i])
 
+                const token = auth.currentUser ? await getIdToken(auth.currentUser) : ""
                 const uploadRes = await fetch("/api/upload", {
                     method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    },
                     body: formDataUpload
                 })
 
@@ -132,10 +138,13 @@ export default function EditBusinessPage() {
             const payload = {
                 ...formData
             }
-
+            const token = auth.currentUser ? await getIdToken(auth.currentUser) : ""
             const res = await fetch(`/api/business/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify(payload)
             })
 

@@ -1,22 +1,17 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { getAuthUser } from '@/lib/auth'
 
-async function verifyAdmin() {
-    const cookieStore = await cookies()
-    const token = cookieStore.get('auth_token')?.value
-    if (!token) return null
-
-    const payload = await verifyJWT(token)
-    if (!payload || payload.role !== 'admin') return null
-    return payload
+async function verifyAdmin(req: Request) {
+    const user = await getAuthUser(req)
+    if (!user || user.role !== 'admin') return null
+    return user
 }
 
 // GET: List pending help and achievements
 export async function GET(req: Request) {
     try {
-        const admin = await verifyAdmin()
+        const admin = await verifyAdmin(req)
         if (!admin) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const { searchParams } = new URL(req.url)
@@ -59,12 +54,7 @@ export async function GET(req: Request) {
 
         return NextResponse.json({
             data: items,
-            pagination: {
-                total,
-                pages: Math.ceil(total / limit),
-                currentPage: page,
-                limit
-            }
+            pagination: { total, pages: Math.ceil(total / limit), currentPage: page, limit }
         })
     } catch (error) {
         console.error('Error fetching admin content:', error)
@@ -75,7 +65,7 @@ export async function GET(req: Request) {
 // PATCH: Approve or reject
 export async function PATCH(req: Request) {
     try {
-        const admin = await verifyAdmin()
+        const admin = await verifyAdmin(req)
         if (!admin) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const body = await req.json()
@@ -103,7 +93,7 @@ export async function PATCH(req: Request) {
 // DELETE: Soft delete content
 export async function DELETE(req: Request) {
     try {
-        const admin = await verifyAdmin()
+        const admin = await verifyAdmin(req)
         if (!admin) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const { searchParams } = new URL(req.url)

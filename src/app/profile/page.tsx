@@ -14,6 +14,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { validateRequired, validateMinLength, validateMaxLength, validatePhone, collectErrors } from "@/lib/validation"
+import { getIdToken } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 export default function ProfilePage() {
     const { user, refreshUser, changePassword, isPasswordUser } = useAuth()
@@ -151,8 +153,12 @@ export default function ProfilePage() {
 
         setUploading(true)
         try {
+            const token = auth.currentUser ? await getIdToken(auth.currentUser) : ""
             const res = await fetch("/api/profile/upload", {
                 method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
                 body: formData,
             })
             if (res.ok) {

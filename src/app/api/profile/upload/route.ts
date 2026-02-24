@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { adminStorage } from '@/lib/firebase-admin'
+import cloudinary from '@/lib/cloudinary'
 import { verifyFirebaseToken } from '@/lib/auth'
 
 export async function POST(req: Request) {
@@ -25,30 +25,44 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'File too large. Maximum 5MB.' }, { status: 400 })
         }
 
-        // Generate unique filename
-        const ext = file.name.split('.').pop() || 'jpg'
-        const filename = `profiles/${userId}-${Date.now()}.${ext}`
-
-        // Upload to Firebase Storage
-        const bucket = adminStorage.bucket()
-        const blob = bucket.file(filename)
-
+        // Convert file to Buffer for Cloudinary
         const bytes = await file.arrayBuffer()
-        await blob.save(Buffer.from(bytes), {
-            contentType: file.type,
-            public: true
-        })
+        const buffer = Buffer.from(bytes)
+
+        // Upload to Cloudinary
+        const uploadResponse = await new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+                {
+                    folder: 'profiles',
+                    public_id: `${userId}-${Date.now()}`,
+                    resource_type: 'auto',
+                },
+                (error, result) => {
+                    if (error) reject(error)
+                    else resolve(result)
+                }
+            )
+            uploadStream.end(buffer)
+        }) as any
+
+        const imageUrl = uploadResponse.secure_url
 
         // Update user profile image in database
-        const imageUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`
         await prisma.user.update({
             where: { id: userId },
             data: { profileImage: imageUrl },
         })
 
         return NextResponse.json({ imageUrl, message: 'Profile image updated' })
-    } catch (error) {
-        console.error('Upload error:', error)
-        return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
+    } catch (error: any) {
+        console.error('Upload error details:', {
+            message: error.message,
+            stack: error.stack,
+            error
+        })
+        return NextResponse.json({
+            message: 'Internal server error',
+            details: error.message
+        }, { status: 500 })
     }
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
+import { getAuthUser } from '@/lib/auth'
 import { cookies } from 'next/headers'
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -27,21 +27,14 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params
-        const cookieStore = await cookies()
-        const token = cookieStore.get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const payload = await verifyJWT(token)
-        if (!payload) return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
-
-        const userId = payload.sub as string
-        const userRole = payload.role as string
+        const user = await getAuthUser(req)
+        if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const achievement = await prisma.achievement.findUnique({ where: { id } })
         if (!achievement) return NextResponse.json({ message: 'Achievement not found' }, { status: 404 })
 
         // Only owner or admin can edit
-        if (achievement.userId !== userId && userRole !== 'admin') {
+        if (achievement.userId !== user.id && user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
@@ -69,25 +62,18 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params
-        const cookieStore = await cookies()
-        const token = cookieStore.get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const payload = await verifyJWT(token)
-        if (!payload) return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
-
-        const userId = payload.sub as string
-        const userRole = payload.role as string
+        const user = await getAuthUser(req)
+        if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const achievement = await prisma.achievement.findUnique({ where: { id } })
         if (!achievement) return NextResponse.json({ message: 'Achievement not found' }, { status: 404 })
 
         // Only owner or admin can delete
-        if (achievement.userId !== userId && userRole !== 'admin') {
+        if (achievement.userId !== user.id && user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
-        if (userRole === 'admin') {
+        if (user.role === 'admin') {
             await prisma.achievement.update({
                 where: { id },
                 data: { status: 'deleted_by_admin' }

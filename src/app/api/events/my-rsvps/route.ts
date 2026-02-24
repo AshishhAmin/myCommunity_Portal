@@ -1,21 +1,14 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { getAuthUser } from '@/lib/auth'
 
 export async function GET(req: Request) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const payload = await verifyJWT(token)
-        if (!payload) return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
-
-        const userId = payload.sub as string
+        const user = await getAuthUser(req)
+        if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const rsvps = await prisma.eventAttendee.findMany({
-            where: { userId },
+            where: { userId: user.id },
             select: { eventId: true }
         })
 

@@ -1,17 +1,12 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { getAuthUser } from '@/lib/auth'
 
 // POST — User submits a report
 export async function POST(req: Request) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const payload = await verifyJWT(token)
-        if (!payload) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+        const user = await getAuthUser(req)
+        if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const body = await req.json()
         const { contentType, contentId, contentTitle, posterName, posterEmail, reason, details } = body
@@ -22,11 +17,7 @@ export async function POST(req: Request) {
 
         // Check if user already reported this content
         const existing = await prisma.report.findFirst({
-            where: {
-                reporterId: payload.sub as string,
-                contentType,
-                contentId,
-            }
+            where: { reporterId: user.id, contentType, contentId }
         })
 
         if (existing) {
@@ -35,7 +26,7 @@ export async function POST(req: Request) {
 
         const report = await prisma.report.create({
             data: {
-                reporterId: payload.sub as string,
+                reporterId: user.id,
                 contentType,
                 contentId,
                 contentTitle,
@@ -56,12 +47,8 @@ export async function POST(req: Request) {
 // GET — Admin fetches all reports
 export async function GET(req: Request) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const payload = await verifyJWT(token)
-        if (!payload || payload.role !== 'admin') {
+        const user = await getAuthUser(req)
+        if (!user || user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
@@ -81,13 +68,7 @@ export async function GET(req: Request) {
             prisma.report.findMany({
                 where,
                 include: {
-                    reporter: {
-                        select: {
-                            name: true,
-                            email: true,
-                            profileImage: true,
-                        }
-                    }
+                    reporter: { select: { name: true, email: true, profileImage: true } }
                 },
                 orderBy: { createdAt: 'desc' },
                 skip,
@@ -97,12 +78,7 @@ export async function GET(req: Request) {
 
         return NextResponse.json({
             data: reports,
-            pagination: {
-                total,
-                pages: Math.ceil(total / limit),
-                currentPage: page,
-                limit
-            }
+            pagination: { total, pages: Math.ceil(total / limit), currentPage: page, limit }
         })
     } catch (error) {
         console.error('Fetch reports failed:', error)

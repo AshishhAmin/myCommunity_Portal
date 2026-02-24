@@ -1,16 +1,11 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { getAuthUser } from '@/lib/auth'
 
 export async function GET(req: Request) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const payload = await verifyJWT(token)
-        if (!payload || payload.role !== 'admin') {
+        const user = await getAuthUser(req)
+        if (!user || user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 

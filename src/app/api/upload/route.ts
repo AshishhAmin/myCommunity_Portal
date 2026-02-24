@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { adminAuth, adminStorage } from "@/lib/firebase-admin"
+import { adminAuth } from "@/lib/firebase-admin"
+import cloudinary from "@/lib/cloudinary"
 
 export async function POST(req: NextRequest) {
     try {
@@ -27,29 +28,27 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: 'Only images are allowed' }, { status: 400 })
         }
 
+        // Convert file to Buffer for Cloudinary
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
-        // Create a unique filename
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        const filename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
-        const finalFilename = `uploads/${uniqueSuffix}-${filename}`
+        // Upload to Cloudinary
+        const uploadResponse = await new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+                {
+                    folder: 'uploads',
+                    public_id: `upload-${Date.now()}-${Math.round(Math.random() * 1E9)}`,
+                    resource_type: 'auto',
+                },
+                (error, result) => {
+                    if (error) reject(error)
+                    else resolve(result)
+                }
+            )
+            uploadStream.end(buffer)
+        }) as any
 
-        // Upload to Firebase Storage
-        const bucket = adminStorage.bucket()
-        const blob = bucket.file(finalFilename)
-
-        await blob.save(buffer, {
-            contentType: file.type,
-            public: true, // Make it publicly accessible
-            metadata: {
-                firebaseStorageDownloadTokens: uniqueSuffix, // Optional, but good for some SDKs
-            }
-        })
-
-        // Construct the public URL
-        // Typically: https://storage.googleapis.com/[BUCKET_NAME]/[FILE_PATH]
-        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${finalFilename}`
+        const publicUrl = uploadResponse.secure_url
 
         return NextResponse.json({ url: publicUrl })
     } catch (error) {

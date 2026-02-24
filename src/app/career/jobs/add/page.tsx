@@ -10,9 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Loader2 } from "lucide-react"
 import { AuthGuard } from "@/components/auth-guard"
 import { validateRequired, validateLength, validateEmail, validatePhone, validateFutureDate, collectErrors } from "@/lib/validation"
+import { useAuth } from "@/lib/auth-context"
 
 export default function PostJobPage() {
     const router = useRouter()
+    const { getToken } = useAuth()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [formData, setFormData] = useState({
@@ -56,9 +58,13 @@ export default function PostJobPage() {
         setError("")
 
         try {
+            const token = await getToken()
             const res = await fetch("/api/career/jobs", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify(formData),
             })
 

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
+import { getAuthUser } from '@/lib/auth'
 import { cookies } from 'next/headers'
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -34,19 +34,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-
-        if (!token) {
+        const user = await getAuthUser(req)
+        if (!user) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
         }
 
-        const payload = await verifyJWT(token)
-        if (!payload) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-
-        const userId = payload.sub as string
         const { id } = await params
 
         const business = await prisma.business.findUnique({
@@ -58,11 +50,11 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
         }
 
         // Check ownership or admin role
-        if (business.ownerId !== userId && payload.role !== 'admin') {
+        if (business.ownerId !== user.id && user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
-        if (payload.role === 'admin') {
+        if (user.role === 'admin') {
             await prisma.business.update({
                 where: { id },
                 data: { status: 'deleted_by_admin' }
@@ -86,19 +78,11 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-
-        if (!token) {
+        const user = await getAuthUser(req)
+        if (!user) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
         }
 
-        const payload = await verifyJWT(token)
-        if (!payload) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-
-        const userId = payload.sub as string
         const { id } = await params
         const body = await req.json()
 
@@ -111,7 +95,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         // Check ownership
-        if (business.ownerId !== userId && payload.role !== 'admin') {
+        if (business.ownerId !== user.id && user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
@@ -127,7 +111,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
                 city,
                 address,
                 images,
-                status: payload.role === 'admin' || business.status === 'approved' ? business.status : 'pending'
+                status: user.role === 'admin' || business.status === 'approved' ? business.status : 'pending'
             }
         })
 

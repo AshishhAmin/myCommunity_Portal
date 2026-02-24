@@ -38,7 +38,7 @@ interface SocialPostProps {
 }
 
 export function SocialPostCard({ post }: SocialPostProps) {
-    const { user } = useAuth()
+    const { user, getToken } = useAuth()
     const [isLiked, setIsLiked] = useState(post.userInteractions.isLiked)
     const [likeCount, setLikeCount] = useState(post.stats.likes)
     const [shareCount, setShareCount] = useState(post.stats.shares)
@@ -67,9 +67,13 @@ export function SocialPostCard({ post }: SocialPostProps) {
         setLikeCount(prev => isLiked ? prev - 1 : prev + 1)
 
         try {
+            const token = await getToken()
             const res = await fetch('/api/social/interactions', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify({
                     action: 'like',
                     contentType: post.type,
@@ -91,9 +95,13 @@ export function SocialPostCard({ post }: SocialPostProps) {
         setShareCount(prev => prev + 1)
 
         try {
+            const token = await getToken()
             await fetch('/api/social/interactions', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify({
                     action: 'share',
                     contentType: post.type,

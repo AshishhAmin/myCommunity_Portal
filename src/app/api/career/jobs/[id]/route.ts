@@ -1,21 +1,16 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { getAuthUser } from '@/lib/auth'
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params
         const job = await prisma.job.findUnique({
             where: { id },
-            include: {
-                poster: { select: { name: true, email: true } }
-            }
+            include: { poster: { select: { name: true, email: true } } }
         })
 
-        if (!job) {
-            return NextResponse.json({ message: 'Job not found' }, { status: 404 })
-        }
+        if (!job) return NextResponse.json({ message: 'Job not found' }, { status: 404 })
 
         return NextResponse.json(job)
     } catch (error) {
@@ -27,19 +22,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const payload = await verifyJWT(token)
-        if (!payload) return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
-
-        const userId = payload.sub as string
-        const userRole = payload.role as string
+        const user = await getAuthUser(req)
+        if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const job = await prisma.job.findUnique({ where: { id } })
         if (!job) return NextResponse.json({ message: 'Job not found' }, { status: 404 })
-        if (job.posterId !== userId && userRole !== 'admin') {
+        if (job.posterId !== user.id && user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
@@ -58,7 +46,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
                 contactEmail: contactEmail || null,
                 contactPhone: contactPhone || null,
                 deadline: deadline ? new Date(deadline) : null,
-                status: userRole === 'admin' || job.status === 'approved' ? job.status : 'pending',
+                status: user.role === 'admin' || job.status === 'approved' ? job.status : 'pending',
             }
         })
 
@@ -72,27 +60,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const payload = await verifyJWT(token)
-        if (!payload) return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
-
-        const userId = payload.sub as string
-        const userRole = payload.role as string
+        const user = await getAuthUser(req)
+        if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const job = await prisma.job.findUnique({ where: { id } })
         if (!job) return NextResponse.json({ message: 'Job not found' }, { status: 404 })
-        if (job.posterId !== userId && userRole !== 'admin') {
+        if (job.posterId !== user.id && user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
-        if (userRole === 'admin') {
-            await prisma.job.update({
-                where: { id },
-                data: { status: 'deleted_by_admin' }
-            })
+        if (user.role === 'admin') {
+            await prisma.job.update({ where: { id }, data: { status: 'deleted_by_admin' } })
             return NextResponse.json({ message: 'Job marked as deleted by admin' })
         }
 

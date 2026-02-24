@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { getAuthUser } from '@/lib/auth'
 
 export async function POST(req: Request) {
     try {
@@ -14,20 +13,9 @@ export async function POST(req: Request) {
 
         let donorId = null
 
-        // Optional: Check if user is logged in
         if (!isAnonymous) {
-            try {
-                const cookieStore = await cookies()
-                const token = cookieStore.get('auth_token')?.value
-                if (token) {
-                    const payload = await verifyJWT(token)
-                    if (payload) {
-                        donorId = payload.sub as string
-                    }
-                }
-            } catch (e) {
-                // Not logged in, proceed as guest if isAnonymous wasn't explicitly false
-            }
+            const user = await getAuthUser(req)
+            if (user) donorId = user.id
         }
 
         const donation = await prisma.donation.create({
@@ -35,7 +23,7 @@ export async function POST(req: Request) {
                 amount: parseFloat(amount),
                 cause,
                 donorId,
-                status: 'completed', // In a real app, this would be 'pending' until payment confirmation
+                status: 'completed',
                 transactionId: `TXN_${Math.random().toString(36).substring(2, 11).toUpperCase()}`
             }
         })
@@ -49,21 +37,11 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
     try {
-        const cookieStore = await cookies()
-        const token = cookieStore.get('auth_token')?.value
-        if (!token) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-
-        const payload = await verifyJWT(token)
-        if (!payload) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-
-        const userId = payload.sub as string
+        const user = await getAuthUser(req)
+        if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const donations = await prisma.donation.findMany({
-            where: { donorId: userId },
+            where: { donorId: user.id },
             orderBy: { createdAt: 'desc' }
         })
 

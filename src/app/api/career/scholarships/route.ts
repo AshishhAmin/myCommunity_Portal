@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { getAuthUser } from '@/lib/auth'
 
 export async function GET(req: Request) {
     try {
@@ -15,13 +14,9 @@ export async function GET(req: Request) {
         const limit = parseInt(searchParams.get('limit') || '15')
         const skip = (page - 1) * limit
 
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-        let userId = null
-        if (token) {
-            const payload = await verifyJWT(token)
-            if (payload) userId = payload.sub as string
-        }
+        // Optionally get current user for personalized listing
+        const activeUser = await getAuthUser(req)
+        const userId = activeUser?.id || null
 
         const filter = searchParams.get('filter')
 
@@ -93,19 +88,11 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+        const user = await getAuthUser(req)
+        if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
-        const payload = await verifyJWT(token)
-        if (!payload) return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
-
-        const userId = payload.sub as string
-        const userRole = payload.role as string
-
-        if (userRole !== 'admin') {
-            return NextResponse.json({ message: 'Forbidden: Admins only' }, { status: 403 })
-        }
+        const userId = user.id
+        const userRole = user.role
 
         const body = await req.json()
         const { title, amount, type, eligibility, description, deadline, link } = body

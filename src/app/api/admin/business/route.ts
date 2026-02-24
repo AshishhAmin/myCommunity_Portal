@@ -1,20 +1,11 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { getAuthUser } from '@/lib/auth'
 
 export async function GET(req: Request) {
     try {
-        // Verify Admin
-        const cookieStore = await cookies()
-        const token = cookieStore.get('auth_token')?.value
-
-        if (!token) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-
-        const payload = await verifyJWT(token)
-        if (!payload || payload.role !== 'admin') {
+        const user = await getAuthUser(req)
+        if (!user || user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
@@ -27,10 +18,7 @@ export async function GET(req: Request) {
 
         const where: any = {}
 
-        if (status && status !== 'all') {
-            where.status = status
-        }
-
+        if (status && status !== 'all') where.status = status
         if (search) {
             where.OR = [
                 { name: { contains: search, mode: 'insensitive' } },
@@ -44,16 +32,7 @@ export async function GET(req: Request) {
             prisma.business.count({ where }),
             prisma.business.findMany({
                 where,
-                include: {
-                    owner: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            mobile: true
-                        }
-                    }
-                },
+                include: { owner: { select: { id: true, name: true, email: true, mobile: true } } },
                 orderBy: { createdAt: 'desc' },
                 skip,
                 take: limit
@@ -62,19 +41,11 @@ export async function GET(req: Request) {
 
         return NextResponse.json({
             data: businesses,
-            pagination: {
-                total,
-                pages: Math.ceil(total / limit),
-                currentPage: page,
-                limit
-            }
+            pagination: { total, pages: Math.ceil(total / limit), currentPage: page, limit }
         })
 
     } catch (error) {
         console.error('Error fetching admin businesses:', error)
-        return NextResponse.json(
-            { message: 'Internal server error' },
-            { status: 500 }
-        )
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
     }
 }

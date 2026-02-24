@@ -43,6 +43,7 @@ interface AuthContextType {
     isAuthenticated: boolean
     changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; message?: string }>
     isPasswordUser: boolean
+    getToken: () => Promise<string | null>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -175,6 +176,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }
 
+    const getToken = async (): Promise<string | null> => {
+        if (auth.currentUser) {
+            return await getIdToken(auth.currentUser)
+        }
+        return null
+    }
+
     const isPasswordUser = !!auth.currentUser?.providerData.some(p => p.providerId === 'password')
 
     return (
@@ -188,7 +196,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             refreshUser,
             isAuthenticated: !!user,
             changePassword,
-            isPasswordUser
+            isPasswordUser,
+            getToken
         }}>
             {children}
         </AuthContext.Provider>

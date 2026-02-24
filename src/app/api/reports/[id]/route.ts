@@ -1,17 +1,12 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyJWT } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { getAuthUser } from '@/lib/auth'
 
 // PATCH — Admin updates report status
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const payload = await verifyJWT(token)
-        if (!payload || payload.role !== 'admin') {
+        const user = await getAuthUser(req)
+        if (!user || user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 
@@ -23,10 +18,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
             return NextResponse.json({ message: 'Invalid status' }, { status: 400 })
         }
 
-        const report = await prisma.report.update({
-            where: { id },
-            data: { status }
-        })
+        const report = await prisma.report.update({ where: { id }, data: { status } })
 
         return NextResponse.json(report)
     } catch (error) {
@@ -38,12 +30,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 // DELETE — Admin deletes report
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const cookieStore = cookies()
-        const token = (await cookieStore).get('auth_token')?.value
-        if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const payload = await verifyJWT(token)
-        if (!payload || payload.role !== 'admin') {
+        const user = await getAuthUser(req)
+        if (!user || user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
 

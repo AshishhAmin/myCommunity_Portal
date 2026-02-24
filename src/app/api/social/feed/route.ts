@@ -1,17 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { verifyJWT } from "@/lib/auth"
-import { cookies } from "next/headers"
+import { getAuthUser } from "@/lib/auth"
 
 export async function GET(req: NextRequest) {
     try {
-        const cookieStore = await cookies()
-        const token = cookieStore.get('auth_token')?.value
-        let activeUserId = null
-        if (token) {
-            const payload = await verifyJWT(token)
-            if (payload && payload.sub) activeUserId = payload.sub as string
-        }
+        // Optionally authenticate to personalize feed
+        const activeUser = await getAuthUser(req)
+        const activeUserId = activeUser?.id || null
 
         const url = new URL(req.url)
         const page = parseInt(url.searchParams.get("page") || "1", 10)
