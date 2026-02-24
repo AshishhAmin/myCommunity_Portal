@@ -43,7 +43,7 @@ export default function AboutPage() {
                     <div className="relative z-10 container mx-auto max-w-3xl">
                         <h1 className="font-serif text-4xl md:text-5xl font-bold mb-6">Our Legacy, Our Future</h1>
                         <p className="text-xl text-gold/90 leading-relaxed">
-                            Connecting the Arya Vyshya community through shared values, culture, and progress.
+                            Connecting the myCommunity community through shared values, culture, and progress.
                         </p>
                     </div>
                 </div>
@@ -59,7 +59,7 @@ export default function AboutPage() {
                                 </div>
                                 <h2 className="font-serif text-2xl font-bold text-maroon">Our Mission</h2>
                                 <p className="text-gray-600 leading-relaxed">
-                                    To create a digital ecosystem that empowers every member of the Arya Vyshya community
+                                    To create a digital ecosystem that empowers every member of the myCommunity community
                                     by providing resources for business growth, career development, and social welfare,
                                     while preserving our rich cultural heritage.
                                 </p>
@@ -87,7 +87,7 @@ export default function AboutPage() {
                         </div>
                         <div className="prose prose-lg text-gray-600 max-w-none">
                             <p className="mb-4">
-                                The Arya Vyshya community traces its lineage back to ancient times, known for its entrepreneurial spirit,
+                                The myCommunity community traces its lineage back to ancient times, known for its entrepreneurial spirit,
                                 philanthropy, and devotion to Sri Kanyaka Parameswari (Vasavi Matha). Historically, our community has
                                 played a pivotal role in trade, commerce, and social service across India.
                             </p>

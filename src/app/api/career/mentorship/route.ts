@@ -47,7 +47,7 @@ export async function GET(req: Request) {
         const total = await prisma.mentorship.count({ where })
         const mentors = await prisma.mentorship.findMany({
             where,
-            include: { mentor: { select: { name: true, email: true, location: true } } },
+            include: { mentor: { select: { id: true, name: true, email: true, location: true, profileImage: true } } },
             orderBy: { createdAt: 'desc' },
             skip,
             take: limit

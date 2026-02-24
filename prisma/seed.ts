@@ -9,10 +9,10 @@ async function main() {
     // 1. Create Admins & Regular Users
     console.log('Seeding Users...')
     const admin = await prisma.user.upsert({
-        where: { email: 'admin@aryavyshya.com' },
+        where: { email: 'admin@mycommunity.com' },
         update: {},
         create: {
-            email: 'admin@aryavyshya.com',
+            email: 'admin@mycommunity.com',
             name: 'Main Admin',
             password,
             mobile: '9999999999',
@@ -47,7 +47,7 @@ async function main() {
         await prisma.business.create({
             data: {
                 ownerId: users[i % 40].id,
-                name: `Vyshya ${businessCategories[i % 5]} ${i}`,
+                name: `Local ${businessCategories[i % 5]} ${i}`,
                 description: `Leading provider of ${businessCategories[i % 5].toLowerCase()} services in the region since 199${i % 10}.`,
                 category: businessCategories[i % 5],
                 city: users[i % 40].location || 'Hyderabad',
@@ -82,7 +82,7 @@ async function main() {
             data: {
                 posterId: users[i % 40].id,
                 title: jobTitles[i % 5],
-                company: `Vyshya Corp ${i}`,
+                company: `Acme Corp ${i}`,
                 location: users[i % 20].location || 'Remote',
                 type: ['Full-time', 'Part-time', 'Remote'][i % 3],
                 salary: `${4 + (i % 5)}L - ${8 + (i % 5)}L PA`,

@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { Pagination } from "@/components/ui/pagination"
 import { ConfirmModal } from "@/components/ui/confirm-modal"
+import { useAuth } from "@/lib/auth-context"
 
 interface AdminEvent {
     id: string
@@ -35,6 +36,7 @@ export default function AdminEventsPage() {
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedIds, setSelectedIds] = useState<string[]>([])
     const { toast } = useToast()
+    const { getToken } = useAuth()
 
     // Modal State
     const [confirmProps, setConfirmProps] = useState<{
@@ -72,7 +74,10 @@ export default function AdminEventsPage() {
                 status: statusFilter,
                 search: debouncedSearch
             })
-            const res = await fetch(`/api/admin/events?${params.toString()}`)
+            const token = await getToken()
+            const res = await fetch(`/api/admin/events?${params.toString()}`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            })
             if (!res.ok) throw new Error("Failed to fetch events")
             const data = await res.json()
             setEvents(data.data)
@@ -99,10 +104,14 @@ export default function AdminEventsPage() {
         const targetIds = Array.isArray(ids) ? ids : [ids]
 
         try {
+            const token = await getToken()
             await Promise.all(targetIds.map(id =>
                 fetch(`/api/admin/events/${id}`, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    },
                     body: JSON.stringify({ status })
                 })
             ))
@@ -140,8 +149,10 @@ export default function AdminEventsPage() {
         setConfirmProps(prev => ({ ...prev, isOpen: false }))
 
         try {
+            const token = await getToken()
             const res = await fetch(`/api/admin/events/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
             })
 
             if (!res.ok) throw new Error("Failed to delete event")

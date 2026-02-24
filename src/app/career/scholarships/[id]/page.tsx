@@ -30,7 +30,7 @@ interface ScholarshipDetail {
 export default function ScholarshipDetailsPage() {
     const params = useParams()
     const router = useRouter()
-    const { user, isAuthenticated } = useAuth()
+    const { user, isAuthenticated, getToken } = useAuth()
     const id = params.id as string
 
     const [scholarship, setScholarship] = useState<ScholarshipDetail | null>(null)
@@ -64,7 +64,10 @@ export default function ScholarshipDetailsPage() {
 
         setIsDeleting(true)
         try {
-            const res = await fetch(`/api/career/scholarships/${id}`, { method: 'DELETE' })
+            const token = await getToken()
+            const headers: Record<string, string> = {}
+            if (token) headers['Authorization'] = `Bearer ${token}`
+            const res = await fetch(`/api/career/scholarships/${id}`, { method: 'DELETE', headers })
             if (res.ok) {
                 router.push('/career?tab=scholarships')
                 router.refresh()

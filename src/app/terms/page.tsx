@@ -34,14 +34,14 @@ export default function TermsPage() {
                         <h2 className="text-xl font-bold text-gray-900 mb-3">3. User Accounts</h2>
                         <p>
                             You are responsible for safeguarding the password that you use to access the service and for any activities or actions under your password.
-                            Only members of the Arya Vyshya community are eligible for full membership access.
+                            Only members of the myCommunity community are eligible for full membership access.
                         </p>
                     </section>
 
                     <section>
                         <h2 className="text-xl font-bold text-gray-900 mb-3">4. Intellectual Property</h2>
                         <p>
-                            The service and its original content, features, and functionality are and will remain the exclusive property of Arya Vyshya Community Portal and its licensors.
+                            The service and its original content, features, and functionality are and will remain the exclusive property of myCommunity Community Portal and its licensors.
                         </p>
                     </section>
 

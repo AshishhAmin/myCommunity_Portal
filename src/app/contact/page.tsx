@@ -81,8 +81,8 @@ export default function ContactPage() {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-gray-800 mb-1">Email Us</h3>
-                                        <p className="text-sm text-gray-600">contact@aryavyshya.com</p>
-                                        <p className="text-sm text-gray-600">support@aryavyshya.com</p>
+                                        <p className="text-sm text-gray-600">contact@mycommunity.com</p>
+                                        <p className="text-sm text-gray-600">support@mycommunity.com</p>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -94,7 +94,7 @@ export default function ContactPage() {
                                     <div>
                                         <h3 className="font-bold text-gray-800 mb-1">Visit Us</h3>
                                         <p className="text-sm text-gray-600">
-                                            Arya Vyshya Samaj Bhavan,<br />
+                                            myCommunity Samaj Bhavan,<br />
                                             Jayanagar 4th Block,<br />
                                             Bangalore - 560011
                                         </p>

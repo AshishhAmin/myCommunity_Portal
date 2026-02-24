@@ -48,7 +48,7 @@ interface PaginationState {
 
 export default function EventsPage() {
     const [rsvps, setRsvps] = useState<string[]>([])
-    const { user, isAuthenticated } = useAuth()
+    const { user, isAuthenticated, getToken } = useAuth()
     const router = useRouter()
 
     // Separate state for sections
@@ -160,7 +160,10 @@ export default function EventsPage() {
         }
 
         try {
-            const res = await fetch(`/api/events/${eventId}/rsvp`, { method: 'POST' })
+            const token = await getToken()
+            const rsvpHeaders: Record<string, string> = {}
+            if (token) rsvpHeaders['Authorization'] = `Bearer ${token}`
+            const res = await fetch(`/api/events/${eventId}/rsvp`, { method: 'POST', headers: rsvpHeaders })
             if (res.ok) {
                 const data = await res.json()
 
@@ -474,7 +477,10 @@ export default function EventsPage() {
                                                                     className="flex-1 text-red-600 border-red-200 hover:bg-red-50"
                                                                     onClick={async () => {
                                                                         if (confirm("Are you sure you want to delete this event?")) {
-                                                                            await fetch(`/api/events/${event.id}`, { method: 'DELETE' })
+                                                                            const token = await getToken()
+                                                                            const delHeaders: Record<string, string> = {}
+                                                                            if (token) delHeaders['Authorization'] = `Bearer ${token}`
+                                                                            await fetch(`/api/events/${event.id}`, { method: 'DELETE', headers: delHeaders })
                                                                             window.location.reload()
                                                                         }
                                                                     }}

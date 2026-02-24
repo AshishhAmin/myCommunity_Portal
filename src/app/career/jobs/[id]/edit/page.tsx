@@ -15,7 +15,7 @@ import { validateRequired, validateLength, validateEmail, validatePhone, validat
 export default function EditJobPage() {
     const router = useRouter()
     const { id } = useParams()
-    const { user } = useAuth()
+    const { user, getToken } = useAuth()
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState("")
@@ -99,9 +99,12 @@ export default function EditJobPage() {
         setError("")
 
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch(`/api/career/jobs/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify(formData),
             })
 
@@ -154,7 +157,7 @@ export default function EditJobPage() {
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-700">Company *</label>
-                                    <Input name="company" value={formData.company} onChange={handleChange} placeholder="e.g. Vyshya Tech Solutions" />
+                                    <Input name="company" value={formData.company} onChange={handleChange} placeholder="e.g. Acme Tech Solutions" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>

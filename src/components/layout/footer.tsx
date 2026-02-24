@@ -14,14 +14,14 @@ export function Footer() {
                 <div className="space-y-4">
                     <div className="flex items-center gap-3">
                         <div className="h-12 w-12 rounded-full bg-maroon flex items-center justify-center shadow-md">
-                            <span className="text-gold font-serif font-bold text-xl">AV</span>
+                            <span className="text-gold font-serif font-bold text-xl">mC</span>
                         </div>
                         <span className="font-serif text-3xl font-bold text-maroon">
-                            Arya Vyshya
+                            myCommunity
                         </span>
                     </div>
                     <p className="text-base text-muted-foreground leading-relaxed">
-                        A Verified and Structured Community Support Platform dedicated to the growth, heritage, and prosperity of the Arya Vyshya community.
+                        A Verified and Structured Community Support Platform dedicated to the growth, heritage, and prosperity of the myCommunity community.
                     </p>
                 </div>
 
@@ -81,7 +81,7 @@ export function Footer() {
             </div>
 
             <div className="container mx-auto px-4 mt-12 pt-8 border-t border-gold/10 text-center text-xs text-muted-foreground">
-                © {new Date().getFullYear()} Arya Vyshya Community Platform. All rights reserved. Not for commercial use.
+                © {new Date().getFullYear()} myCommunity Community Platform. All rights reserved. Not for commercial use.
             </div>
         </footer>
     )

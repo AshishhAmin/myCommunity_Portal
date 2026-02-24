@@ -11,7 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { IndianRupee, Heart, ShieldCheck, CreditCard, Loader2, Trophy, Calendar } from "lucide-react"
 
+import { useAuth } from "@/lib/auth-context"
+
 export default function DonationPage() {
+    const { isAuthenticated, getToken } = useAuth()
     const [amount, setAmount] = useState("")
     const [cause, setCause] = useState("")
     const [isAnonymous, setIsAnonymous] = useState(false)
@@ -45,9 +48,13 @@ export default function DonationPage() {
         setLoading(true)
 
         try {
+            const token = await getToken()
             const res = await fetch("/api/donations", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify({
                     amount: parseFloat(amount),
                     cause,
@@ -93,7 +100,7 @@ export default function DonationPage() {
                                 <span className="text-gold">Empowers Our Community</span>
                             </h1>
                             <p className="text-gray-700 text-lg mb-8 leading-relaxed">
-                                Arya Vyshya Community Portal is dedicated to the progress and welfare of our members.
+                                myCommunity Community Portal is dedicated to the progress and welfare of our members.
                                 Your generous donations support education scholarships, medical emergencies, and cultural preservation.
                             </p>
 

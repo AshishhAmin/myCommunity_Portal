@@ -15,8 +15,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Arya Vyshya Community Platform",
-  description: "A Trusted Digital Platform for Arya Vyshya Community Growth",
+  title: "myCommunity Community Platform",
+  description: "A Trusted Digital Platform for myCommunity Community Growth",
 };
 
 export default function RootLayout({

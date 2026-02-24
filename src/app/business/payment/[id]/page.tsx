@@ -20,7 +20,7 @@ interface PaymentPageProps {
 export default function PaymentPage({ params }: PaymentPageProps) {
     const { id } = use(params)
     const router = useRouter()
-    const { user, isLoading } = useAuth()
+    const { user, isLoading, getToken } = useAuth()
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [businessName, setBusinessName] = useState("")
@@ -35,11 +35,12 @@ export default function PaymentPage({ params }: PaymentPageProps) {
         setLoading(true)
 
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch("/api/business/payment", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers,
                 body: JSON.stringify({
                     businessId: id,
                     paymentDetails: {

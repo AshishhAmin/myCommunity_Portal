@@ -30,7 +30,7 @@ interface HelpRequestDetail {
 export default function HelpRequestDetailsPage() {
     const params = useParams()
     const router = useRouter()
-    const { user } = useAuth()
+    const { user, getToken } = useAuth()
     const id = params.id as string
 
     const [request, setRequest] = useState<HelpRequestDetail | null>(null)
@@ -64,9 +64,12 @@ export default function HelpRequestDetailsPage() {
 
         setIsUpdating(true)
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch(`/api/help/${id}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify({ status: 'received' })
             })
             if (res.ok) {

@@ -1,6 +1,6 @@
-# Arya Vyshya Community Portal
+# myCommunity Community Portal
 
-A comprehensive community platform designed to connect members, promote businesses, manage events, and provide career opportunities within the Arya Vyshya community.
+A comprehensive community platform designed to connect members, promote businesses, manage events, and provide career opportunities within the myCommunity community.
 
 ## Key Features
 

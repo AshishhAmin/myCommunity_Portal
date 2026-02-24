@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/components/ui/use-toast"
 import { Pagination } from "@/components/ui/pagination"
 import { ConfirmModal } from "@/components/ui/confirm-modal"
+import { useAuth } from "@/lib/auth-context"
 
 type CareerType = "jobs" | "scholarships" | "mentorship"
 type StatusFilter = "pending" | "approved" | "rejected" | "deleted"
@@ -41,6 +42,7 @@ export default function AdminCareerPage() {
     const [actionLoading, setActionLoading] = useState<string | null>(null)
     const [selectedIds, setSelectedIds] = useState<string[]>([])
     const { toast } = useToast()
+    const { getToken } = useAuth()
 
     // Modal State
     const [confirmProps, setConfirmProps] = useState<{
@@ -73,7 +75,10 @@ export default function AdminCareerPage() {
                 limit: limit.toString(),
                 ...(searchTerm && { search: searchTerm })
             })
-            const res = await fetch(`/api/admin/career?${params.toString()}`)
+            const token = await getToken()
+            const res = await fetch(`/api/admin/career?${params.toString()}`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            })
             if (res.ok) {
                 const data = await res.json()
                 setItems(data.data)
@@ -98,10 +103,14 @@ export default function AdminCareerPage() {
         setActionLoading(targetIds.length === 1 ? targetIds[0] : 'bulk')
 
         try {
+            const token = await getToken()
             await Promise.all(targetIds.map(id =>
                 fetch("/api/admin/career", {
                     method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    },
                     body: JSON.stringify({ id, type: activeType, status })
                 })
             ))
@@ -144,8 +153,10 @@ export default function AdminCareerPage() {
 
         try {
             setActionLoading(id)
+            const token = await getToken()
             const res = await fetch(`/api/admin/career?id=${id}&type=${activeType}`, {
-                method: "DELETE"
+                method: "DELETE",
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
             })
 
             if (!res.ok) throw new Error("Failed to delete item")

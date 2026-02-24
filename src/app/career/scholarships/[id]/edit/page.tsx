@@ -15,7 +15,7 @@ import { validateRequired, validateLength, validateFutureDate, validateUrl, coll
 export default function EditScholarshipPage() {
     const router = useRouter()
     const { id } = useParams()
-    const { user } = useAuth()
+    const { user, getToken } = useAuth()
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState("")
@@ -94,9 +94,12 @@ export default function EditScholarshipPage() {
         setError("")
 
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch(`/api/career/scholarships/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify(formData),
             })
 

@@ -49,7 +49,7 @@ export function AchievementsCarousel() {
                             id: "top-donor",
                             title: "Highest Paid Contributor",
                             category: "COMMUNITY HERO",
-                            description: `In appreciation of ${topDonor.name}'s outstanding generosity and commitment to the welfare of the Arya Vyshya community.`,
+                            description: `In appreciation of ${topDonor.name}'s outstanding generosity and commitment to the welfare of the myCommunity community.`,
                             user: {
                                 name: topDonor.name,
                                 profileImage: topDonor.image

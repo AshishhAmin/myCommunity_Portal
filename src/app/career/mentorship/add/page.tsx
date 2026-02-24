@@ -11,9 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Loader2 } from "lucide-react"
 import { AuthGuard } from "@/components/auth-guard"
+import { useAuth } from "@/lib/auth-context"
 
 export default function AddMentorshipPage() {
     const router = useRouter()
+    const { getToken } = useAuth()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [formData, setFormData] = useState({
@@ -31,9 +33,12 @@ export default function AddMentorshipPage() {
         setError("")
 
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch("/api/career/mentorship", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify(formData),
             })
 

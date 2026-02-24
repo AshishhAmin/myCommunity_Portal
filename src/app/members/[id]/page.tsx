@@ -39,7 +39,7 @@ export default function MemberProfilePage() {
     const [loading, setLoading] = useState(true)
     const [followLoading, setFollowLoading] = useState(false)
     const [activeTab, setActiveTab] = useState("posts")
-    const { isAuthenticated, user } = useAuth()
+    const { isAuthenticated, user, getToken } = useAuth()
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -60,8 +60,12 @@ export default function MemberProfilePage() {
         if (!member) return
         setFollowLoading(true)
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = {}
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch(`/api/members/${member.id}/follow`, {
                 method: member.isFollowing ? 'DELETE' : 'POST',
+                headers,
             })
             if (res.ok) {
                 setMember(prev => prev ? {

@@ -30,7 +30,7 @@ interface BusinessDetail {
 export default function BusinessDetailsPage() {
     const params = useParams()
     const router = useRouter()
-    const { user, isAuthenticated } = useAuth()
+    const { user, isAuthenticated, getToken } = useAuth()
     const id = params.id as string
 
     const [business, setBusiness] = useState<BusinessDetail | null>(null)
@@ -186,7 +186,10 @@ export default function BusinessDetailsPage() {
                                             onClick={async () => {
                                                 if (confirm("Are you sure you want to delete this listing?")) {
                                                     try {
-                                                        const res = await fetch(`/api/business/${business.id}`, { method: 'DELETE' })
+                                                        const token = await getToken()
+                                                        const delHeaders: Record<string, string> = {}
+                                                        if (token) delHeaders['Authorization'] = `Bearer ${token}`
+                                                        const res = await fetch(`/api/business/${business.id}`, { method: 'DELETE', headers: delHeaders })
                                                         if (res.ok) {
                                                             router.push('/business')
                                                         } else {

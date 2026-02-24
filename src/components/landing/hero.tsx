@@ -29,16 +29,16 @@ export function HeroSection() {
             <div className="container relative mx-auto px-4 text-center">
                 <div className="inline-flex items-center rounded-full border border-gold/40 bg-gold/10 px-4 py-1.5 text-sm font-bold text-maroon mb-8 animate-slide-up shadow-sm">
                     <span className="flex h-2 w-2 rounded-full bg-maroon mr-2 animate-pulse"></span>
-                    Trusted Platform for Community Growth
+                    Welcome to myCommunity
                 </div>
 
                 <h1 className="mx-auto max-w-5xl font-serif text-5xl font-semi-bold tracking-tight text-maroon sm:text-6xl md:text-7xl lg:text-8xl animate-slide-up [animation-delay:200ms]">
-                    A Trusted Digital Platform for <span className="text-gold">Arya Vyshya</span> Community Growth
+                    A Trusted Digital Platform for <span className="text-gold">myCommunity</span>
                 </h1>
 
                 <p className="mx-auto mt-8 max-w-3xl text-xl md:text-2xl text-muted-foreground leading-relaxed animate-slide-up [animation-delay:400ms]">
-                    Uniting our community through business enablement, career development, and dedicated support.
-                    A secure space to connect, grow, and uphold our heritage.
+                    Uniting members through business enablement, career development, and dedicated support.
+                    A secure space to connect, grow, and uphold our shared heritage.
                 </p>
 
                 {mounted && !isLoading && !isAuthenticated && (

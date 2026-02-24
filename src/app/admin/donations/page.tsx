@@ -4,11 +4,13 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { IndianRupee, Download, Loader2, Users, Heart, Calendar } from "lucide-react"
 import { Pagination } from "@/components/ui/pagination"
+import { useAuth } from "@/lib/auth-context"
 
 export default function AdminDonationsPage() {
     const [donations, setDonations] = useState<any[]>([])
     const [stats, setStats] = useState<any>({})
     const [loading, setLoading] = useState(true)
+    const { getToken } = useAuth()
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1)
@@ -22,7 +24,10 @@ export default function AdminDonationsPage() {
                 page: currentPage.toString(),
                 limit: limit.toString()
             })
-            const res = await fetch(`/api/admin/donations?${params.toString()}`)
+            const token = await getToken()
+            const res = await fetch(`/api/admin/donations?${params.toString()}`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            })
             if (res.ok) {
                 const data = await res.json()
                 setDonations(data.donations || [])

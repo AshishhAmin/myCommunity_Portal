@@ -15,7 +15,7 @@ import { validateRequired, validateMinLength, collectErrors } from "@/lib/valida
 export default function EditMentorshipPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter()
     const { id } = use(params)
-    const { user } = useAuth()
+    const { user, getToken } = useAuth()
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState("")
@@ -85,9 +85,12 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
         setError("")
 
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch(`/api/career/mentorship/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify(formData),
             })
 

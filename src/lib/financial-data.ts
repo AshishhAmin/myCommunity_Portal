@@ -12,7 +12,7 @@ export interface FinancialScheme {
 
 export const financialSchemes: FinancialScheme[] = [
     {
-        id: "vyshya-edu-1",
+        id: "comm-edu-1",
         title: "Community Education Interest-Free Loan",
         provider: "Community Trust",
         category: "Education",

@@ -33,7 +33,7 @@ interface JobDetail {
 export default function JobDetailsPage() {
     const params = useParams()
     const router = useRouter()
-    const { user, isAuthenticated } = useAuth()
+    const { user, isAuthenticated, getToken } = useAuth()
     const id = params.id as string
 
     const [job, setJob] = useState<JobDetail | null>(null)
@@ -67,7 +67,10 @@ export default function JobDetailsPage() {
 
         setIsDeleting(true)
         try {
-            const res = await fetch(`/api/career/jobs/${id}`, { method: 'DELETE' })
+            const token = await getToken()
+            const headers: Record<string, string> = {}
+            if (token) headers['Authorization'] = `Bearer ${token}`
+            const res = await fetch(`/api/career/jobs/${id}`, { method: 'DELETE', headers })
             if (res.ok) {
                 router.push('/career?tab=jobs')
                 router.refresh()

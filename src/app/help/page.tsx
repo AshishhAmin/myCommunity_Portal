@@ -420,7 +420,7 @@ function CareerAssistanceWizard({ onBack, onSubmitRequest }: { onBack: () => voi
 }
 
 function HelpContent() {
-    const { user } = useAuth()
+    const { user, getToken } = useAuth()
     const searchParams = useSearchParams()
     const router = useRouter()
 
@@ -536,9 +536,12 @@ function HelpContent() {
         setLoading(true)
 
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch("/api/support", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify(supportForm)
             })
 
@@ -557,9 +560,12 @@ function HelpContent() {
         setLoading(true)
 
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch("/api/help", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify({
                     type: selectedCategory,
                     ...formData
@@ -778,7 +784,7 @@ function HelpContent() {
                                                 <Badge variant="outline" className="text-[9px] h-4 py-0 border-gold/30 text-maroon font-bold">Admin Office</Badge>
                                             </Label>
                                             <Input
-                                                value="support@aryavyshya.com"
+                                                value="support@mycommunity.com"
                                                 disabled
                                                 className="bg-gray-100/50 border-gold/10 text-muted-foreground"
                                             />
@@ -913,15 +919,6 @@ function HelpContent() {
                                     <Loader2 className="h-10 w-10 text-maroon animate-spin" />
                                     <p className="text-maroon font-bold">Fetching latest needs...</p>
                                 </div>
-                            ) : allRequests.length === 0 ? (
-                                <div className="text-center py-20 bg-cream/30 rounded-2xl border border-gold/10 shadow-sm relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-cream/20 to-transparent" />
-                                    <div className="relative z-10">
-                                        <HeartHandshake className="h-16 w-16 text-gold mx-auto mb-4 opacity-30" />
-                                        <h3 className="text-xl font-serif font-bold text-maroon">No active requests found</h3>
-                                        <p className="text-muted-foreground mt-2">Currently, there are no open requests for assistance.</p>
-                                    </div>
-                                </div>
                             ) : (() => {
                                 const browseCat = helpCategories.find(c => c.title === browseCategory)
                                 const matchTypes = browseCat?.dbTypes || [browseCategory]
@@ -966,10 +963,10 @@ function HelpContent() {
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center gap-2">
                                                                     <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-xs font-bold">
-                                                                        {req.user.name[0]}
+                                                                        {req.user?.name ? req.user.name[0] : 'U'}
                                                                     </div>
                                                                     <div className="text-[10px]">
-                                                                        <p className="font-bold text-green-800">{req.user.name}</p>
+                                                                        <p className="font-bold text-green-800">{req.user?.name || 'User'}</p>
                                                                         <p className="text-green-600">Help Received ✓</p>
                                                                     </div>
                                                                 </div>
@@ -993,10 +990,13 @@ function HelpContent() {
 
                                 const filtered = allRequests.filter(r => matchTypes.includes(r.type))
                                 return filtered.length === 0 ? (
-                                    <div className="text-center py-20 bg-white rounded-2xl border border-gold/10 shadow-sm">
-                                        <HeartHandshake className="h-16 w-16 text-gold mx-auto mb-4 opacity-30" />
-                                        <h3 className="text-xl font-serif font-bold text-maroon">No {browseCategory} requests found</h3>
-                                        <p className="text-muted-foreground mt-2">Currently, there are no open requests for this category.</p>
+                                    <div className="text-center py-20 bg-cream/30 rounded-2xl border border-gold/10 shadow-sm relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-cream/20 to-transparent" />
+                                        <div className="relative z-10">
+                                            <HeartHandshake className="h-16 w-16 text-gold mx-auto mb-4 opacity-30" />
+                                            <h3 className="text-xl font-serif font-bold text-maroon">No active {browseCategory} requests found</h3>
+                                            <p className="text-muted-foreground mt-2">Currently, there are no open requests for this category.</p>
+                                        </div>
                                     </div>
                                 ) : (
                                     <div className="max-h-[650px] overflow-y-auto custom-scrollbar pr-4 pb-4">
@@ -1044,10 +1044,10 @@ function HelpContent() {
                                                         <div className="flex items-center justify-between">
                                                             <div className="flex items-center gap-2">
                                                                 <div className="h-8 w-8 rounded-full bg-maroon/10 flex items-center justify-center text-maroon text-xs font-bold">
-                                                                    {req.user.name[0]}
+                                                                    {req.user?.name ? req.user.name[0] : 'U'}
                                                                 </div>
                                                                 <div className="text-[10px]">
-                                                                    <p className="font-bold text-maroon">{req.user.name}</p>
+                                                                    <p className="font-bold text-maroon">{req.user?.name || 'User'}</p>
                                                                     <p className="text-muted-foreground">Beneficiary</p>
                                                                 </div>
                                                             </div>
@@ -1058,7 +1058,10 @@ function HelpContent() {
                                                                         variant="outline"
                                                                         onClick={async () => {
                                                                             try {
-                                                                                const res = await fetch(`/api/help/${req.id}`, { method: 'PATCH' })
+                                                                                const token = await getToken()
+                                                                                const patchHeaders: Record<string, string> = {}
+                                                                                if (token) patchHeaders['Authorization'] = `Bearer ${token}`
+                                                                                const res = await fetch(`/api/help/${req.id}`, { method: 'PATCH', headers: patchHeaders })
                                                                                 if (res.ok) {
                                                                                     // Move from active to received
                                                                                     const movedReq = { ...req, status: 'received', updatedAt: new Date().toISOString() }
@@ -1092,12 +1095,6 @@ function HelpContent() {
                                                                     description={req.description?.substring(0, 100)}
                                                                     details={`🆘 *Help Request: ${req.title}*\nCategory: ${req.type}\nBeneficiary: ${req.user.name}\nDate: ${new Date(req.createdAt).toLocaleDateString()}\nContact: ${req.contact || 'N/A'}\n\n${req.description}`}
                                                                 />
-                                                                {/* <ReportButton
-                                                                    contentType="help"
-                                                                    contentId={req.id}
-                                                                    contentTitle={req.title}
-                                                                    posterEmail={req.user.email}
-                                                                /> */}
                                                             </div>
                                                         </div>
                                                     </CardContent>

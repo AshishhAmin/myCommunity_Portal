@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
@@ -48,7 +49,7 @@ interface Mentor {
     available: boolean
     status: string
     hasRequested?: boolean
-    mentor: { name: string | null; email: string; location: string | null }
+    mentor: { name: string | null; email: string; location: string | null; profileImage: string | null }
 }
 
 function CareerSupportContent() {
@@ -67,7 +68,7 @@ function CareerSupportContent() {
     const [selectedEligibility, setSelectedEligibility] = useState("")
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
-    const { user, isAuthenticated } = useAuth()
+    const { user, isAuthenticated, getToken } = useAuth()
     const router = useRouter()
     const searchParams = useSearchParams()
 
@@ -155,7 +156,10 @@ function CareerSupportContent() {
                 scholarships: `/api/career/scholarships/${id}`,
                 mentorship: `/api/career/mentorship/${id}`,
             }
-            const res = await fetch(endpoints[type], { method: 'DELETE' })
+            const token = await getToken()
+            const headers: Record<string, string> = {}
+            if (token) headers['Authorization'] = `Bearer ${token}`
+            const res = await fetch(endpoints[type], { method: 'DELETE', headers })
             if (res.ok) window.location.reload()
         } catch (e) {
             console.error(e)
@@ -169,9 +173,12 @@ function CareerSupportContent() {
         }
         setConnectingId(mentorshipId)
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch('/api/career/mentorship/request', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify({ mentorshipId })
             })
             if (res.ok) {
@@ -217,7 +224,7 @@ function CareerSupportContent() {
 
                 {/* Tabs Navigation */}
                 <div className="flex justify-center mb-6 border-b border-gold/20">
-                    <div className="flex space-x-8">
+                    <div className="flex flex-wrap justify-center gap-4 sm:gap-8">
                         {tabs.map(tab => (
                             <button
                                 key={tab.id}
@@ -549,8 +556,21 @@ function CareerSupportContent() {
                                         mentors.map(m => (
                                             <Card key={m.id} className="hover:shadow-md transition-shadow">
                                                 <CardHeader className="text-center">
-                                                    <div className="mx-auto h-24 w-24 rounded-full bg-cream border-4 border-gold/20 flex items-center justify-center mb-4 text-3xl font-serif font-bold text-maroon shadow-inner">
-                                                        {m.mentor.name?.charAt(0).toUpperCase() || "M"}
+                                                    <div className="mx-auto h-24 w-24 rounded-full bg-cream border-4 border-gold/20 flex items-center justify-center mb-4 overflow-hidden shadow-inner">
+                                                        {m.mentor.profileImage ? (
+                                                            <Image
+                                                                src={m.mentor.profileImage}
+                                                                alt={m.mentor.name || "Mentor"}
+                                                                width={96}
+                                                                height={96}
+                                                                className="h-full w-full object-cover"
+                                                                suppressHydrationWarning
+                                                            />
+                                                        ) : (
+                                                            <div className="text-3xl font-serif font-bold text-maroon">
+                                                                {m.mentor.name?.charAt(0).toUpperCase() || "M"}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <Link href={`/career/mentorship/${m.id}`}>
                                                         <CardTitle className="text-2xl font-serif font-bold hover:text-gold transition-colors cursor-pointer">{m.mentor.name || "Mentor"}</CardTitle>

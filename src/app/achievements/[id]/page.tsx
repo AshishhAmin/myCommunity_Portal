@@ -7,9 +7,17 @@ import Image from "next/image"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
-import { Trophy, Calendar, ArrowLeft, Loader2, User, Trash2, Edit, Share2 } from "lucide-react"
+import { Trophy, Calendar, ArrowLeft, Loader2, User, Trash2, Edit, Share2, AlertTriangle } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ShareButton } from "@/components/ui/share-button"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 
 interface AchievementDetail {
     id: string
@@ -30,13 +38,14 @@ interface AchievementDetail {
 export default function AchievementDetailsPage() {
     const params = useParams()
     const router = useRouter()
-    const { user, isAuthenticated } = useAuth()
+    const { user, isAuthenticated, getToken } = useAuth()
     const id = params.id as string
 
     const [achievement, setAchievement] = useState<AchievementDetail | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [isDeleting, setIsDeleting] = useState(false)
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
     useEffect(() => {
         const fetchAchievement = async () => {
@@ -60,12 +69,15 @@ export default function AchievementDetailsPage() {
     }, [id])
 
     const handleDelete = async () => {
-        if (!confirm("Are you sure you want to delete this achievement?")) return
 
         setIsDeleting(true)
         try {
-            const res = await fetch(`/api/achievements/${id}`, { method: 'DELETE' })
+            const token = await getToken()
+            const headers: Record<string, string> = {}
+            if (token) headers['Authorization'] = `Bearer ${token}`
+            const res = await fetch(`/api/achievements/${id}`, { method: 'DELETE', headers })
             if (res.ok) {
+                setIsDeleteDialogOpen(false)
                 router.push('/achievements')
                 router.refresh()
             } else {
@@ -108,7 +120,7 @@ export default function AchievementDetailsPage() {
         )
     }
 
-    const isOwner = user?.id === achievement.userId || user?.email === achievement.user?.email
+    const canModify = user?.id === achievement.userId || user?.role === 'admin'
 
     return (
         <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
@@ -228,9 +240,9 @@ export default function AchievementDetailsPage() {
                                     </div>
                                 )}
 
-                                {isOwner && (
+                                {canModify && (
                                     <div className="mt-12 pt-8 border-t border-gray-100 flex flex-wrap gap-4">
-                                        <Link href={`#`}>
+                                        <Link href={`/achievements/${achievement.id}/edit`}>
                                             <Button className="bg-maroon text-gold hover:bg-maroon/90 px-6">
                                                 <Edit className="h-4 w-4 mr-2" /> Edit Achievement
                                             </Button>
@@ -238,7 +250,7 @@ export default function AchievementDetailsPage() {
                                         <Button
                                             variant="outline"
                                             className="border-red-200 text-red-600 hover:bg-red-50"
-                                            onClick={handleDelete}
+                                            onClick={() => setIsDeleteDialogOpen(true)}
                                             disabled={isDeleting}
                                         >
                                             {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Trash2 className="h-4 w-4 mr-2" />}
@@ -263,6 +275,54 @@ export default function AchievementDetailsPage() {
                         </div>
                     </div>
                 </div>
+                <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                    <DialogContent className="sm:max-w-[425px] border-gold/20 shadow-2xl">
+                        <DialogHeader>
+                            <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                                <AlertTriangle className="h-6 w-6 text-red-600" />
+                            </div>
+                            <DialogTitle className="text-2xl font-serif font-bold text-center text-maroon">Delete Achievement?</DialogTitle>
+                            <DialogDescription className="text-center text-gray-600 mt-2">
+                                This action cannot be undone. This success story will be permanently removed from the Wall of Fame.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="py-6 flex flex-col items-center gap-2">
+                            <div className="bg-cream/50 p-4 rounded-xl border border-gold/10 w-full">
+                                <p className="text-xs font-bold uppercase tracking-widest text-gold text-center mb-1">Deleting</p>
+                                <p className="text-maroon font-serif font-bold text-lg text-center truncate">{achievement.title}</p>
+                            </div>
+                        </div>
+                        <DialogFooter className="sm:justify-center flex-row gap-3">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setIsDeleteDialogOpen(false)}
+                                className="flex-1 border-gold/30 text-maroon hover:bg-gold/5 font-bold"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                onClick={handleDelete}
+                                disabled={isDeleting}
+                                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold"
+                            >
+                                {isDeleting ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                        Deleting...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Trash2 className="h-4 w-4 mr-2" />
+                                        Confirm Delete
+                                    </>
+                                )}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </main>
 
             <Footer />

@@ -105,7 +105,7 @@ export default function PostJobPage() {
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-700">Company *</label>
-                                    <Input name="company" value={formData.company} onChange={handleChange} placeholder="e.g. Vyshya Tech Solutions" className={errors.company ? 'border-red-500' : ''} />
+                                    <Input name="company" value={formData.company} onChange={handleChange} placeholder="e.g. Acme Tech Solutions" className={errors.company ? 'border-red-500' : ''} />
                                     {errors.company && <p className="text-red-500 text-xs mt-1">{errors.company}</p>}
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">

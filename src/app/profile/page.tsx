@@ -18,7 +18,7 @@ import { getIdToken } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 
 export default function ProfilePage() {
-    const { user, refreshUser, changePassword, isPasswordUser } = useAuth()
+    const { user, refreshUser, changePassword, isPasswordUser, getToken } = useAuth()
     const [isEditing, setIsEditing] = useState(false)
     const [loading, setLoading] = useState(false)
     const [uploading, setUploading] = useState(false)
@@ -64,7 +64,10 @@ export default function ProfilePage() {
         const fetchActivity = async () => {
             if (!user) return
             try {
-                const res = await fetch('/api/profile/activity')
+                const token = await getToken()
+                const headers: Record<string, string> = {}
+                if (token) headers['Authorization'] = `Bearer ${token}`
+                const res = await fetch('/api/profile/activity', { headers })
                 if (res.ok) {
                     setActivity(await res.json())
                 }
@@ -102,9 +105,12 @@ export default function ProfilePage() {
         if (!validate()) return
         setLoading(true)
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch("/api/profile", {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify(formData),
             })
             if (res.ok) {
@@ -373,12 +379,32 @@ export default function ProfilePage() {
                                                 )
                                             }
 
+                                            const StatusBadge = ({ status }: { status?: string }) => {
+                                                if (!status || status === 'approved') return null
+                                                if (status === 'pending') return (
+                                                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200 whitespace-nowrap">
+                                                        ⏳ Pending Review
+                                                    </span>
+                                                )
+                                                if (status === 'rejected') return (
+                                                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200 whitespace-nowrap">
+                                                        ✗ Rejected
+                                                    </span>
+                                                )
+                                                if (status === 'deleted_by_admin') return (
+                                                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200 whitespace-nowrap">
+                                                        ✗ Removed
+                                                    </span>
+                                                )
+                                                return null
+                                            }
+
                                             return filtered.map((item) => {
                                                 if (item.actType === 'achievement') {
                                                     return (
-                                                        <Card key={`ach-${item.id}`} className="border-l-4 border-l-gold hover:shadow-md transition-shadow">
+                                                        <Card key={`ach-${item.id}`} className={`border-l-4 border-l-gold hover:shadow-md transition-shadow ${item.status === 'pending' ? 'opacity-90 bg-amber-50/30' : ''}`}>
                                                             <CardContent className="p-5">
-                                                                <div className="flex justify-between items-start">
+                                                                <div className="flex justify-between items-start gap-2">
                                                                     <div>
                                                                         <div className="flex items-center gap-2 text-xs font-bold text-gold mb-1 uppercase tracking-wider">
                                                                             <Trophy className="h-3 w-3" /> Achievement
@@ -388,9 +414,12 @@ export default function ProfilePage() {
                                                                         </h3>
                                                                         <p className="text-sm text-muted-foreground line-clamp-1">{item.description}</p>
                                                                     </div>
-                                                                    <span className="text-xs text-muted-foreground whitespace-nowrap bg-gold/5 px-2 py-1 rounded text-gold-700 font-medium">
-                                                                        {new Date(item.createdAt).toLocaleDateString()}
-                                                                    </span>
+                                                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                                                        <StatusBadge status={item.status} />
+                                                                        <span className="text-xs text-muted-foreground whitespace-nowrap bg-gold/5 px-2 py-1 rounded text-gold-700 font-medium">
+                                                                            {new Date(item.createdAt).toLocaleDateString()}
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </CardContent>
                                                         </Card>
@@ -398,9 +427,9 @@ export default function ProfilePage() {
                                                 }
                                                 if (item.actType === 'business') {
                                                     return (
-                                                        <Card key={`biz-${item.id}`} className="border-l-4 border-l-green-500 hover:shadow-md transition-shadow">
+                                                        <Card key={`biz-${item.id}`} className={`border-l-4 border-l-green-500 hover:shadow-md transition-shadow ${item.status === 'pending' ? 'opacity-90 bg-amber-50/30' : ''}`}>
                                                             <CardContent className="p-5">
-                                                                <div className="flex justify-between items-start">
+                                                                <div className="flex justify-between items-start gap-2">
                                                                     <div>
                                                                         <div className="flex items-center gap-2 text-xs font-bold text-green-600 mb-1 uppercase tracking-wider">
                                                                             <Store className="h-3 w-3" /> Business Listing
@@ -410,9 +439,12 @@ export default function ProfilePage() {
                                                                         </h3>
                                                                         <p className="text-sm text-muted-foreground">{item.category} • {item.city}</p>
                                                                     </div>
-                                                                    <span className="text-xs text-muted-foreground whitespace-nowrap bg-green-50 px-2 py-1 rounded text-green-700 font-medium">
-                                                                        {new Date(item.createdAt).toLocaleDateString()}
-                                                                    </span>
+                                                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                                                        <StatusBadge status={item.status} />
+                                                                        <span className="text-xs text-muted-foreground whitespace-nowrap bg-green-50 px-2 py-1 rounded text-green-700 font-medium">
+                                                                            {new Date(item.createdAt).toLocaleDateString()}
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </CardContent>
                                                         </Card>
@@ -420,9 +452,9 @@ export default function ProfilePage() {
                                                 }
                                                 if (item.actType === 'job') {
                                                     return (
-                                                        <Card key={`job-${item.id}`} className="border-l-4 border-l-blue-500 hover:shadow-md transition-shadow">
+                                                        <Card key={`job-${item.id}`} className={`border-l-4 border-l-blue-500 hover:shadow-md transition-shadow ${item.status === 'pending' ? 'opacity-90 bg-amber-50/30' : ''}`}>
                                                             <CardContent className="p-5">
-                                                                <div className="flex justify-between items-start">
+                                                                <div className="flex justify-between items-start gap-2">
                                                                     <div>
                                                                         <div className="flex items-center gap-2 text-xs font-bold text-blue-600 mb-1 uppercase tracking-wider">
                                                                             <Briefcase className="h-3 w-3" /> Job Post
@@ -430,9 +462,12 @@ export default function ProfilePage() {
                                                                         <h3 className="font-bold text-xl text-maroon mt-1">{item.title}</h3>
                                                                         <p className="text-sm text-muted-foreground">{item.company} • {item.location}</p>
                                                                     </div>
-                                                                    <span className="text-xs text-muted-foreground whitespace-nowrap bg-blue-50 px-2 py-1 rounded text-blue-700 font-medium">
-                                                                        {new Date(item.createdAt).toLocaleDateString()}
-                                                                    </span>
+                                                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                                                        <StatusBadge status={item.status} />
+                                                                        <span className="text-xs text-muted-foreground whitespace-nowrap bg-blue-50 px-2 py-1 rounded text-blue-700 font-medium">
+                                                                            {new Date(item.createdAt).toLocaleDateString()}
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </CardContent>
                                                         </Card>
@@ -440,9 +475,9 @@ export default function ProfilePage() {
                                                 }
                                                 if (item.actType === 'event') {
                                                     return (
-                                                        <Card key={`evt-${item.id}`} className="border-l-4 border-l-amber-500 hover:shadow-md transition-shadow">
+                                                        <Card key={`evt-${item.id}`} className={`border-l-4 border-l-amber-500 hover:shadow-md transition-shadow ${item.status === 'pending' ? 'opacity-90 bg-amber-50/30' : ''}`}>
                                                             <CardContent className="p-5">
-                                                                <div className="flex justify-between items-start">
+                                                                <div className="flex justify-between items-start gap-2">
                                                                     <div>
                                                                         <div className="flex items-center gap-2 text-xs font-bold text-amber-600 mb-1 uppercase tracking-wider">
                                                                             <Calendar className="h-3 w-3" /> Event
@@ -452,9 +487,12 @@ export default function ProfilePage() {
                                                                         </h3>
                                                                         <p className="text-sm text-muted-foreground">{item.location} • {new Date(item.date).toLocaleDateString()}</p>
                                                                     </div>
-                                                                    <span className="text-xs text-muted-foreground whitespace-nowrap bg-amber-50 px-2 py-1 rounded text-amber-700 font-medium">
-                                                                        {new Date(item.createdAt).toLocaleDateString()}
-                                                                    </span>
+                                                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                                                        <StatusBadge status={item.status} />
+                                                                        <span className="text-xs text-muted-foreground whitespace-nowrap bg-amber-50 px-2 py-1 rounded text-amber-700 font-medium">
+                                                                            {new Date(item.createdAt).toLocaleDateString()}
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </CardContent>
                                                         </Card>
@@ -462,9 +500,9 @@ export default function ProfilePage() {
                                                 }
                                                 if (item.actType === 'scholarship') {
                                                     return (
-                                                        <Card key={`sch-${item.id}`} className="border-l-4 border-l-purple-500 hover:shadow-md transition-shadow">
+                                                        <Card key={`sch-${item.id}`} className={`border-l-4 border-l-purple-500 hover:shadow-md transition-shadow ${item.status === 'pending' ? 'opacity-90 bg-amber-50/30' : ''}`}>
                                                             <CardContent className="p-5">
-                                                                <div className="flex justify-between items-start">
+                                                                <div className="flex justify-between items-start gap-2">
                                                                     <div>
                                                                         <div className="flex items-center gap-2 text-xs font-bold text-purple-600 mb-1 uppercase tracking-wider">
                                                                             <GraduationCap className="h-3 w-3" /> Scholarship
@@ -472,9 +510,12 @@ export default function ProfilePage() {
                                                                         <h3 className="font-bold text-xl text-maroon mt-1">{item.title}</h3>
                                                                         <p className="text-sm text-muted-foreground">Amount: ₹{item.amount}</p>
                                                                     </div>
-                                                                    <span className="text-xs text-muted-foreground whitespace-nowrap bg-purple-50 px-2 py-1 rounded text-purple-700 font-medium">
-                                                                        {new Date(item.createdAt).toLocaleDateString()}
-                                                                    </span>
+                                                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                                                        <StatusBadge status={item.status} />
+                                                                        <span className="text-xs text-muted-foreground whitespace-nowrap bg-purple-50 px-2 py-1 rounded text-purple-700 font-medium">
+                                                                            {new Date(item.createdAt).toLocaleDateString()}
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </CardContent>
                                                         </Card>
@@ -482,9 +523,9 @@ export default function ProfilePage() {
                                                 }
                                                 if (item.actType === 'mentorship') {
                                                     return (
-                                                        <Card key={`men-${item.id}`} className="border-l-4 border-l-pink-500 hover:shadow-md transition-shadow">
+                                                        <Card key={`men-${item.id}`} className={`border-l-4 border-l-pink-500 hover:shadow-md transition-shadow ${item.status === 'pending' ? 'opacity-90 bg-amber-50/30' : ''}`}>
                                                             <CardContent className="p-5">
-                                                                <div className="flex justify-between items-start">
+                                                                <div className="flex justify-between items-start gap-2">
                                                                     <div>
                                                                         <div className="flex items-center gap-2 text-xs font-bold text-pink-600 mb-1 uppercase tracking-wider">
                                                                             <Users className="h-3 w-3" /> Mentorship
@@ -492,9 +533,12 @@ export default function ProfilePage() {
                                                                         <h3 className="font-bold text-xl text-maroon mt-1">{item.expertise}</h3>
                                                                         <p className="text-sm text-muted-foreground line-clamp-1">{item.bio}</p>
                                                                     </div>
-                                                                    <span className="text-xs text-muted-foreground whitespace-nowrap bg-pink-50 px-2 py-1 rounded text-pink-700 font-medium">
-                                                                        {new Date(item.createdAt).toLocaleDateString()}
-                                                                    </span>
+                                                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                                                        <StatusBadge status={item.status} />
+                                                                        <span className="text-xs text-muted-foreground whitespace-nowrap bg-pink-50 px-2 py-1 rounded text-pink-700 font-medium">
+                                                                            {new Date(item.createdAt).toLocaleDateString()}
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </CardContent>
                                                         </Card>

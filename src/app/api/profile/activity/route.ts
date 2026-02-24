@@ -11,12 +11,12 @@ export async function GET(req: Request) {
             where: { id: user.id },
             select: {
                 id: true,
-                jobs: { orderBy: { createdAt: 'desc' }, take: 10 },
-                businesses: { orderBy: { createdAt: 'desc' }, take: 10 },
-                events: { orderBy: { createdAt: 'desc' }, take: 10 },
-                scholarships: { orderBy: { createdAt: 'desc' }, take: 10 },
-                mentorships: { orderBy: { createdAt: 'desc' }, take: 10 },
-                achievements: { orderBy: { createdAt: 'desc' }, take: 10 }
+                jobs: { select: { id: true, title: true, company: true, location: true, status: true, createdAt: true }, orderBy: { createdAt: 'desc' }, take: 10 },
+                businesses: { select: { id: true, name: true, category: true, city: true, status: true, createdAt: true }, orderBy: { createdAt: 'desc' }, take: 10 },
+                events: { select: { id: true, title: true, date: true, location: true, status: true, createdAt: true }, orderBy: { createdAt: 'desc' }, take: 10 },
+                scholarships: { select: { id: true, title: true, amount: true, type: true, status: true, createdAt: true }, orderBy: { createdAt: 'desc' }, take: 10 },
+                mentorships: { select: { id: true, expertise: true, bio: true, available: true, status: true, createdAt: true }, orderBy: { createdAt: 'desc' }, take: 10 },
+                achievements: { select: { id: true, title: true, category: true, description: true, status: true, createdAt: true }, orderBy: { createdAt: 'desc' }, take: 10 }
             }
         })
 

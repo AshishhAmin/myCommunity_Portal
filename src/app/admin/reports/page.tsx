@@ -10,6 +10,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Pagination } from "@/components/ui/pagination"
 import { ConfirmModal } from "@/components/ui/confirm-modal"
+import { useAuth } from "@/lib/auth-context"
 
 interface ReportData {
     id: string
@@ -54,6 +55,7 @@ export default function AdminReportsPage() {
     const [filterStatus, setFilterStatus] = useState<FilterStatus>('all')
     const [filterType, setFilterType] = useState<string>('all')
     const [actionLoading, setActionLoading] = useState<string | null>(null)
+    const { getToken } = useAuth()
 
     // Modal State
     const [confirmProps, setConfirmProps] = useState<{
@@ -90,7 +92,10 @@ export default function AdminReportsPage() {
             if (filterStatus !== 'all') params.append('status', filterStatus)
             if (filterType !== 'all') params.append('contentType', filterType)
 
-            const res = await fetch(`/api/reports?${params.toString()}`)
+            const token = await getToken()
+            const res = await fetch(`/api/reports?${params.toString()}`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            })
             if (res.ok) {
                 const data = await res.json()
                 setReports(data.data)
@@ -126,9 +131,13 @@ export default function AdminReportsPage() {
             // Re-using previous logic blindly might fail if I didn't verify [id] route.
             // Let's assume it works as I didn't touch [id] route.
 
-            const patchRes = await fetch(`/api/reports/${reportId}`, { // Assuming [id] route exists
+            const token = await getToken()
+            const patchRes = await fetch(`/api/reports/${reportId}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify({ status })
             })
 
@@ -152,7 +161,11 @@ export default function AdminReportsPage() {
                 setConfirmProps(prev => ({ ...prev, isOpen: false }))
                 setActionLoading(reportId)
                 try {
-                    const res = await fetch(`/api/reports/${reportId}`, { method: 'DELETE' })
+                    const token = await getToken()
+                    const res = await fetch(`/api/reports/${reportId}`, {
+                        method: 'DELETE',
+                        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                    })
                     if (res.ok) {
                         setReports(prev => prev.filter(r => r.id !== reportId))
                     }
@@ -187,7 +200,10 @@ export default function AdminReportsPage() {
                     const endpoint = endpointMap[report.contentType.toLowerCase()]
                     if (!endpoint) return
 
-                    const res = await fetch(`/api/${endpoint}/${report.contentId}`, { method: 'DELETE' })
+                    const token = await getToken()
+                    const deleteHeaders: Record<string, string> = {}
+                    if (token) deleteHeaders['Authorization'] = `Bearer ${token}`
+                    const res = await fetch(`/api/${endpoint}/${report.contentId}`, { method: 'DELETE', headers: deleteHeaders })
                     if (res.ok) {
                         // Mark report as reviewed after deleting content
                         await handleUpdateStatus(report.id, 'reviewed')

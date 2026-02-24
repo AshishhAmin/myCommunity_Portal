@@ -13,7 +13,7 @@ import Link from "next/link"
 const features = [
     {
         title: "Business Directory",
-        description: "Discover and connect with Arya Vyshya businesses. Grow your network and support community enterprises.",
+        description: "Discover and connect with myCommunity businesses. Grow your network and support community enterprises.",
         icon: Building2,
         color: "text-maroon",
         href: "/business"

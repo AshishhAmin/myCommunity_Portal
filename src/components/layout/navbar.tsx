@@ -11,7 +11,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, User, PlusCircle, Briefcase, GraduationCap, Building2, Calendar, Trophy, Users, Menu, ChevronDown } from "lucide-react"
+import { LogOut, User, PlusCircle, Briefcase, GraduationCap, Building2, Calendar, Trophy, Users, Menu, ChevronDown, X } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
 
@@ -20,6 +20,12 @@ export function Navbar() {
     const router = useRouter()
     const pathname = usePathname()
     const [mounted, setMounted] = useState(false)
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+    // Close mobile menu on route change
+    useEffect(() => {
+        setIsMobileMenuOpen(false)
+    }, [pathname])
 
     useEffect(() => {
         setMounted(true)
@@ -42,10 +48,10 @@ export function Navbar() {
                 {/* Logo / Brand */}
                 <div className="flex items-center gap-3 group cursor-pointer">
                     <div className="h-10 w-10 rounded-full bg-maroon flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <span className="text-gold font-serif font-bold text-xl">AV</span>
+                        <span className="text-gold font-serif font-bold text-xl">mC</span>
                     </div>
                     <Link href="/" className="font-serif text-3xl font-bold text-maroon tracking-tight">
-                        Arya Vyshya
+                        myCommunity
                     </Link>
                 </div>
 
@@ -164,11 +170,69 @@ export function Navbar() {
                     ) : null}
 
                     {/* Mobile Menu Trigger */}
-                    <Button variant="ghost" size="sm" className="md:hidden" suppressHydrationWarning>
-                        <Menu className="h-5 w-5 text-maroon" />
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="md:hidden"
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        suppressHydrationWarning
+                    >
+                        {isMobileMenuOpen ? (
+                            <X className="h-5 w-5 text-maroon" />
+                        ) : (
+                            <Menu className="h-5 w-5 text-maroon" />
+                        )}
                     </Button>
                 </div>
             </div>
+
+            {/* Mobile Menu Overlay */}
+            {isMobileMenuOpen && (
+                <div className="md:hidden border-t border-gold/10 bg-cream/98 px-4 py-6 shadow-inner absolute top-16 left-0 w-full z-40 max-h-[calc(100vh-4rem)] overflow-y-auto">
+                    <div className="flex flex-col gap-4">
+                        <Link href="/" className={linkClass("/")}>Home</Link>
+                        {showAuth && isAuthenticated && (
+                            <Link href="/dashboard" className={linkClass("/dashboard")}>Dashboard</Link>
+                        )}
+                        {showAuth && user?.role === "admin" && (
+                            <Link href="/admin" className={linkClass("/admin")}>Admin Panel</Link>
+                        )}
+                        <Link href="/social" className={linkClass("/social")}>Social</Link>
+                        <Link href="/events" className={linkClass("/events")}>Events</Link>
+                        <Link href="/business" className={linkClass("/business")}>Business</Link>
+                        <div className="flex flex-col space-y-2 border-l-2 border-gold/30 pl-4 py-1">
+                            <span className="text-sm font-bold text-maroon/70 uppercase">Careers</span>
+                            <Link href="/career?tab=jobs" className="text-foreground hover:text-maroon">Job Listings</Link>
+                            <Link href="/career?tab=scholarships" className="text-foreground hover:text-maroon">Scholarships</Link>
+                            <Link href="/career?tab=mentorship" className="text-foreground hover:text-maroon">Mentorship</Link>
+                        </div>
+
+                        {!isAuthenticated && showAuth && (
+                            <div className="pt-4 border-t border-gold/20 flex flex-col gap-3">
+                                <Link href="/login" className="w-full">
+                                    <Button variant="outline" className="w-full border-maroon text-maroon">Login</Button>
+                                </Link>
+                                <Link href="/join" className="w-full">
+                                    <Button variant="primary" className="w-full">Join Community</Button>
+                                </Link>
+                            </div>
+                        )}
+
+                        {isAuthenticated && showAuth && (
+                            <div className="pt-4 border-t border-gold/20 flex flex-col gap-3 mb-4">
+                                <Link href="/posts/create" className="w-full">
+                                    <Button variant="outline" className="w-full border-gold text-maroon gap-2">
+                                        <PlusCircle className="h-4 w-4" /> Create Post
+                                    </Button>
+                                </Link>
+                                <Button variant="ghost" onClick={logout} className="w-full text-maroon hover:bg-red-50 justify-start gap-2">
+                                    <LogOut className="h-4 w-4" /> Logout
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </nav>
     )
 }

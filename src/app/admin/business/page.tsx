@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { Pagination } from "@/components/ui/pagination"
 import { ConfirmModal } from "@/components/ui/confirm-modal"
+import { useAuth } from "@/lib/auth-context"
 
 interface Business {
     id: string
@@ -40,6 +41,7 @@ export default function AdminBusinessPage() {
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedIds, setSelectedIds] = useState<string[]>([])
     const { toast } = useToast()
+    const { getToken } = useAuth()
 
     // Modal State
     const [confirmProps, setConfirmProps] = useState<{
@@ -78,7 +80,10 @@ export default function AdminBusinessPage() {
                 search: debouncedSearch
             })
 
-            const res = await fetch(`/api/admin/business?${params.toString()}`)
+            const token = await getToken()
+            const res = await fetch(`/api/admin/business?${params.toString()}`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            })
             if (!res.ok) throw new Error("Failed to fetch businesses")
 
             const data = await res.json()
@@ -106,10 +111,14 @@ export default function AdminBusinessPage() {
         const ids = Array.isArray(userIds) ? userIds : [userIds]
 
         try {
+            const token = await getToken()
             await Promise.all(ids.map(id =>
                 fetch(`/api/admin/business/${id}`, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    },
                     body: JSON.stringify({ status })
                 })
             ))
@@ -147,8 +156,10 @@ export default function AdminBusinessPage() {
         setConfirmProps(prev => ({ ...prev, isOpen: false }))
 
         try {
+            const token = await getToken()
             const res = await fetch(`/api/admin/business/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
             })
 
             if (!res.ok) throw new Error("Failed to delete business")

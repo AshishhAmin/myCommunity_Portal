@@ -13,13 +13,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, ArrowLeft } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { validateRequired, validateLength, collectErrors } from "@/lib/validation"
-import { getIdToken } from "firebase/auth"
-import { auth } from "@/lib/firebase"
 
 export default function EditAchievementPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter()
     const { id } = use(params)
-    const { user } = useAuth()
+    const { user, getToken } = useAuth()
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState("")
@@ -94,7 +92,7 @@ export default function EditAchievementPage({ params }: { params: Promise<{ id: 
                 const formDataUpload = new FormData()
                 formDataUpload.append("file", files[i])
 
-                const token = auth.currentUser ? await getIdToken(auth.currentUser) : ""
+                const token = await getToken()
                 const uploadRes = await fetch("/api/upload", {
                     method: "POST",
                     headers: {
@@ -148,7 +146,7 @@ export default function EditAchievementPage({ params }: { params: Promise<{ id: 
         setError("")
 
         try {
-            const token = auth.currentUser ? await getIdToken(auth.currentUser) : ""
+            const token = await getToken()
             const res = await fetch(`/api/achievements/${id}`, {
                 method: "PUT",
                 headers: {

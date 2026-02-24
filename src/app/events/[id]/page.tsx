@@ -30,7 +30,7 @@ export default function EventDetailPage() {
     const router = useRouter()
     const params = useParams()
     const id = params.id as string
-    const { user } = useAuth()
+    const { user, getToken } = useAuth()
 
     const [event, setEvent] = useState<EventDetail | null>(null)
     const [loading, setLoading] = useState(true)
@@ -85,11 +85,12 @@ export default function EventDetailPage() {
         setRsvpLoading(true)
         try {
             const method = isRsvped ? 'DELETE' : 'POST'
+            const token = await getToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch(`/api/events/${id}/rsvp`, {
                 method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify({ userId: user.id }) // Assuming user.id is available
             })
 
@@ -245,7 +246,10 @@ export default function EventDetailPage() {
                                         onClick={async () => {
                                             if (confirm("Are you sure you want to delete this event?")) {
                                                 try {
-                                                    const res = await fetch(`/api/events/${event.id}`, { method: 'DELETE' })
+                                                    const token = await getToken()
+                                                    const delHeaders: Record<string, string> = {}
+                                                    if (token) delHeaders['Authorization'] = `Bearer ${token}`
+                                                    const res = await fetch(`/api/events/${event.id}`, { method: 'DELETE', headers: delHeaders })
                                                     if (res.ok) {
                                                         router.push('/events')
                                                     } else {

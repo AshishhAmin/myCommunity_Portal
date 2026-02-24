@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, Cell } from 'recharts'
 import Link from 'next/link'
+import { useAuth } from '@/lib/auth-context'
 
 type StatsView = 'total' | 'pending'
 type TimeRange = '7d' | '30d' | '90d' | '6m' | '1y'
@@ -21,16 +22,20 @@ export default function AdminDashboard() {
     const [timeRange, setTimeRange] = useState<TimeRange>('6m')
     const [chartLoading, setChartLoading] = useState(false)
     const [activeGrowthMetric, setActiveGrowthMetric] = useState<string>('userGrowth')
+    const { getToken } = useAuth()
 
     const fetchStats = useCallback(async (range: TimeRange) => {
         try {
-            const res = await fetch(`/api/admin/analytics?range=${range}`)
+            const token = await getToken()
+            const res = await fetch(`/api/admin/analytics?range=${range}`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            })
             const data = await res.json()
             setStats(data)
         } catch (err) {
             console.error(err)
         }
-    }, [])
+    }, [getToken])
 
     useEffect(() => {
         setLoading(true)

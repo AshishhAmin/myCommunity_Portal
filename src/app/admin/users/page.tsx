@@ -22,6 +22,7 @@ import { useSearchParams } from "next/navigation"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Pagination } from "@/components/ui/pagination"
+import { useAuth } from "@/lib/auth-context"
 
 interface User {
     id: string
@@ -44,6 +45,7 @@ export default function AdminUsersPage() {
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedIds, setSelectedIds] = useState<string[]>([])
     const { toast } = useToast()
+    const { getToken } = useAuth()
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1)
@@ -69,7 +71,10 @@ export default function AdminUsersPage() {
                 search: debouncedSearch
             })
 
-            const res = await fetch(`/api/admin/users?${params.toString()}`)
+            const token = await getToken()
+            const res = await fetch(`/api/admin/users?${params.toString()}`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            })
             if (!res.ok) throw new Error("Failed to fetch users")
 
             const data = await res.json()
@@ -100,10 +105,14 @@ export default function AdminUsersPage() {
         const ids = Array.isArray(userIds) ? userIds : [userIds]
 
         try {
+            const token = await getToken()
             await Promise.all(ids.map(id =>
                 fetch(`/api/admin/users/${id}`, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    },
                     body: JSON.stringify({ status })
                 })
             ))

@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { Pagination } from "@/components/ui/pagination"
 import { ConfirmModal } from "@/components/ui/confirm-modal"
+import { useAuth } from "@/lib/auth-context"
 
 type VerificationTab = 'jobs' | 'help' | 'support' | 'reports'
 
@@ -37,6 +38,7 @@ export default function ModerationCenter() {
     const [limit] = useState(20)
 
     const [selectedIds, setSelectedIds] = useState<string[]>([])
+    const { getToken } = useAuth()
 
     // Modal State
     const [confirmProps, setConfirmProps] = useState<{
@@ -55,11 +57,14 @@ export default function ModerationCenter() {
 
     const fetchCounts = async () => {
         try {
+            const token = await getToken()
+            const headers: Record<string, string> = {}
+            if (token) headers['Authorization'] = `Bearer ${token}`
             const [jobRes, helpRes, supRes, repRes] = await Promise.all([
-                fetch('/api/admin/career?type=jobs&status=pending&limit=1'),
-                fetch('/api/admin/content?type=help&status=pending&limit=1'),
-                fetch('/api/admin/support?status=open&limit=1'),
-                fetch('/api/reports?status=open&limit=1')
+                fetch('/api/admin/career?type=jobs&status=pending&limit=1', { headers }),
+                fetch('/api/admin/content?type=help&status=pending&limit=1', { headers }),
+                fetch('/api/admin/support?status=open&limit=1', { headers }),
+                fetch('/api/reports?status=open&limit=1', { headers })
             ])
 
             const [jobData, helpData, supData, repData] = await Promise.all([
@@ -96,7 +101,10 @@ export default function ModerationCenter() {
 
             const url = `${endpoint}&${params.toString()}`
 
-            const res = await fetch(url)
+            const token = await getToken()
+            const fetchHeaders: Record<string, string> = {}
+            if (token) fetchHeaders['Authorization'] = `Bearer ${token}`
+            const res = await fetch(url, { headers: fetchHeaders })
             if (!res.ok) throw new Error("Failed to fetch items")
 
             const data = await res.json()
@@ -192,12 +200,18 @@ export default function ModerationCenter() {
                 }
 
                 if (method === 'DELETE') {
-                    return fetch(endpoint, { method })
+                    const token = await getToken()
+                    const delHeaders: Record<string, string> = {}
+                    if (token) delHeaders['Authorization'] = `Bearer ${token}`
+                    return fetch(endpoint, { method, headers: delHeaders })
                 }
 
+                const token2 = await getToken()
+                const patchHeaders: Record<string, string> = { 'Content-Type': 'application/json' }
+                if (token2) patchHeaders['Authorization'] = `Bearer ${token2}`
                 return fetch(endpoint, {
                     method,
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: patchHeaders,
                     body: JSON.stringify(body)
                 })
             }))
@@ -227,7 +241,10 @@ export default function ModerationCenter() {
         }
 
         if (endpoint) {
-            await fetch(endpoint, { method: 'DELETE' })
+            const token = await getToken()
+            const delHeaders: Record<string, string> = {}
+            if (token) delHeaders['Authorization'] = `Bearer ${token}`
+            await fetch(endpoint, { method: 'DELETE', headers: delHeaders })
         }
     }
 

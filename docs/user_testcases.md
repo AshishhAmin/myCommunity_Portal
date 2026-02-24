@@ -1,4 +1,4 @@
-# User Test Cases — Arya Vyshya Community Portal
+# User Test Cases — myCommunity Community Portal
 
 ## 1. Registration (/join)
 

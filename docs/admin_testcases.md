@@ -1,4 +1,4 @@
-# Admin Test Cases — Arya Vyshya Community Portal
+# Admin Test Cases — myCommunity Community Portal
 
 ## 1. Admin Content Management
 

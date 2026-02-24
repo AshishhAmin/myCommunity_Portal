@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
@@ -23,13 +24,14 @@ interface MentorshipDetail {
         email: string | null
         location: string | null
         bio: string | null
+        profileImage: string | null
     }
 }
 
 export default function MentorDetailsPage() {
     const params = useParams()
     const router = useRouter()
-    const { user, isAuthenticated } = useAuth()
+    const { user, isAuthenticated, getToken } = useAuth()
     const id = params.id as string
 
     const [mentorship, setMentorship] = useState<MentorshipDetail | null>(null)
@@ -63,7 +65,10 @@ export default function MentorDetailsPage() {
 
         setIsDeleting(true)
         try {
-            const res = await fetch(`/api/career/mentorship/${id}`, { method: 'DELETE' })
+            const token = await getToken()
+            const headers: Record<string, string> = {}
+            if (token) headers['Authorization'] = `Bearer ${token}`
+            const res = await fetch(`/api/career/mentorship/${id}`, { method: 'DELETE', headers })
             if (res.ok) {
                 router.push('/career?tab=mentorship')
                 router.refresh()
@@ -150,7 +155,17 @@ export default function MentorDetailsPage() {
                                         <div className="flex flex-col md:flex-row gap-8 items-start">
                                             <Link href={`/members/${mentorship.mentorId}`}>
                                                 <div className="h-32 w-32 rounded-2xl bg-cream border-2 border-gold flex-shrink-0 flex items-center justify-center text-4xl font-serif font-bold text-maroon shadow-inner hover:bg-gold/5 transition-colors cursor-pointer overflow-hidden relative">
-                                                    {mentorship.mentor.name?.charAt(0).toUpperCase() || "M"}
+                                                    {mentorship.mentor.profileImage ? (
+                                                        <Image
+                                                            src={mentorship.mentor.profileImage}
+                                                            alt={mentorship.mentor.name || "Mentor"}
+                                                            fill
+                                                            className="object-cover"
+                                                            suppressHydrationWarning
+                                                        />
+                                                    ) : (
+                                                        mentorship.mentor.name?.charAt(0).toUpperCase() || "M"
+                                                    )}
                                                 </div>
                                             </Link>
                                             <div className="flex-1">

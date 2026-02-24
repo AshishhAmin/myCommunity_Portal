@@ -308,7 +308,7 @@ export function SocialPostCard({ post }: SocialPostProps) {
                     )}
                 >
                     <Heart className={cn("h-5 w-5", isLiked && "fill-current")} />
-                    <span className="font-medium text-sm">{likeCount > 0 ? likeCount : ''} Like{likeCount !== 1 && 's'}</span>
+                    <span className="font-medium text-xs sm:text-sm tracking-tight">{likeCount > 0 ? likeCount : ''} Like{likeCount !== 1 && 's'}</span>
                 </Button>
 
                 <Button
@@ -321,7 +321,7 @@ export function SocialPostCard({ post }: SocialPostProps) {
                     )}
                 >
                     <MessageCircle className="h-5 w-5" />
-                    <span className="font-medium text-sm">{commentCount > 0 ? commentCount : ''} Comment{commentCount !== 1 && 's'}</span>
+                    <span className="font-medium text-xs sm:text-sm tracking-tight">{commentCount > 0 ? commentCount : ''} Comment{commentCount !== 1 && 's'}</span>
                 </Button>
 
                 <Button
@@ -331,7 +331,7 @@ export function SocialPostCard({ post }: SocialPostProps) {
                     className="flex-1 justify-center gap-1.5 text-gray-500 hover:text-maroon hover:bg-maroon/5 transition-all h-9"
                 >
                     <Share2 className="h-5 w-5" />
-                    <span className="font-medium text-sm">{shareCount > 0 ? shareCount : ''} Share{shareCount !== 1 && 's'}</span>
+                    <span className="font-medium text-xs sm:text-sm tracking-tight">{shareCount > 0 ? shareCount : ''} Share{shareCount !== 1 && 's'}</span>
                 </Button>
             </CardFooter>
 

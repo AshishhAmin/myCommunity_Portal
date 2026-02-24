@@ -7,7 +7,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         const { id } = await params
         const mentorship = await prisma.mentorship.findUnique({
             where: { id },
-            include: { mentor: { select: { name: true, email: true, location: true, bio: true } } }
+            include: { mentor: { select: { id: true, name: true, email: true, location: true, bio: true, profileImage: true } } }
         })
 
         if (!mentorship) {
