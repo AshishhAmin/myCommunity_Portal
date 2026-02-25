@@ -784,7 +784,7 @@ function HelpContent() {
                                                 <Badge variant="outline" className="text-[9px] h-4 py-0 border-gold/30 text-maroon font-bold">Admin Office</Badge>
                                             </Label>
                                             <Input
-                                                value="support@mycommunity.com"
+                                                value="support@communet.com"
                                                 disabled
                                                 className="bg-gray-100/50 border-gold/10 text-muted-foreground"
                                             />

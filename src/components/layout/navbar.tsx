@@ -11,7 +11,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, User, PlusCircle, Briefcase, GraduationCap, Building2, Calendar, Trophy, Users, Menu, ChevronDown, X } from "lucide-react"
+import { LogOut, User, PlusCircle, Briefcase, GraduationCap, Building2, Calendar, Trophy, Users, Menu, ChevronDown, X, Network } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
 
@@ -48,10 +48,10 @@ export function Navbar() {
                 {/* Logo / Brand */}
                 <div className="flex items-center gap-3 group cursor-pointer">
                     <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-maroon flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <span className="text-gold font-serif font-bold text-lg md:text-xl">mC</span>
+                        <Network className="h-5 w-5 md:h-6 md:w-6 text-gold" strokeWidth={2.5} />
                     </div>
                     <Link href="/" className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-maroon tracking-tight">
-                        myCommunity
+                        CommuNet
                     </Link>
                 </div>
 

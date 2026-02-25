@@ -1,4 +1,4 @@
-# Admin Test Cases — myCommunity Community Portal
+# Admin Test Cases — CommuNet Community Portal
 
 ## 1. Admin Content Management
 

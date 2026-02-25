@@ -1,6 +1,6 @@
 # 🏗 Architecture & Technical Documentation
 
-This document provides a deeper dive into the technical architecture, design decisions, and data flow of the **myCommunity Platform**.
+This document provides a deeper dive into the technical architecture, design decisions, and data flow of the **CommuNet Platform**.
 
 ## System Overview
 

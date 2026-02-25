@@ -162,7 +162,7 @@ export default function AddBusinessPage() {
                         <div className="mb-6">
                             <h1 className="font-serif text-2xl font-bold text-maroon">Add Your Business</h1>
                             <p className="text-muted-foreground mt-1">
-                                Promote your business to the myCommunity community.
+                                Promote your business to the CommuNet community.
                             </p>
                         </div>
 

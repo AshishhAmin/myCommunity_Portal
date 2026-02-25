@@ -269,7 +269,7 @@ export default function SocialFeedPage() {
                                 <Link href="/privacy" className="hover:underline">Privacy</Link>
                                 <Link href="/terms" className="hover:underline">Terms</Link>
                             </div>
-                            <p className="mt-4">© 2026 myCommunity Platform</p>
+                            <p className="mt-4">© 2026 CommuNet Platform</p>
                         </div>
                     </div>
 

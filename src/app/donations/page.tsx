@@ -100,7 +100,7 @@ export default function DonationPage() {
                                 <span className="text-gold">Empowers Our Community</span>
                             </h1>
                             <p className="text-gray-700 text-lg mb-8 leading-relaxed">
-                                myCommunity Community Portal is dedicated to the progress and welfare of our members.
+                                CommuNet Community Portal is dedicated to the progress and welfare of our members.
                                 Your generous donations support education scholarships, medical emergencies, and cultural preservation.
                             </p>
 

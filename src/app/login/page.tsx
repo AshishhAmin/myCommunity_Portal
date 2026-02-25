@@ -156,7 +156,7 @@ export default function LoginPage() {
                         <div className="mt-6 flex flex-col items-center gap-2 border-t border-gold/10 pt-4">
                             <div className="flex items-center gap-2 text-xs text-muted-foreground text-center bg-gold/5 px-3 py-1.5 rounded-full border border-gold/20">
                                 <ShieldCheck className="h-4 w-4 text-maroon" />
-                                <span className="font-medium text-maroon">Only Verified myCommunity Members Get Full Access</span>
+                                <span className="font-medium text-maroon">Only Verified CommuNet Members Get Full Access</span>
                             </div>
                         </div>
 

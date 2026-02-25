@@ -1,8 +1,8 @@
-# myCommunity Platform
+# CommuNet Platform
 
-![myCommunity Banner](public/logo.png) <!-- Will fallback gracefully if no logo exists -->
+![CommuNet Banner](public/logo.png) <!-- Will fallback gracefully if no logo exists -->
 
-A comprehensive, secure, and modern community platform designed to connect members, promote global businesses, effortlessly manage events, and provide career & mentorship opportunities within the myCommunity ecosystem.
+A comprehensive, secure, and modern community platform designed to connect members, promote global businesses, effortlessly manage events, and provide career & mentorship opportunities within the CommuNet ecosystem.
 
 ## 🌟 Key Features
 
@@ -57,8 +57,8 @@ Ensure you have the following installed on your local machine:
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-org/mycommunity.git
-cd mycommunity/web
+git clone https://github.com/your-org/CommuNet.git
+cd CommuNet/web
 npm install
 ```
 
@@ -104,7 +104,7 @@ Generate the Prisma client:
 npx prisma generate
 ```
 
-(Optional) Seed the database with initial dummy data and an admin user. **Warning**: You must have a Firebase user with `admin@mycommunity.com` / `password123` manually created in your Firebase console first for the dummy admin to be fully usable.
+(Optional) Seed the database with initial dummy data and an admin user. **Warning**: You must have a Firebase user with `admin@communet.com` / `password123` manually created in your Firebase console first for the dummy admin to be fully usable.
 
 ```bash
 npm run prisma db seed
@@ -139,4 +139,4 @@ Contributions are welcome! Please ensure you create a feature branch, adhere to 
 
 ## 📄 License
 
-© 2026 myCommunity Platform. All rights reserved. Not for commercial use.
+© 2026 CommuNet Platform. All rights reserved. Not for commercial use.

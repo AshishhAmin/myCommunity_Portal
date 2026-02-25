@@ -1,4 +1,4 @@
-# User Test Cases — myCommunity Community Portal
+# User Test Cases — CommuNet Community Portal
 
 ## 1. Registration (/join)
 

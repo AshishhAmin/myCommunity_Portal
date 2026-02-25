@@ -15,8 +15,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "myCommunity Community Platform",
-  description: "A Trusted Digital Platform for myCommunity Community Growth",
+  title: "CommuNet Community Platform",
+  description: "A Trusted Digital Platform for CommuNet Community Growth",
 };
 
 export default function RootLayout({

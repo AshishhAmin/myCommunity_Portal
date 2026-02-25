@@ -91,7 +91,7 @@ export default function MembersPage() {
                     <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
                         <div className="text-center md:text-left">
                             <h1 className="font-serif text-5xl font-bold text-maroon mb-1">Member Directory</h1>
-                            <p className="text-xl text-muted-foreground">Connect with fellow myCommunity community members.</p>
+                            <p className="text-xl text-muted-foreground">Connect with fellow CommuNet community members.</p>
                         </div>
                         {isAuthenticated && (
                             <Link href="/members/feed">

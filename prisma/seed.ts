@@ -9,10 +9,10 @@ async function main() {
     // 1. Create Admins & Regular Users
     console.log('Seeding Users...')
     const admin = await prisma.user.upsert({
-        where: { email: 'admin@mycommunity.com' },
+        where: { email: 'admin@communet.com' },
         update: {},
         create: {
-            email: 'admin@mycommunity.com',
+            email: 'admin@communet.com',
             name: 'Main Admin',
             password,
             mobile: '9999999999',

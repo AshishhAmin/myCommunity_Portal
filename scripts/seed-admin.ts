@@ -5,7 +5,7 @@ import { prisma } from '../src/lib/prisma';
 import bcrypt from 'bcryptjs';
 
 async function seed() {
-    const adminEmail = "admin@mycommunity.com";
+    const adminEmail = "admin@communet.com";
     const password = "password123";
     const name = "Portal Admin";
 
