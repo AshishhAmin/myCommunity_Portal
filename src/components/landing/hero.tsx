@@ -32,11 +32,11 @@ export function HeroSection() {
                     Welcome to myCommunity
                 </div>
 
-                <h1 className="mx-auto max-w-5xl font-serif text-5xl font-semi-bold tracking-tight text-maroon sm:text-6xl md:text-7xl lg:text-8xl animate-slide-up [animation-delay:200ms]">
+                <h1 className="mx-auto max-w-5xl font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semi-bold tracking-tight text-maroon animate-slide-up [animation-delay:200ms]">
                     A Trusted Digital Platform for <span className="text-gold">myCommunity</span>
                 </h1>
 
-                <p className="mx-auto mt-8 max-w-3xl text-xl md:text-2xl text-muted-foreground leading-relaxed animate-slide-up [animation-delay:400ms]">
+                <p className="mx-auto mt-6 max-w-3xl text-lg md:text-xl text-muted-foreground leading-relaxed animate-slide-up [animation-delay:400ms]">
                     Uniting members through business enablement, career development, and dedicated support.
                     A secure space to connect, grow, and uphold our shared heritage.
                 </p>
@@ -44,12 +44,12 @@ export function HeroSection() {
                 {mounted && !isLoading && !isAuthenticated && (
                     <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 animate-slide-up [animation-delay:600ms]">
                         <Link href="/join">
-                            <Button size="lg" className="w-full sm:w-auto min-w-[200px] text-xl h-14 shadow-lg hover:scale-105 transition-transform">
+                            <Button size="lg" className="w-full sm:w-auto min-w-[200px] text-lg h-12 md:text-xl md:h-14 shadow-lg hover:scale-105 transition-transform">
                                 Join Community
                             </Button>
                         </Link>
                         <Link href="/login">
-                            <Button variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px] text-xl h-14 bg-white/50 backdrop-blur-sm shadow-md hover:scale-105 transition-transform">
+                            <Button variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px] text-lg h-12 md:text-xl md:h-14 bg-white/50 backdrop-blur-sm shadow-md hover:scale-105 transition-transform">
                                 Member Login
                             </Button>
                         </Link>
@@ -59,7 +59,7 @@ export function HeroSection() {
                 {mounted && !isLoading && isAuthenticated && (
                     <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 animate-slide-up [animation-delay:600ms]">
                         <Link href="/dashboard">
-                            <Button size="lg" className="w-full sm:w-auto min-w-[200px] text-xl h-14 shadow-lg hover:scale-105 transition-transform">
+                            <Button size="lg" className="w-full sm:w-auto min-w-[200px] text-lg h-12 md:text-xl md:h-14 shadow-lg hover:scale-105 transition-transform">
                                 Go to Dashboard
                             </Button>
                         </Link>
@@ -69,19 +69,19 @@ export function HeroSection() {
                 {/* Trust Indicators */}
                 <div className="mt-20 grid grid-cols-2 gap-10 md:grid-cols-4 border-t border-gold/10 pt-12 max-w-5xl mx-auto animate-slide-up [animation-delay:800ms]">
                     <div className="flex flex-col items-center group">
-                        <span className="font-serif text-4xl md:text-5xl font-bold text-maroon group-hover:scale-110 transition-transform">{stats ? `${stats.members}+` : "..."}</span>
+                        <span className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-maroon group-hover:scale-110 transition-transform">{stats ? `${stats.members}+` : "..."}</span>
                         <span className="text-base text-muted-foreground mt-2 font-medium">Verified Members</span>
                     </div>
                     <div className="flex flex-col items-center group">
-                        <span className="font-serif text-4xl md:text-5xl font-bold text-maroon group-hover:scale-110 transition-transform">{stats ? `${stats.businesses}+` : "..."}</span>
+                        <span className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-maroon group-hover:scale-110 transition-transform">{stats ? `${stats.businesses}+` : "..."}</span>
                         <span className="text-base text-muted-foreground mt-2 font-medium">Businesses</span>
                     </div>
                     <div className="flex flex-col items-center group">
-                        <span className="font-serif text-4xl md:text-5xl font-bold text-maroon group-hover:scale-110 transition-transform">{stats ? `₹${(stats.donations / 1000000).toFixed(1)}M+` : "..."}</span>
+                        <span className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-maroon group-hover:scale-110 transition-transform">{stats ? `₹${(stats.donations / 1000000).toFixed(1)}M+` : "..."}</span>
                         <span className="text-base text-muted-foreground mt-2 font-medium">Donations Raised</span>
                     </div>
                     <div className="flex flex-col items-center group">
-                        <span className="font-serif text-4xl md:text-5xl font-bold text-maroon group-hover:scale-110 transition-transform">{stats ? `${stats.events}+` : "..."}</span>
+                        <span className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-maroon group-hover:scale-110 transition-transform">{stats ? `${stats.events}+` : "..."}</span>
                         <span className="text-base text-muted-foreground mt-2 font-medium">Community Events</span>
                     </div>
                 </div>

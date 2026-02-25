@@ -47,10 +47,10 @@ export function Navbar() {
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
                 {/* Logo / Brand */}
                 <div className="flex items-center gap-3 group cursor-pointer">
-                    <div className="h-10 w-10 rounded-full bg-maroon flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <span className="text-gold font-serif font-bold text-xl">mC</span>
+                    <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-maroon flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <span className="text-gold font-serif font-bold text-lg md:text-xl">mC</span>
                     </div>
-                    <Link href="/" className="font-serif text-3xl font-bold text-maroon tracking-tight">
+                    <Link href="/" className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-maroon tracking-tight">
                         myCommunity
                     </Link>
                 </div>
@@ -123,7 +123,7 @@ export function Navbar() {
                     {showAuth ? (
                         isAuthenticated ? (
                             <div className="flex items-center gap-4">
-                                <Link href="/posts/create">
+                                <Link href="/posts/create" className="hidden md:flex">
                                     <Button variant="ghost" className="text-maroon hover:bg-maroon/10 gap-2 px-3" suppressHydrationWarning>
                                         <PlusCircle className="h-4 w-4" />
                                         <span className="font-semibold">Create Post</span>
@@ -150,9 +150,9 @@ export function Navbar() {
                                     </span>
                                 </Link>
 
-                                <Button variant="ghost" size="sm" onClick={logout} className="text-maroon hover:bg-maroon/10 gap-2 px-3" suppressHydrationWarning>
+                                <Button variant="ghost" size="sm" onClick={logout} className="hidden md:flex text-maroon hover:bg-maroon/10 gap-2 px-3" suppressHydrationWarning>
                                     <LogOut className="h-4 w-4" />
-                                    <span className="hidden md:inline font-semibold">Logout</span>
+                                    <span className="font-semibold">Logout</span>
                                 </Button>
                             </div>
                         ) : (
@@ -162,7 +162,7 @@ export function Navbar() {
                                         Login
                                     </Button>
                                 </Link>
-                                <Link href="/join">
+                                <Link href="/join" className="hidden md:block">
                                     <Button variant="primary" suppressHydrationWarning>Join Community</Button>
                                 </Link>
                             </>
@@ -225,8 +225,13 @@ export function Navbar() {
                                         <PlusCircle className="h-4 w-4" /> Create Post
                                     </Button>
                                 </Link>
-                                <Button variant="ghost" onClick={logout} className="w-full text-maroon hover:bg-red-50 justify-start gap-2">
-                                    <LogOut className="h-4 w-4" /> Logout
+                                <Link href="/profile" className="w-full">
+                                    <Button variant="ghost" className="w-full border border-gold/20 text-maroon hover:bg-maroon/5 justify-start gap-2">
+                                        <User className="h-4 w-4" /> View Profile
+                                    </Button>
+                                </Link>
+                                <Button variant="ghost" onClick={logout} className="w-full text-maroon hover:bg-red-50 justify-start gap-2 overflow-hidden">
+                                    <LogOut className="h-4 w-4 shrink-0" /> Logout
                                 </Button>
                             </div>
                         )}
