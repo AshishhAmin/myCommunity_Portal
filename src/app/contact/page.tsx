@@ -48,20 +48,20 @@ export default function ContactPage() {
             <Navbar />
 
             <main className="flex-1">
-                <div className="bg-maroon text-white py-16 px-4 text-center">
+                <div className="bg-maroon text-white py-10 md:py-16 px-4 text-center">
                     <div className="container mx-auto">
-                        <h1 className="font-serif text-4xl font-bold mb-4 text-gold">Get in Touch</h1>
-                        <p className="text-white/80 max-w-2xl mx-auto">
+                        <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3 md:mb-4 text-gold">Get in Touch</h1>
+                        <p className="text-sm md:text-base text-white/80 max-w-2xl mx-auto">
                             Have questions about the community, events, or membership? We&apos;re here to help.
                         </p>
                     </div>
                 </div>
 
-                <div className="container mx-auto px-4 py-16 -mt-10">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="container mx-auto px-4 py-10 md:py-16 -mt-6 md:-mt-10">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
 
                         {/* Contact Info Cards */}
-                        <div className="space-y-6">
+                        <div className="space-y-4 md:space-y-6">
                             <Card className="shadow-lg border-0">
                                 <CardContent className="p-6 flex items-start gap-4">
                                     <div className="bg-gold/10 p-3 rounded-full text-maroon">
@@ -106,9 +106,9 @@ export default function ContactPage() {
                         {/* Contact Form */}
                         <div className="md:col-span-2">
                             <Card className="shadow-xl border-gold/20">
-                                <CardContent className="p-8">
-                                    <h2 className="text-2xl font-serif font-bold text-maroon mb-6">Send us a Message</h2>
-                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                <CardContent className="p-5 md:p-8">
+                                    <h2 className="text-xl md:text-2xl font-serif font-bold text-maroon mb-4 md:mb-6">Send us a Message</h2>
+                                    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
                                                 <label className="text-sm font-medium text-gray-700">Your Name *</label>

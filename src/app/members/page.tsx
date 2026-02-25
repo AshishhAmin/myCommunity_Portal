@@ -89,9 +89,9 @@ export default function MembersPage() {
                 <main className="flex-1 container mx-auto px-4 py-8">
                     {/* Header */}
                     <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
-                        <div className="text-center md:text-left">
-                            <h1 className="font-serif text-5xl font-bold text-maroon mb-1">Member Directory</h1>
-                            <p className="text-xl text-muted-foreground">Connect with fellow CommuNet community members.</p>
+                        <div className="text-center md:text-left mb-4 md:mb-0">
+                            <h1 className="font-serif text-4xl md:text-5xl font-bold text-maroon mb-1 md:mb-2">Member Directory</h1>
+                            <p className="text-lg md:text-xl text-muted-foreground">Connect with fellow CommuNet community members.</p>
                         </div>
                         {isAuthenticated && (
                             <Link href="/members/feed">
@@ -103,11 +103,11 @@ export default function MembersPage() {
                     </div>
 
                     {/* Search */}
-                    <div className="relative max-w-lg mx-auto mb-8">
-                        <Search className="absolute left-4 top-5 h-5 w-5 text-maroon/50" />
+                    <div className="relative max-w-lg mx-auto mb-6 md:mb-8 px-2 md:px-0">
+                        <Search className="absolute left-6 md:left-4 top-4 md:top-5 h-5 w-5 text-maroon/50" />
                         <Input
                             placeholder="Search by name, location, or gotra..."
-                            className="pl-12 h-14 text-lg border-gold/30 focus-visible:ring-gold/40 shadow-sm"
+                            className="pl-12 md:pl-12 h-12 md:h-14 text-base md:text-lg border-gold/30 focus-visible:ring-gold/40 shadow-sm"
                             value={search}
                             onChange={(e) => { setSearch(e.target.value); setPage(1) }}
                         />
@@ -125,9 +125,9 @@ export default function MembersPage() {
                             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                 {members.map(member => (
                                     <Card key={member.id} className="hover:shadow-lg transition-shadow border-gold/20">
-                                        <CardContent className="p-8 text-center">
+                                        <CardContent className="p-6 md:p-8 text-center">
                                             {/* Avatar */}
-                                            <div className="mx-auto h-24 w-24 rounded-full bg-cream border-4 border-gold/20 flex items-center justify-center mb-4 text-3xl font-serif font-bold text-maroon overflow-hidden relative shadow-inner group-hover:border-gold/50 transition-colors">
+                                            <div className="mx-auto h-20 w-20 md:h-24 md:w-24 rounded-full bg-cream border-4 border-gold/20 flex items-center justify-center mb-3 md:mb-4 text-2xl md:text-3xl font-serif font-bold text-maroon overflow-hidden relative shadow-inner group-hover:border-gold/50 transition-colors">
                                                 {member.profileImage ? (
                                                     <Image src={member.profileImage} alt={member.name || 'Member'} fill className="object-cover" />
                                                 ) : (
@@ -137,34 +137,34 @@ export default function MembersPage() {
 
                                             {/* Name */}
                                             <Link href={`/members/${member.id}`}>
-                                                <h3 className="font-bold text-2xl text-maroon hover:text-gold transition-colors cursor-pointer leading-tight">
+                                                <h3 className="font-bold text-xl md:text-2xl text-maroon hover:text-gold transition-colors cursor-pointer leading-tight">
                                                     {member.name || "Anonymous"}
                                                 </h3>
                                             </Link>
 
                                             {/* Location */}
                                             {member.location && (
-                                                <p className="text-base text-muted-foreground font-medium flex items-center justify-center gap-1.5 mt-2">
-                                                    <MapPin className="h-4 w-4 text-maroon/50" /> {member.location}
+                                                <p className="text-sm md:text-base text-muted-foreground font-medium flex items-center justify-center gap-1.5 mt-1.5 md:mt-2">
+                                                    <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4 text-maroon/50" /> {member.location}
                                                 </p>
                                             )}
 
                                             {/* Gotra */}
                                             {member.gotra && (
-                                                <span className="inline-block mt-3 px-4 py-1 rounded-full text-base font-bold bg-gold/10 text-maroon border border-gold/20">
+                                                <span className="inline-block mt-2 md:mt-3 px-3 py-0.5 md:px-4 md:py-1 rounded-full text-sm md:text-base font-bold bg-gold/10 text-maroon border border-gold/20">
                                                     {member.gotra}
                                                 </span>
                                             )}
 
                                             {/* Bio */}
                                             {member.bio && (
-                                                <p className="text-base text-gray-500 mt-3 line-clamp-2 break-all italic">{member.bio}</p>
+                                                <p className="text-sm md:text-base text-gray-500 mt-2 md:mt-3 line-clamp-2 break-all italic">{member.bio}</p>
                                             )}
 
                                             {/* Stats */}
-                                            <div className="flex justify-center gap-6 mt-4 text-base font-bold text-muted-foreground/70">
-                                                <span className="flex items-center gap-1.5"><Users className="h-5 w-5" /> {member.followerCount} <span className="text-sm font-medium">followers</span></span>
-                                                <span>{member.followingCount} <span className="text-sm font-medium">following</span></span>
+                                            <div className="flex justify-center gap-4 md:gap-6 mt-3 md:mt-4 text-sm md:text-base font-bold text-muted-foreground/70">
+                                                <span className="flex items-center gap-1.5"><Users className="h-4 w-4 md:h-5 md:w-5" /> {member.followerCount} <span className="text-xs md:text-sm font-medium">followers</span></span>
+                                                <span>{member.followingCount} <span className="text-xs md:text-sm font-medium">following</span></span>
                                             </div>
 
                                             {/* Follow Button */}

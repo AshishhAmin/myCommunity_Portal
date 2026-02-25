@@ -276,8 +276,8 @@ export default function ModerationCenter() {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <h2 className="text-5xl font-serif font-bold text-maroon mb-1">Moderation Center</h2>
-                    <p className="text-xl text-muted-foreground">Unified dashboard for content review and reports.</p>
+                    <h2 className="text-3xl md:text-5xl font-serif font-bold text-maroon mb-1">Moderation Center</h2>
+                    <p className="text-base md:text-xl text-muted-foreground">Unified dashboard for content review and reports.</p>
                 </div>
                 <div className="flex gap-3">
                     <Link href="/posts/create">
@@ -343,11 +343,11 @@ export default function ModerationCenter() {
                             <table className="w-full text-sm text-left border-collapse">
                                 <thead className="bg-[#FAF3E0] text-maroon border-b border-gold/10 sticky top-0 z-10 shadow-sm">
                                     <tr>
-                                        <th className="px-6 py-4 w-10"><Checkbox checked={selectedIds.length === items.length && items.length > 0} onCheckedChange={toggleSelectAll} /></th>
-                                        <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Title / Subject</th>
-                                        <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">{activeTab === 'reports' ? 'Reporter' : 'Submitted By'}</th>
-                                        <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Description</th>
-                                        <th className="px-6 py-4 font-serif font-bold text-right whitespace-nowrap text-lg">Actions</th>
+                                        <th className="px-3 md:px-6 py-3 md:py-4 w-10 shrink-0"><Checkbox checked={selectedIds.length === items.length && items.length > 0} onCheckedChange={toggleSelectAll} /></th>
+                                        <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Title / Subject</th>
+                                        <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">{activeTab === 'reports' ? 'Reporter' : 'Submitted By'}</th>
+                                        <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Description</th>
+                                        <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold text-right whitespace-nowrap text-sm md:text-lg">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gold/10">
@@ -358,15 +358,15 @@ export default function ModerationCenter() {
                                             const { title, owner, ownerEmail, description } = getItemDisplay(item)
                                             return (
                                                 <tr key={item.id} className={cn("transition-colors", selectedIds.includes(item.id) ? "bg-maroon/5" : "hover:bg-[#FAF3E0]/20")}>
-                                                    <td className="px-6 py-5"><Checkbox checked={selectedIds.includes(item.id)} onCheckedChange={() => toggleSelect(item.id)} /></td>
-                                                    <td className="px-6 py-5 font-bold text-gray-900 whitespace-nowrap text-base">{title}</td>
-                                                    <td className="px-6 py-5 text-gray-700 whitespace-nowrap text-base">
-                                                        <div className="flex flex-col"><span className="font-bold text-maroon">{owner}</span>{ownerEmail && <span className="text-xs text-muted-foreground font-medium">{ownerEmail}</span>}</div>
+                                                    <td className="px-3 md:px-6 py-4 md:py-5"><Checkbox checked={selectedIds.includes(item.id)} onCheckedChange={() => toggleSelect(item.id)} /></td>
+                                                    <td className="px-3 md:px-6 py-4 md:py-5 font-bold text-gray-900 whitespace-nowrap text-sm md:text-base">{title}</td>
+                                                    <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 whitespace-nowrap text-sm md:text-base">
+                                                        <div className="flex flex-col"><span className="font-bold text-maroon">{owner}</span>{ownerEmail && <span className="text-[10px] md:text-xs text-muted-foreground font-medium">{ownerEmail}</span>}</div>
                                                     </td>
-                                                    <td className="px-6 py-5 text-gray-700 min-w-[300px] max-w-[400px] text-base">
+                                                    <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 min-w-[250px] md:min-w-[300px] max-w-[400px] text-sm md:text-base">
                                                         <p className="line-clamp-2 italic leading-relaxed break-words">{description}</p>
                                                     </td>
-                                                    <td className="px-6 py-4 text-right">
+                                                    <td className="px-3 md:px-6 py-3 md:py-4 text-right">
                                                         <div className="flex justify-end gap-2">
                                                             {activeTab === 'reports' ? (
                                                                 <>

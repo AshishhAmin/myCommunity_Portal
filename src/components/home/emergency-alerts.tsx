@@ -87,49 +87,49 @@ function RequestCard({ req, variant = "full", currentUserId, onMarkReceived }: {
     return (
         <Card className="overflow-hidden border border-maroon/20 shadow-md bg-white">
             <CardContent className="p-0">
-                <div className="bg-maroon text-gold px-6 py-3 flex items-center justify-between">
+                <div className="bg-maroon text-gold px-4 md:px-6 py-2.5 md:py-3 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4 animate-pulse" />
-                        <span className="text-xs font-bold uppercase tracking-[0.2em]">Emergency Assistance Required</span>
+                        <AlertCircle className="h-4 w-4 animate-pulse shrink-0" />
+                        <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] truncate">Emergency Assistance Required</span>
                     </div>
-                    <span className="text-[10px] opacity-80">{timeAgo(req.createdAt)}</span>
+                    <span className="text-[9px] md:text-[10px] opacity-80 shrink-0 ml-2">{timeAgo(req.createdAt)}</span>
                 </div>
 
-                <div className="p-6 md:p-8">
+                <div className="p-5 md:p-8">
                     <div className="flex flex-col md:flex-row md:items-start gap-6">
                         <div className="flex-1 space-y-4">
                             <div>
-                                <h3 className="text-4xl font-serif font-bold text-maroon mb-4">{req.title}</h3>
-                                <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
-                                    <div className="flex items-center gap-4 bg-white/60 p-3 rounded-2xl border border-gold/20 shadow-sm">
-                                        <div className="h-12 w-12 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
-                                            <MapPin className="h-6 w-6 text-maroon" />
+                                <h3 className="text-2xl md:text-4xl font-serif font-bold text-maroon mb-4 leading-tight">{req.title}</h3>
+                                <div className="flex flex-col sm:flex-row gap-4 md:gap-8 items-start sm:items-center w-full">
+                                    <div className="flex items-center gap-3 md:gap-4 bg-white/60 p-2.5 md:p-3 rounded-2xl border border-gold/20 shadow-sm w-full sm:w-auto">
+                                        <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
+                                            <MapPin className="h-5 w-5 md:h-6 md:w-6 text-maroon" />
                                         </div>
-                                        <div>
-                                            <p className="text-[10px] font-bold uppercase tracking-widest text-maroon/60">Location</p>
-                                            <p className="font-serif font-bold text-xl text-maroon">{req.user.location}</p>
+                                        <div className="min-w-0">
+                                            <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-maroon/60">Location</p>
+                                            <p className="font-serif font-bold text-lg md:text-xl text-maroon truncate">{req.user.location}</p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-4 bg-white/60 p-3 rounded-2xl border border-gold/20 shadow-sm">
-                                        <div className="h-12 w-12 rounded-xl bg-maroon/10 flex items-center justify-center shrink-0">
-                                            <Phone className="h-6 w-6 text-maroon" />
+                                    <div className="flex items-center gap-3 md:gap-4 bg-white/60 p-2.5 md:p-3 rounded-2xl border border-gold/20 shadow-sm w-full sm:w-auto">
+                                        <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-maroon/10 flex items-center justify-center shrink-0">
+                                            <Phone className="h-5 w-5 md:h-6 md:w-6 text-maroon" />
                                         </div>
-                                        <div>
-                                            <p className="text-[10px] font-bold uppercase tracking-widest text-maroon/60">Urgent Contact</p>
-                                            <p className="font-serif font-bold text-xl text-maroon">{req.contact}</p>
+                                        <div className="min-w-0">
+                                            <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-maroon/60">Urgent Contact</p>
+                                            <p className="font-serif font-bold text-lg md:text-xl text-maroon truncate">{req.contact}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <p className="text-gray-800 text-2xl border-l-2 border-maroon/30 pl-4 py-1">
+                            <p className="text-gray-800 text-lg md:text-2xl border-l-2 border-maroon/30 pl-3 md:pl-4 py-1">
                                 {req.description}
                             </p>
 
-                            <div className="flex flex-wrap gap-3 pt-4">
-                                <a href={`tel:${req.contact}`}>
-                                    <Button className="bg-maroon text-gold hover:bg-maroon/90 font-bold px-6 shadow-sm">
+                            <div className="flex flex-wrap gap-2 md:gap-3 pt-4">
+                                <a href={`tel:${req.contact}`} className="w-full sm:w-auto">
+                                    <Button className="w-full sm:w-auto bg-maroon text-gold hover:bg-maroon/90 font-bold px-4 md:px-6 shadow-sm">
                                         <Phone className="h-4 w-4 mr-2" />
                                         Call Emergency Contact
                                     </Button>
@@ -151,7 +151,7 @@ function RequestCard({ req, variant = "full", currentUserId, onMarkReceived }: {
                                                 setMarking(false)
                                             }
                                         }}
-                                        className="border-green-600 text-green-700 hover:bg-green-50"
+                                        className="w-full sm:w-auto border-green-600 text-green-700 hover:bg-green-50"
                                     >
                                         {marking ? (
                                             <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Updating...</>
@@ -165,12 +165,14 @@ function RequestCard({ req, variant = "full", currentUserId, onMarkReceived }: {
 
                         <div className="hidden md:block w-px bg-gold/10 self-stretch" />
 
-                        <div className="flex flex-col items-start md:items-center justify-center md:w-48 pt-4 md:pt-0">
-                            <div className="h-12 w-12 rounded-full bg-gold/10 flex items-center justify-center text-gold text-lg font-bold mb-2">
+                        <div className="flex flex-row md:flex-col items-center md:items-center justify-start md:justify-center md:w-48 pt-4 md:pt-0 gap-3 md:gap-2 border-t md:border-t-0 border-gold/10 mt-2 md:mt-0 w-full">
+                            <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gold/10 flex items-center justify-center text-gold text-base md:text-lg font-bold shrink-0">
                                 {req.user.name[0]}
                             </div>
-                            <p className="text-maroon font-serif text-sm font-bold text-center">{req.user.name}</p>
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider text-center">Community Member</p>
+                            <div className="flex flex-col md:items-center">
+                                <p className="text-maroon font-serif text-sm font-bold md:text-center line-clamp-1">{req.user.name}</p>
+                                <p className="text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider md:text-center mt-0.5">Community Member</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -231,38 +233,38 @@ export function EmergencyAlerts() {
 
     return (
         <section
-            className="bg-[#FAF3E0]/30 py-16 scroll-mt-20 border-y border-gold/10"
+            className="bg-[#FAF3E0]/30 py-10 md:py-16 scroll-mt-20 border-y border-gold/10"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >
             <div className="container mx-auto px-4 max-w-6xl">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mb-8 md:mb-10">
                     <div className="space-y-2">
-                        <div className="inline-flex items-center gap-2 text-maroon font-bold text-xs uppercase tracking-[0.3em]">
-                            <span className="w-8 h-px bg-maroon/30" />
+                        <div className="inline-flex items-center gap-2 text-maroon font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em]">
+                            <span className="w-6 md:w-8 h-px bg-maroon/30" />
                             Urgent Community Bulletin
-                            <span className="w-3 h-3 rounded-full bg-red-600 animate-pulse shadow-[0_0_10px_rgba(220,38,38,0.5)]" />
+                            <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-600 animate-pulse shadow-[0_0_10px_rgba(220,38,38,0.5)]" />
                         </div>
-                        <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-maroon">Active Community Requests</h2>
+                        <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-maroon">Active Community Requests</h2>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 hidden sm:flex">
                         <div className="flex gap-2">
                             <Button
                                 variant="outline"
                                 onClick={prev}
                                 disabled={!hasMultiple}
-                                className="rounded-full border-maroon/20 text-maroon hover:bg-maroon hover:text-gold w-12 h-12 p-0 transition-all duration-300"
+                                className="rounded-full border-maroon/20 text-maroon hover:bg-maroon hover:text-gold w-10 h-10 md:w-12 md:h-12 p-0 transition-all duration-300"
                             >
-                                <ChevronLeft className="h-5 w-5" />
+                                <ChevronLeft className="h-4 w-4 md:h-5 md:w-5" />
                             </Button>
                             <Button
                                 variant="outline"
                                 onClick={next}
                                 disabled={!hasMultiple}
-                                className="rounded-full border-maroon/20 text-maroon hover:bg-maroon hover:text-gold w-12 h-12 p-0 transition-all duration-300"
+                                className="rounded-full border-maroon/20 text-maroon hover:bg-maroon hover:text-gold w-10 h-10 md:w-12 md:h-12 p-0 transition-all duration-300"
                             >
-                                <ChevronRight className="h-5 w-5" />
+                                <ChevronRight className="h-4 w-4 md:h-5 md:w-5" />
                             </Button>
                         </div>
                     </div>

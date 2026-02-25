@@ -200,18 +200,18 @@ export default function AdminEventsPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-5xl font-serif font-bold text-maroon mb-1">Event Management</h1>
-                    <p className="text-xl text-muted-foreground">Verify and manage community events.</p>
+                    <h1 className="text-3xl md:text-5xl font-serif font-bold text-maroon mb-1">Event Management</h1>
+                    <p className="text-base md:text-xl text-muted-foreground">Verify and manage community events.</p>
                 </div>
             </div>
 
             {/* Filters and Search */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 border-b border-gold/20 pb-2">
-                <div className="flex gap-10">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 md:gap-6 border-b border-gold/20 pb-2">
+                <div className="flex gap-4 md:gap-10 overflow-x-auto custom-scrollbar w-full lg:w-auto pb-2 whitespace-nowrap">
                     {['approved', 'deleted'].map((status) => (
                         <button
                             key={status}
-                            className={`pb-4 text-lg font-bold capitalize transition-all border-b-2 ${statusFilter === status
+                            className={`pb-2 md:pb-4 text-sm md:text-lg font-bold capitalize transition-all border-b-2 shrink-0 ${statusFilter === status
                                 ? "text-maroon border-maroon"
                                 : "text-gray-500 border-transparent hover:text-maroon/70"}`}
                             onClick={() => {
@@ -224,12 +224,12 @@ export default function AdminEventsPage() {
                     ))}
                 </div>
 
-                <div className="flex gap-4 w-full sm:w-auto mb-2">
+                <div className="flex gap-4 w-full lg:w-auto mb-2">
                     <div className="relative w-full sm:w-64">
-                        <Search className="absolute left-3 top-3 h-4 w-4 text-maroon/50" />
+                        <Search className="absolute left-3 top-2.5 md:top-3 h-4 w-4 md:h-5 md:w-5 text-maroon/50" />
                         <Input
                             placeholder="Search events..."
-                            className="pl-10 h-12 border-gold/30 focus-visible:ring-gold/40 text-lg"
+                            className="pl-9 md:pl-10 h-10 md:h-12 border-gold/30 focus-visible:ring-gold/40 text-sm md:text-lg"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -279,17 +279,17 @@ export default function AdminEventsPage() {
                     <table className="w-full text-sm text-left border-collapse">
                         <thead className="bg-[#FAF3E0] text-maroon border-b border-gold/10 sticky top-0 z-10 shadow-sm">
                             <tr>
-                                <th className="px-6 py-4 w-10">
+                                <th className="px-3 md:px-6 py-3 md:py-4 w-10 shrink-0">
                                     <Checkbox
                                         checked={selectedIds.length === events.length && events.length > 0}
                                         onCheckedChange={toggleSelectAll}
                                     />
                                 </th>
-                                <th className="px-6 py-4 font-serif font-bold whitespace-nowrap">Event Title</th>
-                                <th className="px-6 py-4 font-serif font-bold whitespace-nowrap">Date & Location</th>
-                                <th className="px-6 py-4 font-serif font-bold whitespace-nowrap">Organizer</th>
-                                <th className="px-6 py-4 font-serif font-bold whitespace-nowrap">Status</th>
-                                <th className="px-6 py-4 font-serif font-bold text-right whitespace-nowrap">Actions</th>
+                                <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Event Title</th>
+                                <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Date & Location</th>
+                                <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Organizer</th>
+                                <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Status</th>
+                                <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold text-right whitespace-nowrap text-sm md:text-base">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gold/10">
@@ -311,34 +311,34 @@ export default function AdminEventsPage() {
                                         "transition-colors",
                                         selectedIds.includes(event.id) ? "bg-maroon/5" : "hover:bg-[#FAF3E0]/20"
                                     )}>
-                                        <td className="px-6 py-5">
+                                        <td className="px-3 md:px-6 py-4 md:py-5">
                                             <Checkbox
                                                 checked={selectedIds.includes(event.id)}
                                                 onCheckedChange={() => toggleSelect(event.id)}
                                             />
                                         </td>
-                                        <td className="px-6 py-5 font-bold text-gray-900 whitespace-nowrap text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 font-bold text-gray-900 whitespace-nowrap text-sm md:text-base">
                                             {event.title}
                                         </td>
-                                        <td className="px-6 py-5 text-gray-700 whitespace-nowrap text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 whitespace-nowrap text-sm md:text-base">
                                             <div className="flex flex-col gap-1">
                                                 <span className="flex items-center gap-1.5 font-bold text-maroon">
-                                                    <Calendar className="h-4 w-4 text-gold" /> {formatDate(event.date)}
+                                                    <Calendar className="h-3.5 w-3.5 md:h-4 md:w-4 text-gold" /> {formatDate(event.date)}
                                                 </span>
-                                                <span className="text-xs text-muted-foreground font-medium flex items-center">
+                                                <span className="text-[10px] md:text-xs text-muted-foreground font-medium flex items-center">
                                                     <MapPin className="h-3 w-3 mr-1" /> {event.location}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 text-gray-700 whitespace-nowrap text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 whitespace-nowrap text-sm md:text-base">
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-gray-800">{event.organizer?.name || "Unknown"}</span>
-                                                <span className="text-xs text-muted-foreground font-medium">{event.organizer?.email}</span>
+                                                <span className="text-[10px] md:text-xs text-muted-foreground font-medium">{event.organizer?.email}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 md:px-6 py-3 md:py-4">
                                             <span className={cn(
-                                                "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold capitalize border",
+                                                "inline-flex items-center px-2 py-0.5 md:px-2.5 rounded-full text-[10px] md:text-xs font-bold capitalize border",
                                                 event.status === 'approved' ? 'bg-green-100 text-green-800 border-green-200' :
                                                     event.status === 'rejected' ? 'bg-red-100 text-red-800 border-red-200' :
                                                         'bg-amber-100 text-amber-800 border-amber-200'
@@ -346,8 +346,8 @@ export default function AdminEventsPage() {
                                                 {event.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex justify-end gap-2">
+                                        <td className="px-3 md:px-6 py-3 md:py-4 text-right">
+                                            <div className="flex justify-end gap-1 md:gap-2">
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"

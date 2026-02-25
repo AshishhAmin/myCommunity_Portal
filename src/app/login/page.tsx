@@ -46,55 +46,55 @@ export default function LoginPage() {
     }
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-[#FAF3E0] p-4">
+        <main className="min-h-screen flex items-center justify-center bg-[#FAF3E0] p-4 sm:p-6 md:p-8">
             <div className="w-full max-w-md">
 
                 {/* Logo / Branding */}
-                <div className="text-center mb-8">
-                    <div className="mx-auto h-16 w-16 rounded-full bg-maroon flex items-center justify-center mb-4 shadow-lg border-2 border-gold/50">
-                        <span className="text-gold font-serif text-2xl font-bold">AV</span>
+                <div className="text-center mb-6 md:mb-8">
+                    <div className="mx-auto h-14 w-14 md:h-16 md:w-16 rounded-full bg-maroon flex items-center justify-center mb-3 md:mb-4 shadow-lg border-2 border-gold/50 text-gold font-serif text-xl md:text-2xl font-bold">
+                        AV
                     </div>
-                    <h1 className="font-serif text-3xl font-bold text-maroon">Welcome Back</h1>
-                    <p className="text-muted-foreground mt-2">Secure access for verified members</p>
+                    <h1 className="font-serif text-2xl md:text-3xl font-bold text-maroon">Welcome Back</h1>
+                    <p className="text-sm md:text-base text-muted-foreground mt-1 md:mt-2">Secure access for verified members</p>
                 </div>
 
                 <Card className="border-gold/40 shadow-xl bg-cream/40 backdrop-blur-sm">
                     <CardHeader className="text-center border-b-0 pb-2">
-                        <CardTitle className="text-xl">
+                        <CardTitle className="text-lg md:text-xl">
                             Member Login
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="text-xs md:text-sm">
                             Enter your credentials to access the portal
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleLogin} className="space-y-4">
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-maroon">Email Address</label>
+                            <div className="space-y-4 md:space-y-4">
+                                <div className="space-y-1 md:space-y-2">
+                                    <label className="text-xs md:text-sm font-medium text-maroon">Email Address</label>
                                     <div className="relative">
-                                        <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                                        <Mail className="absolute left-3 top-2.5 md:top-3 h-4 w-4 md:h-5 md:w-5 text-gray-400" />
                                         <Input
                                             type="email"
                                             placeholder="your@email.com"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="pl-10 text-lg"
+                                            className="pl-9 md:pl-10 text-base md:text-lg h-10 md:h-12"
                                             required
                                         />
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-maroon">Password</label>
+                                <div className="space-y-1 md:space-y-2">
+                                    <label className="text-xs md:text-sm font-medium text-maroon">Password</label>
                                     <div className="relative">
-                                        <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                                        <Lock className="absolute left-3 top-2.5 md:top-3 h-4 w-4 md:h-5 md:w-5 text-gray-400" />
                                         <Input
                                             type="password"
                                             placeholder="Enter your password"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            className="pl-10 text-lg"
+                                            className="pl-9 md:pl-10 text-base md:text-lg h-10 md:h-12"
                                             required
                                         />
                                     </div>
@@ -103,7 +103,7 @@ export default function LoginPage() {
 
                             {error && <p className="text-sm text-red-600 text-center bg-red-50 p-2 rounded">{error}</p>}
 
-                            <Button type="submit" className="w-full text-lg h-12 bg-maroon text-gold hover:bg-maroon/90" disabled={isLoading}>
+                            <Button type="submit" className="w-full text-base md:text-lg h-11 md:h-12 bg-maroon text-gold hover:bg-maroon/90" disabled={isLoading}>
                                 {isLoading ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Logging in...
@@ -154,9 +154,9 @@ export default function LoginPage() {
                         </form>
 
                         <div className="mt-6 flex flex-col items-center gap-2 border-t border-gold/10 pt-4">
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground text-center bg-gold/5 px-3 py-1.5 rounded-full border border-gold/20">
-                                <ShieldCheck className="h-4 w-4 text-maroon" />
-                                <span className="font-medium text-maroon">Only Verified CommuNet Members Get Full Access</span>
+                            <div className="flex items-center gap-2 text-[10px] md:text-xs text-muted-foreground text-center bg-gold/5 px-2 md:px-3 py-1.5 rounded-full border border-gold/20">
+                                <ShieldCheck className="h-3 w-3 md:h-4 md:w-4 text-maroon shrink-0" />
+                                <span className="font-medium text-maroon leading-tight">Only Verified CommuNet Members Get Full Access</span>
                             </div>
                         </div>
 

@@ -59,10 +59,10 @@ export default function AdminDonationsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center mb-10">
-                <h1 className="text-5xl font-serif font-bold text-maroon">Donations & Funds</h1>
-                <button className="bg-maroon text-gold px-10 py-4 rounded-lg text-lg font-bold hover:bg-maroon/90 flex items-center shadow-lg transition-all active:scale-95">
-                    <Download className="h-6 w-6 mr-3" /> Export Report
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-10">
+                <h1 className="text-3xl md:text-5xl font-serif font-bold text-maroon">Donations & Funds</h1>
+                <button className="w-full sm:w-auto bg-maroon text-gold px-6 py-3 md:px-10 md:py-4 rounded-lg text-base md:text-lg font-bold hover:bg-maroon/90 flex justify-center items-center shadow-lg transition-all active:scale-95">
+                    <Download className="h-5 w-5 md:h-6 md:w-6 mr-2 md:mr-3" /> Export Report
                 </button>
             </div>
 
@@ -117,11 +117,11 @@ export default function AdminDonationsPage() {
                     <table className="w-full text-sm text-left border-collapse">
                         <thead className="bg-gray-50 text-maroon border-b sticky top-0 z-10 shadow-sm">
                             <tr>
-                                <th className="px-6 py-4 text-lg font-serif font-bold">Donor</th>
-                                <th className="px-6 py-4 text-lg font-serif font-bold">Amount</th>
-                                <th className="px-6 py-4 text-lg font-serif font-bold">Cause</th>
-                                <th className="px-6 py-4 text-lg font-serif font-bold">Date</th>
-                                <th className="px-6 py-4 text-lg font-serif font-bold">Payment ID</th>
+                                <th className="px-3 md:px-6 py-3 md:py-4 text-sm md:text-lg font-serif font-bold whitespace-nowrap">Donor</th>
+                                <th className="px-3 md:px-6 py-3 md:py-4 text-sm md:text-lg font-serif font-bold whitespace-nowrap">Amount</th>
+                                <th className="px-3 md:px-6 py-3 md:py-4 text-sm md:text-lg font-serif font-bold whitespace-nowrap">Cause</th>
+                                <th className="px-3 md:px-6 py-3 md:py-4 text-sm md:text-lg font-serif font-bold whitespace-nowrap">Date</th>
+                                <th className="px-3 md:px-6 py-3 md:py-4 text-sm md:text-lg font-serif font-bold whitespace-nowrap">Payment ID</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -138,23 +138,25 @@ export default function AdminDonationsPage() {
                             ) : (
                                 donations.map((d: any) => (
                                     <tr key={d.id} className="hover:bg-gray-50/50 transition-colors">
-                                        <td className="px-6 py-5">
-                                            <div className="font-bold text-maroon text-base">{d.donor?.name || "Anonymous Guest"}</div>
-                                            <div className="text-xs text-gray-500 font-medium">{d.donor?.email || "No email provided"}</div>
+                                        <td className="px-3 md:px-6 py-4 md:py-5 min-w-[150px]">
+                                            <div className="font-bold text-maroon text-sm md:text-base">{d.donor?.name || "Anonymous Guest"}</div>
+                                            <div className="text-[10px] md:text-xs text-gray-500 font-medium break-all md:break-normal">{d.donor?.email || "No email provided"}</div>
                                         </td>
-                                        <td className="px-6 py-5 font-black text-green-700 text-lg">₹ {d.amount.toLocaleString('en-IN')}</td>
-                                        <td className="px-6 py-5">
-                                            <span className="px-3 py-1 bg-gold/10 rounded-full text-[11px] font-bold text-maroon border border-gold/20 uppercase tracking-widest">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 font-black text-green-700 text-sm md:text-lg whitespace-nowrap">₹ {d.amount.toLocaleString('en-IN')}</td>
+                                        <td className="px-3 md:px-6 py-4 md:py-5">
+                                            <span className="px-2 py-0.5 md:px-3 md:py-1 bg-gold/10 rounded-full text-[9px] md:text-[11px] font-bold text-maroon border border-gold/20 uppercase tracking-widest whitespace-nowrap">
                                                 {d.cause}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-5 text-gray-700 text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 text-sm md:text-base whitespace-nowrap">
                                             <div className="flex items-center font-medium">
-                                                <Calendar className="h-4 w-4 mr-2 text-gold" />
+                                                <Calendar className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2 text-gold shrink-0" />
                                                 {new Date(d.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 text-xs font-mono text-gray-400 font-medium">{d.transactionId}</td>
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-[10px] md:text-xs font-mono text-gray-400 font-medium">
+                                            <span className="truncate max-w-[100px] md:max-w-[150px] inline-block" title={d.transactionId}>{d.transactionId}</span>
+                                        </td>
                                     </tr>
                                 ))
                             )}

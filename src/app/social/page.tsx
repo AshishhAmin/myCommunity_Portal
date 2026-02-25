@@ -109,14 +109,14 @@ export default function SocialFeedPage() {
             <main className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
 
                 {/* Header Section */}
-                <div className="text-center mb-8 sticky top-[64px] z-30 bg-[#FAF3E0]/95 backdrop-blur-md pt-6 pb-4 border-b border-gold/10 -mx-4 px-4 sm:mx-0 sm:px-0 sm:rounded-b-xl shadow-sm lg:static lg:bg-transparent lg:shadow-none lg:border-none lg:pt-0">
+                <div className="text-center mb-6 md:mb-8 sticky top-[64px] z-30 bg-[#FAF3E0]/95 backdrop-blur-md pt-6 pb-4 border-b border-gold/10 -mx-4 px-4 sm:mx-0 sm:px-0 sm:rounded-b-xl shadow-sm lg:static lg:bg-transparent lg:shadow-none lg:border-none lg:pt-0">
                     <div className="inline-flex items-center justify-center p-3 bg-maroon/10 rounded-full mb-4 lg:mt-0">
                         <Activity className="h-8 w-8 text-maroon" />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-maroon mb-4 tracking-tight">
+                    <h1 className="text-3xl md:text-5xl font-serif font-bold text-maroon mb-2 md:mb-4 tracking-tight">
                         Community Feed
                     </h1>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
                         Stay connected with the latest events, business updates, and member achievements across our global network.
                     </p>
                 </div>
@@ -179,7 +179,7 @@ export default function SocialFeedPage() {
                     <div className="lg:col-span-2 space-y-6">
 
                         {/* Filter Bar */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gold/20 p-2 sticky top-[180px] lg:top-24 z-20 flex overflow-x-auto hide-scrollbar gap-2">
+                        <div className="bg-white rounded-xl shadow-sm border border-gold/20 p-2 sticky top-[160px] md:top-[180px] lg:top-24 z-20 flex overflow-x-auto hide-scrollbar gap-2">
                             {['all', 'event', 'business', 'achievement'].map((type) => (
                                 <button
                                     key={type}

@@ -229,8 +229,8 @@ export default function ProfilePage() {
 
                             {!isEditing && (
                                 <div className="text-center mt-4">
-                                    <h1 className="text-2xl font-bold text-maroon font-serif">{user.name}</h1>
-                                    <p className="text-muted-foreground">{user.email}</p>
+                                    <h1 className="text-2xl md:text-3xl font-bold text-maroon font-serif">{user.name}</h1>
+                                    <p className="text-sm md:text-base text-muted-foreground">{user.email}</p>
 
                                     <div className="flex flex-wrap justify-center gap-4 mt-3 text-sm text-muted-foreground">
                                         {user.location && (
@@ -300,12 +300,12 @@ export default function ProfilePage() {
                 {/* Tabs & Content */}
                 {!isEditing && (
                     <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-                        <div className="flex justify-center border-b border-gold/20 mb-6">
-                            <div className="flex space-x-8">
+                        <div className="flex justify-center border-b border-gold/20 mb-6 w-full">
+                            <div className="flex space-x-4 md:space-x-8 overflow-x-auto hide-scrollbar w-full justify-center">
                                 <button
                                     onClick={() => setActiveTab("posts")}
                                     className={cn(
-                                        "pb-3 text-sm font-medium transition-colors border-b-2 px-4",
+                                        "pb-2 md:pb-3 text-xs md:text-sm font-medium transition-colors border-b-2 px-2 md:px-4 whitespace-nowrap",
                                         activeTab === "posts"
                                             ? "border-maroon text-maroon font-bold"
                                             : "border-transparent text-muted-foreground hover:text-maroon"
@@ -316,7 +316,7 @@ export default function ProfilePage() {
                                 <button
                                     onClick={() => setActiveTab("security")}
                                     className={cn(
-                                        "pb-3 text-sm font-medium transition-colors border-b-2 px-4",
+                                        "pb-2 md:pb-3 text-xs md:text-sm font-medium transition-colors border-b-2 px-2 md:px-4 whitespace-nowrap",
                                         activeTab === "security"
                                             ? "border-maroon text-maroon font-bold"
                                             : "border-transparent text-muted-foreground hover:text-maroon"

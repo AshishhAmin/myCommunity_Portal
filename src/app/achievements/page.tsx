@@ -107,10 +107,10 @@ export default function AchievementsPage() {
         <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30 relative">
             <Navbar />
             <main className="flex-1 container mx-auto px-4 py-8">
-                <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+                <div className="flex flex-col md:flex-row items-center justify-between mb-6 md:mb-8 gap-4 px-2 md:px-0">
                     <div className="text-center md:text-left">
-                        <h1 className="font-serif text-4xl md:text-5xl font-bold text-maroon">Community Achievements</h1>
-                        <p className="text-lg md:text-xl text-muted-foreground mt-3 leading-relaxed max-w-2xl">Celebrating success, excellence, and the inspiring milestones of our community members.</p>
+                        <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-maroon">Community Achievements</h1>
+                        <p className="text-base md:text-lg lg:text-xl text-muted-foreground mt-2 md:mt-3 leading-relaxed max-w-2xl">Celebrating success, excellence, and the inspiring milestones of our community members.</p>
                     </div>
 
                     {/* Filter Toggle (Authenticated Only) */}
@@ -140,10 +140,12 @@ export default function AchievementsPage() {
 
                 {/* Hero Carousel - Always visible if data exists, independent of search */}
                 {topAchievements.length > 0 && !search && (
-                    <HeroCarousel achievements={topAchievements} />
+                    <div className="px-2 md:px-0 mb-6 md:mb-8">
+                        <HeroCarousel achievements={topAchievements} />
+                    </div>
                 )}
 
-                <div className="flex flex-col sm:flex-row gap-4 mb-8" id="full-list">
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6 md:mb-8 px-2 md:px-0" id="full-list">
                     <div className="relative flex-1">
                         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -156,7 +158,7 @@ export default function AchievementsPage() {
                     </div>
                     {isAuthenticated && (
                         <Link href="/achievements/add">
-                            <Button className="bg-maroon text-gold hover:bg-maroon/90" suppressHydrationWarning>
+                            <Button className="bg-maroon text-gold hover:bg-maroon/90 w-full sm:w-auto" suppressHydrationWarning>
                                 <Plus className="h-4 w-4 mr-2" /> Share Achievement
                             </Button>
                         </Link>
@@ -200,32 +202,32 @@ export default function AchievementsPage() {
                                                         )}
                                                     </div>
                                                 </div>
-                                                <CardContent className="p-6 flex-1 flex flex-col">
-                                                    <div className="flex items-center gap-2 mb-3">
-                                                        <div className="h-8 w-8 rounded-full bg-cream border border-gold flex items-center justify-center overflow-hidden relative text-sm font-bold text-maroon shadow-sm">
+                                                <CardContent className="p-4 md:p-6 flex-1 flex flex-col">
+                                                    <div className="flex items-center gap-2 mb-2 md:mb-3">
+                                                        <div className="h-6 w-6 md:h-8 md:w-8 rounded-full bg-cream border border-gold flex items-center justify-center overflow-hidden relative text-xs md:text-sm font-bold text-maroon shadow-sm shrink-0">
                                                             {item.user.profileImage ? (
                                                                 <Image src={item.user.profileImage} alt={item.user.name || "User"} fill className="object-cover" />
                                                             ) : (
                                                                 item.user.name?.charAt(0).toUpperCase() || "U"
                                                             )}
                                                         </div>
-                                                        <span className="text-base font-bold text-gray-800">{item.user.name || "Anonymous"}</span>
+                                                        <span className="text-sm md:text-base font-bold text-gray-800 truncate">{item.user.name || "Anonymous"}</span>
                                                     </div>
 
-                                                    <h3 className="font-serif font-bold text-2xl text-maroon mb-2 group-hover:text-gold transition-colors leading-tight">{item.title}</h3>
-                                                    <p className="text-muted-foreground text-sm font-medium line-clamp-2 break-all mb-4 flex-1 leading-relaxed">{item.description}</p>
+                                                    <h3 className="font-serif font-bold text-xl md:text-2xl text-maroon mb-1 md:mb-2 group-hover:text-gold transition-colors leading-tight line-clamp-2">{item.title}</h3>
+                                                    <p className="text-muted-foreground text-xs md:text-sm font-medium line-clamp-2 break-all mb-3 md:mb-4 flex-1 leading-relaxed">{item.description}</p>
 
-                                                    <div className="flex items-center justify-between text-sm font-bold text-maroon/60 mt-auto pt-4 border-t border-gold/10">
+                                                    <div className="flex items-center justify-between text-[10px] md:text-xs lg:text-sm font-bold text-maroon/60 mt-auto pt-3 md:pt-4 border-t border-gold/10">
                                                         <div className="flex items-center">
-                                                            <Calendar className="h-4 w-4 mr-2" />
-                                                            {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                                            <Calendar className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2 shrink-0" />
+                                                            <span className="truncate">{new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                                                         </div>
                                                         <ShareButton
                                                             url={`/achievements/${item.id}`}
                                                             title={item.title}
                                                             description={`Achievement by ${item.user.name || "Anonymous"}`}
                                                             details={`🏆 *Achievement: ${item.title}*\nBy: ${item.user.name || "Anonymous"}\nCategory: ${item.category}\nDate: ${new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}\n\n${item.description}`}
-                                                            className="h-8 w-8 hover:bg-gold/10"
+                                                            className="h-7 w-7 md:h-8 md:w-8 hover:bg-gold/10 shrink-0"
                                                         />
                                                     </div>
                                                 </CardContent>

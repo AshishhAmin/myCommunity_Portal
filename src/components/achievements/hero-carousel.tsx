@@ -47,7 +47,7 @@ export function HeroCarousel({ achievements }: HeroCarouselProps) {
     const current = achievements[currentIndex]
 
     return (
-        <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden rounded-2xl shadow-2xl mb-12 group border border-gold/20">
+        <div className="relative w-full h-[400px] md:h-[600px] overflow-hidden rounded-2xl shadow-2xl mb-8 md:mb-12 group border border-gold/20">
             {/* Cinematic Curtain (Framer Motion) */}
             <div className="absolute inset-0 z-50 pointer-events-none flex">
                 <motion.div
@@ -121,36 +121,36 @@ export function HeroCarousel({ achievements }: HeroCarouselProps) {
             </div>
 
             {/* Content Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8 md:p-16">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-16">
                 <div className="max-w-4xl mx-auto w-full animate-slide-up">
-                    <span className="inline-block bg-gold/90 text-maroon text-xs md:text-sm font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider shadow-lg">
+                    <span className="inline-block bg-gold/90 text-maroon text-[10px] md:text-sm font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full mb-3 md:mb-4 uppercase tracking-wider shadow-lg">
                         {current.category}
                     </span>
-                    <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+                    <h2 className="font-serif text-2xl md:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4 leading-tight">
                         {current.title}
                     </h2>
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="h-10 w-10 md:h-12 md:w-12 rounded-full border-2 border-gold overflow-hidden relative bg-cream">
+                    <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+                        <div className="h-8 w-8 md:h-12 md:w-12 rounded-full border-2 border-gold overflow-hidden relative bg-cream shrink-0">
                             {current.user.profileImage ? (
                                 <Image src={current.user.profileImage} alt={current.user.name || "User"} fill className="object-cover" />
                             ) : (
-                                <div className="flex items-center justify-center h-full text-maroon font-bold text-lg">
+                                <div className="flex items-center justify-center h-full text-maroon font-bold text-base md:text-lg">
                                     {current.user.name?.charAt(0) || "U"}
                                 </div>
                             )}
                         </div>
                         <div className="text-white">
-                            <p className="font-bold text-lg md:text-xl">{current.user.name || "Anonymous"}</p>
-                            <p className="text-white/60 text-sm">{new Date(current.date).toLocaleDateString('en-IN', { dateStyle: 'long' })}</p>
+                            <p className="font-bold text-sm md:text-xl line-clamp-1">{current.user.name || "Anonymous"}</p>
+                            <p className="text-white/60 text-xs md:text-sm">{new Date(current.date).toLocaleDateString('en-IN', { dateStyle: 'long' })}</p>
                         </div>
                     </div>
-                    <p className="text-white/80 text-lg md:text-xl line-clamp-2 max-w-2xl mb-8 leading-relaxed">
+                    <p className="text-white/80 text-sm md:text-xl line-clamp-2 max-w-2xl mb-5 md:mb-8 leading-relaxed">
                         {current.description}
                     </p>
 
                     <Button
                         onClick={() => document.getElementById('full-list')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="bg-gold text-maroon hover:bg-white hover:text-maroon font-bold text-lg px-8 py-6 rounded-xl shadow-lg transition-transform hover:scale-105"
+                        className="bg-gold text-maroon hover:bg-white hover:text-maroon font-bold text-base md:text-lg px-6 py-4 md:px-8 md:py-6 rounded-xl shadow-lg transition-transform hover:scale-105 w-full sm:w-auto"
                     >
                         View Full List
                     </Button>

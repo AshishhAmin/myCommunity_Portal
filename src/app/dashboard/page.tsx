@@ -103,19 +103,19 @@ export default function DashboardPage() {
             <main className="flex-1 container mx-auto px-4 py-8">
 
                 {/* Welcome Section */}
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 bg-gradient-to-br from-cream to-amber-50 p-8 rounded-2xl border border-gold/30 shadow-sm relative overflow-hidden group">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 mb-8 md:mb-12 bg-gradient-to-br from-cream to-amber-50 p-6 md:p-8 rounded-2xl border border-gold/30 shadow-sm relative overflow-hidden group">
                     {/* Decorative Background Elements */}
                     <div className="absolute -right-8 -top-8 w-32 h-32 bg-gold/5 rounded-full blur-2xl group-hover:bg-gold/10 transition-colors" />
                     <div className="absolute -left-8 -bottom-8 w-32 h-32 bg-maroon/5 rounded-full blur-2xl group-hover:bg-maroon/10 transition-colors" />
 
-                    <div className="flex items-center gap-6 relative z-10">
-                        <div className="h-20 w-20 rounded-full bg-cream border-4 border-gold/20 flex items-center justify-center shadow-inner overflow-hidden relative group-hover:border-gold/40 transition-colors">
+                    <div className="flex items-center gap-4 md:gap-6 relative z-10 text-center md:text-left">
+                        <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-cream border-4 border-gold/20 flex items-center justify-center shadow-inner overflow-hidden relative group-hover:border-gold/40 transition-colors shrink-0 mx-auto md:mx-0">
                             <div className="absolute inset-0 bg-maroon/5 group-hover:bg-transparent transition-colors" />
-                            <User className="h-10 w-10 text-maroon relative z-10 group-hover:scale-110 transition-transform" />
+                            <User className="h-8 w-8 md:h-10 md:w-10 text-maroon relative z-10 group-hover:scale-110 transition-transform" />
                         </div>
                         <div>
-                            <h1 className="font-serif text-5xl font-bold text-maroon">Namaskaram, {user?.name || "Member"}</h1>
-                            <p className="text-xl text-muted-foreground mt-1">Welcome to your community dashboard.</p>
+                            <h1 className="font-serif text-3xl md:text-5xl font-bold text-maroon">Namaskaram, {user?.name || "Member"}</h1>
+                            <p className="text-lg md:text-xl text-muted-foreground mt-1">Welcome to your community dashboard.</p>
                         </div>
                     </div>
 
@@ -148,22 +148,22 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Modules Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
                     {modules.map((module, index) => (
                         <Link href={module.href} key={index} className="block h-full animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
                             <Card className="border-gold/20 transition-all duration-500 group h-full cursor-pointer shadow-md hover:shadow-2xl">
-                                <CardContent className="p-8">
+                                <CardContent className="p-6 md:p-8 flex flex-col items-center md:items-start text-center md:text-left">
                                     <div className={`
-                    mb-6 h-16 w-16 rounded-2xl flex items-center justify-center
+                    mb-4 md:mb-6 h-14 w-14 md:h-16 md:w-16 rounded-2xl flex items-center justify-center
                     bg-white border border-gold/20 group-hover:bg-maroon group-hover:border-maroon transition-all duration-500 shadow-sm
                     ${module.color} group-hover:text-gold
                     `}>
-                                        <module.icon className="h-8 w-8 transition-transform duration-500 group-hover:scale-110" />
+                                        <module.icon className="h-7 w-7 md:h-8 md:w-8 transition-transform duration-500 group-hover:scale-110" />
                                     </div>
-                                    <h3 className="font-serif text-2xl font-bold text-maroon mb-4">
+                                    <h3 className="font-serif text-xl md:text-2xl font-bold text-maroon mb-3 md:mb-4">
                                         {module.title}
                                     </h3>
-                                    <p className="text-lg text-muted-foreground leading-relaxed">
+                                    <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                                         {module.description}
                                     </p>
                                 </CardContent>
@@ -173,11 +173,11 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Members List Section */}
-                <div className="mb-12">
-                    <div className="flex justify-between items-center mb-10">
-                        <h2 className="text-4xl font-serif font-bold text-maroon">Community Members</h2>
+                <div className="mb-8 md:mb-12">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-10 gap-3 md:gap-0">
+                        <h2 className="text-2xl md:text-4xl font-serif font-bold text-maroon text-center md:text-left">Community Members</h2>
                         <Link href="/members">
-                            <Button variant="ghost" className="text-maroon hover:bg-gold/10 text-base font-bold">View All Members →</Button>
+                            <Button variant="ghost" className="text-maroon hover:bg-gold/10 text-sm md:text-base font-bold">View All Members →</Button>
                         </Link>
                     </div>
 

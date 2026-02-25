@@ -14,22 +14,22 @@ export function Footer() {
                 {/* Brand Section */}
                 <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                        <div className="h-12 w-12 rounded-full bg-maroon flex items-center justify-center shadow-md">
-                            <Network className="h-6 w-6 text-gold" strokeWidth={2.5} />
+                        <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-maroon flex items-center justify-center shadow-md">
+                            <Network className="h-5 w-5 md:h-6 md:w-6 text-gold" strokeWidth={2.5} />
                         </div>
-                        <span className="font-serif text-3xl font-bold text-maroon">
+                        <span className="font-serif text-2xl md:text-3xl font-bold text-maroon">
                             CommuNet
                         </span>
                     </div>
-                    <p className="text-base text-muted-foreground leading-relaxed">
+                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                         A Verified and Structured Community Support Platform dedicated to the growth, heritage, and prosperity of the CommuNet community.
                     </p>
                 </div>
 
                 {/* Community Links */}
                 <div className="space-y-4">
-                    <h4 className="font-serif text-xl font-bold text-maroon">Community</h4>
-                    <ul className="space-y-3 text-base text-muted-foreground">
+                    <h4 className="font-serif text-lg md:text-xl font-bold text-maroon">Community</h4>
+                    <ul className="space-y-3 text-sm md:text-base text-muted-foreground">
                         <li><Link href="/business" className="hover:text-maroon">Business Directory</Link></li>
                         <li><Link href="/events" className="hover:text-maroon">Community Events</Link></li>
                         <li><Link href="/career" className="hover:text-maroon">Career Support</Link></li>
@@ -40,8 +40,8 @@ export function Footer() {
 
                 {/* Support & Legal */}
                 <div className="space-y-4">
-                    <h4 className="font-serif text-xl font-bold text-maroon">Support</h4>
-                    <ul className="space-y-3 text-base text-muted-foreground">
+                    <h4 className="font-serif text-lg md:text-xl font-bold text-maroon">Support</h4>
+                    <ul className="space-y-3 text-sm md:text-base text-muted-foreground">
                         <li><Link href="/about" className="hover:text-maroon">About Us</Link></li>
                         <li><Link href="/help" className="hover:text-maroon">Help Center</Link></li>
                         <li><Link href="/donations" className="hover:text-maroon">Make a Donation</Link></li>
@@ -52,10 +52,10 @@ export function Footer() {
 
                 {/* Account / Admin Manage */}
                 <div className="space-y-4">
-                    <h4 className="font-serif text-2xl font-bold text-maroon">
+                    <h4 className="font-serif text-xl md:text-2xl font-bold text-maroon">
                         {user ? (user.role === 'admin' ? 'Administration' : 'My Account') : 'Join Us'}
                     </h4>
-                    <ul className="space-y-3 text-base text-muted-foreground">
+                    <ul className="space-y-3 text-sm md:text-base text-muted-foreground">
                         {!user ? (
                             <>
                                 <li><Link href="/login" className="hover:text-maroon">Member Login</Link></li>

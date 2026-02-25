@@ -99,37 +99,37 @@ export function AchievementsCarousel() {
     const currentItem = achievements[current]
 
     return (
-        <section className="py-16 bg-maroon text-white relative overflow-hidden">
+        <section className="py-12 md:py-16 bg-maroon text-white relative overflow-hidden">
             {/* Background design elements */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-gold/10 rounded-full -mr-48 -mt-48 blur-3xl animate-pulse-slow" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-gold/10 rounded-full -ml-48 -mb-48 blur-3xl animate-pulse-slow" />
 
             <div className="container mx-auto px-4 relative z-10">
-                <div className="text-center mb-12 animate-slide-up">
-                    <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 flex items-center justify-center gap-4">
-                        <Trophy className="h-10 w-10 text-gold animate-float" />
+                <div className="text-center mb-8 md:mb-12 animate-slide-up">
+                    <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 flex items-center justify-center gap-2 md:gap-4">
+                        <Trophy className="h-8 w-8 md:h-10 md:w-10 text-gold animate-float" />
                         Community Achievements
                     </h2>
-                    <div className="h-1 w-24 bg-gold mx-auto mb-6 shadow-sm"></div>
-                    <p className="text-white/80 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
+                    <div className="h-1 w-16 md:w-24 bg-gold mx-auto mb-4 md:mb-6 shadow-sm"></div>
+                    <p className="text-white/80 max-w-2xl mx-auto text-base md:text-xl leading-relaxed">
                         Celebrating the extraordinary success stories and generous contributions that inspire us all.
                     </p>
                 </div>
 
                 <div className="max-w-5xl mx-auto">
                     <Card animative={false} className={`bg-white/5 border-gold/20 backdrop-blur-md text-white overflow-hidden shadow-2xl ring-1 ring-white/10 transition-all duration-700 ${currentItem.isTopDonor ? 'border-gold/50 bg-gold/5' : ''}`}>
-                        <CardContent className="p-8 md:p-12">
+                        <CardContent className="p-6 md:p-12">
                             {currentItem.isTopDonor && (
-                                <div className="absolute top-0 right-0 p-6">
-                                    <span className="bg-gold text-maroon text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-tighter flex items-center gap-2 shadow-xl animate-pulse">
-                                        <Star className="h-4 w-4 fill-maroon" /> Top Contributor
+                                <div className="absolute top-0 right-0 p-4 md:p-6 z-10">
+                                    <span className="bg-gold text-maroon text-[10px] md:text-xs font-bold px-3 md:px-4 py-1.5 rounded-full uppercase tracking-tighter flex items-center gap-1.5 md:gap-2 shadow-xl animate-pulse">
+                                        <Star className="h-3 w-3 md:h-4 md:w-4 fill-maroon" /> Top Contributor
                                     </span>
                                 </div>
                             )}
-                            <div className="flex flex-col lg:flex-row gap-12 items-center">
+                            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
                                 {/* Achievement Image or Icon */}
-                                <div className="shrink-0">
-                                    <div className={`h-40 w-40 md:h-56 md:w-56 rounded-2xl border-2 border-gold/30 bg-maroon flex items-center justify-center shadow-2xl overflow-hidden relative group ${currentItem.isTopDonor ? 'scale-105 ring-4 ring-gold/10' : ''}`}>
+                                <div className="shrink-0 pt-4 md:pt-0">
+                                    <div className={`h-32 w-32 md:h-40 md:w-40 lg:h-56 lg:w-56 rounded-2xl border-2 border-gold/30 bg-maroon flex items-center justify-center shadow-2xl overflow-hidden relative group ${currentItem.isTopDonor ? 'scale-105 ring-4 ring-gold/10' : ''}`}>
                                         {currentItem.image ? (
                                             <Image
                                                 src={currentItem.image}
@@ -138,28 +138,28 @@ export function AchievementsCarousel() {
                                                 className="object-cover group-hover:scale-110 transition-transform duration-700"
                                             />
                                         ) : currentItem.isTopDonor ? (
-                                            <div className="flex flex-col items-center justify-center p-6 text-center">
-                                                <Trophy className="h-16 w-16 text-gold fill-gold/20 mb-3 animate-float" />
-                                                <span className="text-[10px] font-bold text-gold uppercase tracking-widest">Community Legend</span>
+                                            <div className="flex flex-col items-center justify-center p-4 lg:p-6 text-center">
+                                                <Trophy className="h-12 w-12 lg:h-16 lg:w-16 text-gold fill-gold/20 mb-2 md:mb-3 animate-float" />
+                                                <span className="text-[8px] md:text-[10px] font-bold text-gold uppercase tracking-widest">Community Legend</span>
                                             </div>
                                         ) : (
-                                            <Star className="h-16 w-16 text-gold fill-gold/20 animate-pulse-slow" />
+                                            <Star className="h-12 w-12 lg:h-16 lg:w-16 text-gold fill-gold/20 animate-pulse-slow" />
                                         )}
                                         <div className="absolute inset-0 bg-gradient-to-t from-maroon/80 to-transparent" />
                                     </div>
                                 </div>
 
                                 {/* Content */}
-                                <div className="flex-1 text-center lg:text-left">
-                                    <div className={`inline-flex items-center gap-2 px-4 py-1.5 border rounded-full text-sm font-bold uppercase tracking-widest mb-6 ${currentItem.isTopDonor ? 'bg-gold text-maroon border-gold' : 'bg-gold/10 border-gold/20 text-gold shadow-sm'}`}>
-                                        {currentItem.isTopDonor ? <Heart className="h-4 w-4 fill-maroon" /> : <Star className="h-4 w-4" />}
+                                <div className="flex-1 text-center lg:text-left w-full">
+                                    <div className={`inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1 md:py-1.5 border rounded-full text-[10px] md:text-sm font-bold uppercase tracking-widest mb-4 md:mb-6 ${currentItem.isTopDonor ? 'bg-gold text-maroon border-gold' : 'bg-gold/10 border-gold/20 text-gold shadow-sm'}`}>
+                                        {currentItem.isTopDonor ? <Heart className="h-3 w-3 md:h-4 md:w-4 fill-maroon" /> : <Star className="h-3 w-3 md:h-4 md:w-4" />}
                                         {currentItem.category}
                                     </div>
-                                    <h3 className={`font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white leading-tight ${currentItem.isTopDonor ? 'text-gold' : ''}`}>
+                                    <h3 className={`font-serif text-2xl md:text-3xl lg:text-5xl font-bold mb-4 text-white leading-tight mx-auto lg:mx-0 max-w-lg lg:max-w-none ${currentItem.isTopDonor ? 'text-gold' : ''}`}>
                                         {currentItem.title}
                                     </h3>
-                                    <div className="flex items-center justify-center lg:justify-start gap-3 mb-6">
-                                        <div className="h-10 w-10 rounded-full border-2 border-gold/40 overflow-hidden relative shadow-lg">
+                                    <div className="flex items-center justify-center lg:justify-start gap-3 mb-4 md:mb-6">
+                                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full border-2 border-gold/40 overflow-hidden relative shadow-lg shrink-0">
                                             {currentItem.user.profileImage ? (
                                                 <Image
                                                     src={currentItem.user.profileImage}
@@ -168,19 +168,19 @@ export function AchievementsCarousel() {
                                                     className="object-cover"
                                                 />
                                             ) : (
-                                                <div className="h-full w-full bg-gold/20 flex items-center justify-center text-gold text-xl font-bold">
+                                                <div className="h-full w-full bg-gold/20 flex items-center justify-center text-gold text-lg md:text-xl font-bold">
                                                     {currentItem.user.name?.[0]}
                                                 </div>
                                             )}
                                         </div>
-                                        <div>
-                                            <p className="text-xl font-serif font-bold text-gold">{currentItem.user.name || "Proud Community Member"}</p>
+                                        <div className="text-left min-w-0">
+                                            <p className="text-lg md:text-xl font-serif font-bold text-gold truncate">{currentItem.user.name || "Proud Community Member"}</p>
                                             {currentItem.isTopDonor && (
-                                                <p className="text-[10px] text-white/70 font-bold uppercase tracking-[0.2em] mt-0.5">Total Donated: ₹{currentItem.amount.toLocaleString()}</p>
+                                                <p className="text-[9px] md:text-[10px] text-white/70 font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] mt-0.5 truncate">Total Donated: ₹{currentItem.amount.toLocaleString()}</p>
                                             )}
                                         </div>
                                     </div>
-                                    <p className="text-white/90 text-lg md:text-xl leading-relaxed italic border-l-4 border-gold/30 pl-5 py-1">
+                                    <p className="text-white/90 text-base md:text-xl leading-relaxed italic border-l-2 md:border-l-4 border-gold/30 pl-3 md:pl-5 py-0.5 md:py-1 mx-auto lg:mx-0 max-w-lg lg:max-w-none">
                                         "{currentItem.description}"
                                     </p>
                                 </div>
@@ -189,22 +189,22 @@ export function AchievementsCarousel() {
                     </Card>
 
                     {/* Controls */}
-                    <div className="flex items-center justify-between mt-10">
+                    <div className="flex items-center justify-between mt-8 md:mt-10">
                         <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => { prev(); setAutoPlay(false) }}
-                            className="text-gold/50 hover:text-gold hover:bg-gold/10 h-12 w-12 rounded-full transition-all"
+                            className="text-gold/50 hover:text-gold hover:bg-gold/10 h-10 w-10 md:h-12 md:w-12 rounded-full transition-all p-0"
                         >
-                            <ChevronLeft className="h-8 w-8" />
+                            <ChevronLeft className="h-6 w-6 md:h-8 md:w-8" />
                         </Button>
 
-                        <div className="flex gap-3">
+                        <div className="flex gap-2 md:gap-3 flex-wrap justify-center px-2">
                             {achievements.map((_, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => { setCurrent(idx); setAutoPlay(false) }}
-                                    className={`h-2.5 transition-all rounded-full ${current === idx ? "w-10 bg-gold" : "w-2.5 bg-white/20 hover:bg-white/40"
+                                    className={`h-2 md:h-2.5 transition-all rounded-full ${current === idx ? "w-8 md:w-10 bg-gold" : "w-2 md:w-2.5 bg-white/20 hover:bg-white/40"
                                         }`}
                                     aria-label={`Go to slide ${idx + 1}`}
                                 />
@@ -215,9 +215,9 @@ export function AchievementsCarousel() {
                             variant="ghost"
                             size="sm"
                             onClick={() => { next(); setAutoPlay(false) }}
-                            className="text-gold/50 hover:text-gold hover:bg-gold/10 h-12 w-12 rounded-full transition-all"
+                            className="text-gold/50 hover:text-gold hover:bg-gold/10 h-10 w-10 md:h-12 md:w-12 rounded-full transition-all p-0"
                         >
-                            <ChevronRight className="h-8 w-8" />
+                            <ChevronRight className="h-6 w-6 md:h-8 md:w-8" />
                         </Button>
                     </div>
                 </div>

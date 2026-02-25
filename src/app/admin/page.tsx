@@ -116,26 +116,26 @@ export default function AdminDashboard() {
     const selectedMetric = growthMetrics.find(m => m.id === activeGrowthMetric) || growthMetrics[0]
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500">
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h1 className="text-5xl font-bold text-maroon font-serif">Admin Dashboard</h1>
+                <h1 className="text-3xl md:text-5xl font-bold text-maroon font-serif">Admin Dashboard</h1>
 
                 {/* Total / Pending Toggle */}
-                <div className="flex items-center gap-2 bg-cream/70 border border-gold/20 rounded-lg p-1 shadow-sm backdrop-blur-sm">
+                <div className="flex items-center gap-1 md:gap-2 bg-cream/70 border border-gold/20 rounded-lg p-1 shadow-sm backdrop-blur-sm self-stretch sm:self-auto">
                     <button
                         onClick={() => setStatsView('total')}
-                        className={`flex items-center gap-1.5 px-5 py-2.5 rounded-md text-base font-bold transition-all ${statsView === 'total'
+                        className={`flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-md text-sm md:text-base font-bold transition-all ${statsView === 'total'
                             ? 'bg-maroon text-gold shadow-sm'
                             : 'text-muted-foreground hover:text-maroon hover:bg-gold/10'
                             }`}
                     >
-                        <TrendingUp className="h-4 w-4" />
+                        <TrendingUp className="h-4 w-4 shrink-0" />
                         Total
                     </button>
                     <button
                         onClick={() => setStatsView('pending')}
-                        className={`flex items-center gap-1.5 px-5 py-2.5 rounded-md text-base font-bold transition-all ${statsView === 'pending'
+                        className={`flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-md text-sm md:text-base font-bold transition-all ${statsView === 'pending'
                             ? 'bg-orange-500 text-white shadow-sm'
                             : 'text-muted-foreground hover:text-orange-600 hover:bg-orange-50'
                             }`}
@@ -164,11 +164,11 @@ export default function AdminDashboard() {
                                     {card.label}
                                 </CardTitle>
                                 <div className={`p-2 rounded-md ${card.bg}`}>
-                                    <card.icon className={`h-5 w-5 ${card.color}`} />
+                                    <card.icon className={`h-4 w-4 md:h-5 md:w-5 ${card.color}`} />
                                 </div>
                             </CardHeader>
                             <CardContent>
-                                <div className={`text-3xl font-bold ${card.color}`}>{card.value}</div>
+                                <div className={`text-2xl md:text-3xl font-bold ${card.color}`}>{card.value}</div>
                                 {card.subtitle && (
                                     <p className="text-xs text-muted-foreground mt-1 font-medium">{card.subtitle}</p>
                                 )}
@@ -183,10 +183,10 @@ export default function AdminDashboard() {
                 {/* User Growth Chart */}
                 <Card className="border-gold/20 shadow-sm col-span-1 lg:col-span-2">
                     <CardHeader className="pb-4">
-                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
                             <div className="space-y-1">
-                                <CardTitle className="text-2xl font-serif text-maroon flex items-center gap-2">
-                                    <selectedMetric.icon className="h-6 w-6" /> {selectedMetric.label} Growth Hub
+                                <CardTitle className="text-xl md:text-2xl font-serif text-maroon flex items-center gap-2">
+                                    <selectedMetric.icon className="h-5 w-5 md:h-6 md:w-6" /> {selectedMetric.label} Growth Hub
                                 </CardTitle>
                                 <p className="text-sm text-muted-foreground">Historical trends for community participation</p>
                             </div>
@@ -217,7 +217,7 @@ export default function AdminDashboard() {
                                             key={r.value}
                                             onClick={() => handleRangeChange(r.value)}
                                             disabled={chartLoading}
-                                            className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${timeRange === r.value
+                                            className={`px-2 py-1 md:px-3 text-[10px] md:text-xs font-semibold rounded-md transition-all ${timeRange === r.value
                                                 ? 'bg-maroon text-gold shadow-sm'
                                                 : 'text-muted-foreground hover:text-maroon hover:bg-white'
                                                 }`}
@@ -229,7 +229,7 @@ export default function AdminDashboard() {
                             </div>
                         </div>
                     </CardHeader>
-                    <CardContent className="h-[350px]">
+                    <CardContent className="h-[250px] md:h-[350px]">
                         {chartLoading ? (
                             <div className="flex items-center justify-center h-full">
                                 <Loader2 className="h-6 w-6 animate-spin text-maroon" />

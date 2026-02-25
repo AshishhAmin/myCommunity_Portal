@@ -242,14 +242,14 @@ export default function AdminReportsPage() {
                     <Shield className="h-6 w-6 text-red-600" />
                 </div>
                 <div>
-                    <h1 className="text-6xl font-bold text-maroon font-serif mb-1">Reports & Flags</h1>
-                    <p className="text-2xl text-muted-foreground">Review flagged content and take moderation actions</p>
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-maroon font-serif mb-1">Reports & Flags</h1>
+                    <p className="text-base md:text-xl lg:text-2xl text-muted-foreground">Review flagged content and take moderation actions</p>
                 </div>
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex flex-col sm:flex-row gap-8 justify-between items-end border-b border-gold/20 pb-2">
-                <div className="flex gap-10">
+            <div className="flex flex-col lg:flex-row gap-4 md:gap-8 justify-between items-start lg:items-end border-b border-gold/20 pb-2">
+                <div className="flex gap-4 md:gap-10 overflow-x-auto custom-scrollbar w-full lg:w-auto pb-2 whitespace-nowrap">
                     {([
                         { value: 'all', label: 'All Reports', icon: Flag },
                         { value: 'open', label: 'Open Cases', icon: AlertTriangle },
@@ -259,7 +259,7 @@ export default function AdminReportsPage() {
                         <button
                             key={tab.value}
                             onClick={() => { setFilterStatus(tab.value); setCurrentPage(1); }}
-                            className={`pb-4 text-lg font-bold transition-all border-b-2 flex items-center gap-2 ${filterStatus === tab.value
+                            className={`pb-2 md:pb-4 text-sm md:text-lg font-bold transition-all border-b-2 flex items-center gap-1 md:gap-2 shrink-0 ${filterStatus === tab.value
                                 ? "text-maroon border-maroon"
                                 : "text-gray-500 border-transparent hover:text-maroon/70"}`}
                         >
@@ -270,11 +270,11 @@ export default function AdminReportsPage() {
                 </div>
 
                 {/* Content Type Filter */}
-                <div className="mb-2">
+                <div className="mb-2 w-full lg:w-auto">
                     <select
                         value={filterType}
                         onChange={(e) => { setFilterType(e.target.value); setCurrentPage(1); }}
-                        className="px-6 py-3 border border-gold/30 rounded-lg text-lg font-bold bg-white text-maroon focus:outline-none focus:ring-2 focus:ring-maroon/20 cursor-pointer"
+                        className="px-4 py-2 md:px-6 md:py-3 border border-gold/30 rounded-lg text-sm md:text-lg font-bold bg-white text-maroon focus:outline-none focus:ring-2 focus:ring-maroon/20 cursor-pointer w-full md:w-auto"
                     >
                         <option value="all">All Content Types</option>
                         {Object.entries(TYPE_LABELS).map(([value, { label }]) => (
@@ -305,13 +305,13 @@ export default function AdminReportsPage() {
                         <table className="w-full text-sm text-left border-collapse">
                             <thead className="bg-[#FAF3E0] text-maroon border-b border-gold/10 sticky top-0 z-10 shadow-sm">
                                 <tr>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Content Type</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Title</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Reason</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Reporter</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Date</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Status</th>
-                                    <th className="px-6 py-4 font-serif font-bold text-right whitespace-nowrap text-lg">Actions</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Content Type</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Title</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Reason</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Reporter</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Date</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Status</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold text-right whitespace-nowrap text-sm md:text-lg">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gold/10">
@@ -322,41 +322,41 @@ export default function AdminReportsPage() {
 
                                     return (
                                         <tr key={report.id} className="hover:bg-[#FAF3E0]/20 transition-colors">
-                                            <td className="px-6 py-5 whitespace-nowrap">
-                                                <span className={`text-[11px] font-bold uppercase px-3 py-1 rounded-full border border-current/20 ${typeInfo.color}`}>
+                                            <td className="px-3 md:px-6 py-4 md:py-5 whitespace-nowrap">
+                                                <span className={`text-[9px] md:text-[11px] font-bold uppercase px-2 md:px-3 py-0.5 md:py-1 rounded-full border border-current/20 ${typeInfo.color}`}>
                                                     {typeInfo.label}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-5 font-bold text-gray-900 text-base">
-                                                <div className="flex flex-col max-w-[250px]">
+                                            <td className="px-3 md:px-6 py-4 md:py-5 font-bold text-gray-900 text-sm md:text-base">
+                                                <div className="flex flex-col max-w-[200px] md:max-w-[250px]">
                                                     <span className="truncate" title={report.contentTitle}>{report.contentTitle}</span>
-                                                    {report.details && <span className="text-xs text-muted-foreground truncate italic font-medium mt-0.5">{report.details}</span>}
+                                                    {report.details && <span className="text-[10px] md:text-xs text-muted-foreground truncate italic font-medium mt-0.5">{report.details}</span>}
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-5 whitespace-nowrap">
-                                                <span className={`text-[11px] font-bold px-3 py-1 rounded-full ${reasonInfo.color} border border-current/20`}>
+                                            <td className="px-3 md:px-6 py-4 md:py-5 whitespace-nowrap">
+                                                <span className={`text-[9px] md:text-[11px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full ${reasonInfo.color} border border-current/20`}>
                                                     {reasonInfo.label}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-5 whitespace-nowrap text-base">
+                                            <td className="px-3 md:px-6 py-4 md:py-5 whitespace-nowrap text-sm md:text-base">
                                                 <div className="flex flex-col">
                                                     <span className="font-bold text-maroon">{report.reporter.name || "Member"}</span>
-                                                    <span className="text-xs text-muted-foreground font-medium">{report.reporter.email}</span>
+                                                    <span className="text-[10px] md:text-xs text-muted-foreground font-medium">{report.reporter.email}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-5 text-gray-700 whitespace-nowrap text-base font-medium">
+                                            <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 whitespace-nowrap text-sm md:text-base font-medium">
                                                 {formatDate(report.createdAt)}
                                             </td>
-                                            <td className="px-6 py-5 whitespace-nowrap">
-                                                <span className={`text-[11px] font-black px-3 py-1 rounded-full border ${report.status === 'open' ? 'bg-red-50 text-red-700 border-red-200'
+                                            <td className="px-3 md:px-6 py-4 md:py-5 whitespace-nowrap">
+                                                <span className={`text-[9px] md:text-[11px] font-black px-2 md:px-3 py-0.5 md:py-1 rounded-full border ${report.status === 'open' ? 'bg-red-50 text-red-700 border-red-200'
                                                     : report.status === 'reviewed' ? 'bg-green-50 text-green-700 border-green-200'
                                                         : 'bg-gray-50 text-gray-600 border-gray-200'
                                                     }`}>
                                                     {report.status.toUpperCase()}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-5 text-right">
-                                                <div className="flex justify-end gap-2">
+                                            <td className="px-3 md:px-6 py-4 md:py-5 text-right">
+                                                <div className="flex justify-end gap-1 md:gap-2">
                                                     {report.status === 'open' && (
                                                         <>
                                                             <Button

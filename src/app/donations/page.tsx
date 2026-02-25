@@ -86,20 +86,20 @@ export default function DonationPage() {
     return (
         <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
             <Navbar />
-            <main className="flex-1 container mx-auto px-4 py-12">
+            <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
                 <div className="max-w-6xl mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-20">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start mb-10 md:mb-20">
                         {/* Left: Content */}
                         <div className="lg:sticky lg:top-24">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-maroon/10 rounded-full text-maroon text-sm font-bold mb-4">
-                                <Heart className="h-4 w-4 fill-maroon" />
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-maroon/10 rounded-full text-maroon text-xs md:text-sm font-bold mb-3 md:mb-4">
+                                <Heart className="h-3 w-3 md:h-4 md:w-4 fill-maroon" />
                                 Community Support
                             </div>
-                            <h1 className="font-serif text-4xl md:text-5xl font-bold text-maroon mb-6 leading-tight">
+                            <h1 className="font-serif text-3xl md:text-5xl font-bold text-maroon mb-4 md:mb-6 leading-tight">
                                 Your Contribution <br />
                                 <span className="text-gold">Empowers Our Community</span>
                             </h1>
-                            <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            <p className="text-gray-700 text-base md:text-lg mb-6 md:mb-8 leading-relaxed">
                                 CommuNet Community Portal is dedicated to the progress and welfare of our members.
                                 Your generous donations support education scholarships, medical emergencies, and cultural preservation.
                             </p>
@@ -127,12 +127,12 @@ export default function DonationPage() {
                         </div>
 
                         {/* Right: Donation Card */}
-                        <Card className="border-gold/20 shadow-xl overflow-hidden">
-                            <CardHeader className="bg-maroon text-white p-6">
-                                <CardTitle className="text-2xl font-serif">Make a Donation</CardTitle>
-                                <CardDescription className="text-white/70">Fill in the details to contribute</CardDescription>
+                        <Card className="border-gold/20 shadow-xl overflow-hidden mt-6 lg:mt-0">
+                            <CardHeader className="bg-maroon text-white p-5 md:p-6">
+                                <CardTitle className="text-xl md:text-2xl font-serif">Make a Donation</CardTitle>
+                                <CardDescription className="text-white/70 text-sm">Fill in the details to contribute</CardDescription>
                             </CardHeader>
-                            <CardContent className="p-6">
+                            <CardContent className="p-5 md:p-6">
                                 {success ? (
                                     <div className="text-center py-8">
                                         <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -215,17 +215,16 @@ export default function DonationPage() {
                         </Card>
                     </div>
 
-                    {/* Stats Section: Leaderboard & Recent History */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 pb-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-8 md:mt-12 pb-8 md:pb-12">
                         {/* Leaderboard */}
-                        <Card className="border-gold/20 shadow-md flex flex-col h-[450px]">
-                            <CardHeader className="border-b border-gold/10 pb-4 shrink-0">
-                                <div className="flex items-center justify-between">
-                                    <CardTitle className="text-xl font-serif text-maroon flex items-center gap-2">
-                                        <Trophy className="h-5 w-5 text-gold fill-gold" />
+                        <Card className="border-gold/20 shadow-md flex flex-col h-[400px] md:h-[450px]">
+                            <CardHeader className="border-b border-gold/10 pb-3 md:pb-4 shrink-0">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                                    <CardTitle className="text-lg md:text-xl font-serif text-maroon flex items-center gap-2">
+                                        <Trophy className="h-4 w-4 md:h-5 md:w-5 text-gold fill-gold" />
                                         Donation Leaderboard
                                     </CardTitle>
-                                    <span className="text-[10px] items-center px-2 py-0.5 bg-gold/10 text-maroon rounded-full font-bold uppercase">Top Contributors</span>
+                                    <span className="text-[10px] items-center px-2 py-0.5 bg-gold/10 text-maroon rounded-full font-bold uppercase shrink-0">Top Contributors</span>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-0 overflow-y-auto custom-scrollbar flex-1">
@@ -269,14 +268,14 @@ export default function DonationPage() {
                         </Card>
 
                         {/* Recent History */}
-                        <Card className="border-gold/20 shadow-md flex flex-col h-[450px]">
-                            <CardHeader className="border-b border-gold/10 pb-4 shrink-0">
-                                <div className="flex items-center justify-between">
-                                    <CardTitle className="text-xl font-serif text-maroon flex items-center gap-2">
-                                        <Calendar className="h-5 w-5 text-gold" />
+                        <Card className="border-gold/20 shadow-md flex flex-col h-[400px] md:h-[450px]">
+                            <CardHeader className="border-b border-gold/10 pb-3 md:pb-4 shrink-0">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                                    <CardTitle className="text-lg md:text-xl font-serif text-maroon flex items-center gap-2">
+                                        <Calendar className="h-4 w-4 md:h-5 md:w-5 text-gold" />
                                         Recent Contributions
                                     </CardTitle>
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1 shrink-0">
                                         <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse" />
                                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Live Updates</span>
                                     </div>

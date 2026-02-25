@@ -244,18 +244,18 @@ export default function EventsPage() {
         <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
             <Navbar />
 
-            <main className="flex-1 container mx-auto px-4 py-8">
+            <main className="flex-1 container mx-auto px-4 py-6 md:py-8">
 
                 <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
                     <div className="text-center md:text-left">
-                        <h1 className="font-serif text-5xl md:text-6xl font-bold text-maroon">Community Events</h1>
-                        <p className="text-xl md:text-2xl text-muted-foreground mt-4 leading-relaxed max-w-3xl">Connect, Celebrate, and Grow Together. Join our community gatherings across India.</p>
+                        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-maroon">Community Events</h1>
+                        <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground mt-3 md:mt-4 leading-relaxed max-w-3xl">Connect, Celebrate, and Grow Together. Join our community gatherings across India.</p>
                     </div>
 
-                    <div className="flex flex-col gap-3 items-end">
+                    <div className="flex flex-col sm:flex-row md:flex-col gap-3 items-center sm:items-end w-full md:w-auto">
                         {user?.role === "admin" && (
-                            <Link href="/events/add">
-                                <Button className="bg-maroon text-gold hover:bg-maroon/90 w-full sm:w-auto">
+                            <Link href="/events/add" className="w-full sm:w-auto">
+                                <Button className="bg-maroon text-gold hover:bg-maroon/90 w-full md:w-auto md:h-11">
                                     <Plus className="mr-2 h-4 w-4" /> Organize Event
                                 </Button>
                             </Link>
@@ -263,7 +263,7 @@ export default function EventsPage() {
                         {user?.role === "admin" && (
                             <Dialog open={isAnnounceOpen} onOpenChange={setIsAnnounceOpen}>
                                 <DialogTrigger asChild>
-                                    <Button variant="outline" className="border-maroon text-maroon hover:bg-maroon/10 w-full sm:w-auto">
+                                    <Button variant="outline" className="border-maroon text-maroon hover:bg-maroon/10 w-full sm:w-auto md:h-11">
                                         <Megaphone className="mr-2 h-4 w-4" /> Make Announcement
                                     </Button>
                                 </DialogTrigger>
@@ -290,11 +290,11 @@ export default function EventsPage() {
 
                 {/* Filter Toggle (Authenticated Only) */}
                 {isAuthenticated && (
-                    <div className="flex justify-center mb-12">
-                        <div className="bg-cream/40 p-1.5 rounded-xl border border-gold/30 flex gap-1 shadow-inner">
+                    <div className="flex justify-center mb-8 md:mb-12">
+                        <div className="bg-cream/40 p-1.5 rounded-xl border border-gold/30 flex gap-1 shadow-inner w-full sm:w-auto justify-center">
                             <button
                                 onClick={() => setViewMode('all')}
-                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${viewMode === 'all'
+                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all flex-1 sm:flex-none ${viewMode === 'all'
                                     ? "bg-maroon text-gold shadow-sm"
                                     : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
                                     }`}
@@ -303,7 +303,7 @@ export default function EventsPage() {
                             </button>
                             <button
                                 onClick={() => setViewMode('mine')}
-                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${viewMode === 'mine'
+                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all flex-1 sm:flex-none ${viewMode === 'mine'
                                     ? "bg-maroon text-gold shadow-sm"
                                     : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
                                     }`}
@@ -316,29 +316,29 @@ export default function EventsPage() {
 
                 {/* Announcement Banner */}
                 {announcements.length > 0 && (
-                    <div className="mb-16 animate-slide-up relative group/banner">
+                    <div className="mb-12 md:mb-16 animate-slide-up relative group/banner">
                         {/* Decorative Gold Trim Ornaments */}
                         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent z-30" />
                         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent z-30" />
 
-                        <div className="bg-white/40 backdrop-blur-md border-y border-gold/20 relative overflow-hidden h-40 flex items-center shadow-[0_4px_20px_-4px_rgba(128,0,0,0.1)]">
+                        <div className="bg-white/40 backdrop-blur-md border-y border-gold/20 relative overflow-hidden h-32 md:h-40 flex items-center shadow-[0_4px_20px_-4px_rgba(128,0,0,0.1)]">
                             {/* Static Decorative Background Elements */}
-                            <div className="absolute top-0 left-0 w-32 h-32 bg-maroon/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-                            <div className="absolute bottom-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+                            <div className="absolute top-0 left-0 w-24 h-24 md:w-32 md:h-32 bg-maroon/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+                            <div className="absolute bottom-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-gold/5 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
 
                             {/* Premium Fixed Label */}
-                            <div className="flex flex-col justify-center items-center gap-3 px-6 h-full z-20 bg-white/80 backdrop-blur-sm border-r border-gold/30 shrink-0 shadow-[4px_0_15px_-3px_rgba(0,0,0,0.05)] text-center min-w-[140px]">
+                            <div className="flex flex-col justify-center items-center gap-2 md:gap-3 px-4 md:px-6 h-full z-20 bg-white/80 backdrop-blur-sm border-r border-gold/30 shrink-0 shadow-[4px_0_15px_-3px_rgba(0,0,0,0.05)] text-center w-28 md:w-auto md:min-w-[140px]">
                                 <div className="relative">
-                                    <Megaphone className="h-7 w-7 text-maroon" />
-                                    <div className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-white animate-pulse shadow-sm" />
+                                    <Megaphone className="h-5 w-5 md:h-7 md:w-7 text-maroon" />
+                                    <div className="absolute -top-1 -right-1 h-2 w-2 md:h-3 md:w-3 bg-red-500 rounded-full border-2 border-white animate-pulse shadow-sm" />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="font-serif font-black text-maroon uppercase tracking-tighter text-xs">Community</span>
-                                    <span className="font-serif font-bold text-gold uppercase tracking-[0.2em] text-[10px] -mt-1">Bulletin</span>
+                                    <span className="font-serif font-black text-maroon uppercase tracking-tighter text-[10px] md:text-xs">Community</span>
+                                    <span className="font-serif font-bold text-gold uppercase tracking-[0.2em] text-[8px] md:text-[10px] md:-mt-1">Bulletin</span>
                                 </div>
-                                <div className="flex items-center gap-1.5 mt-1 bg-maroon/5 px-2 py-0.5 rounded-full">
-                                    <div className="h-1.5 w-1.5 bg-red-500 rounded-full animate-pulse" />
-                                    <span className="text-[9px] font-bold text-maroon tracking-widest uppercase">Live</span>
+                                <div className="flex items-center gap-1.5 mt-1 md:mt-1 bg-maroon/5 px-2 py-0.5 rounded-full">
+                                    <div className="h-1 h-1 md:h-1.5 md:w-1.5 bg-red-500 rounded-full animate-pulse" />
+                                    <span className="text-[8px] md:text-[9px] font-bold text-maroon tracking-widest uppercase">Live</span>
                                 </div>
                             </div>
 
@@ -398,17 +398,17 @@ export default function EventsPage() {
                 ) : (
                     <>
                         {/* Upcoming Events */}
-                        <section className="mb-16">
-                            <h2 className="font-serif text-3xl md:text-4xl font-bold text-maroon mb-8 flex items-center gap-3">
-                                <Calendar className="h-8 w-8" /> Upcoming Gatherings
+                        <section className="mb-12 md:mb-16">
+                            <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-maroon mb-6 md:mb-8 flex items-center gap-3">
+                                <Calendar className="h-6 w-6 md:h-8 md:w-8" /> Upcoming Gatherings
                             </h2>
                             {upcomingEvents.length > 0 ? (
                                 <>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-6 md:pb-8">
                                         {upcomingEvents.map((event) => (
-                                            <Card key={event.id} className="overflow-hidden border-gold/30 hover:shadow-lg transition-shadow bg-white/50">
+                                            <Card key={event.id} className="overflow-hidden border-gold/30 hover:shadow-lg transition-shadow bg-white/50 flex flex-col">
                                                 {/* Event Image */}
-                                                <div className="h-40 w-full bg-gold/5 relative overflow-hidden ring-1 ring-gold/10 group">
+                                                <div className="h-32 md:h-40 w-full bg-gold/5 relative overflow-hidden ring-1 ring-gold/10 group shrink-0">
                                                     {event.images && event.images.length > 0 ? (
                                                         <img
                                                             src={event.images[0]}
@@ -421,13 +421,13 @@ export default function EventsPage() {
                                                             }}
                                                         />
                                                     ) : null}
-                                                    <div className={`fallback absolute inset-0 flex items-center justify-center text-muted-foreground/50 font-serif text-sm ${(event.images && event.images.length > 0) ? 'hidden' : ''}`}>
+                                                    <div className={`fallback absolute inset-0 flex items-center justify-center text-muted-foreground/50 font-serif text-xs md:text-sm ${(event.images && event.images.length > 0) ? 'hidden' : ''}`}>
                                                         Event Image
                                                     </div>
                                                 </div>
                                                 <CardHeader className="p-4 pb-2">
-                                                    <div className="flex justify-between items-start mb-2">
-                                                        <span className="font-bold text-maroon bg-gold/10 px-2 py-1 rounded text-xs border border-gold/20">
+                                                    <div className="flex flex-wrap gap-2 justify-between items-start mb-2">
+                                                        <span className="font-bold text-maroon bg-gold/10 px-2 py-1 rounded text-[10px] md:text-xs border border-gold/20">
                                                             {formatDate(event.date)}
                                                         </span>
                                                         {event.status === 'pending' && (
@@ -437,27 +437,27 @@ export default function EventsPage() {
                                                         )}
                                                         {event.status === 'deleted_by_admin' && (
                                                             <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border border-red-200">
-                                                                Deleted by Admin
+                                                                Deleted
                                                             </span>
                                                         )}
-                                                        <span className="text-xs text-muted-foreground font-semibold flex items-center gap-1">
+                                                        <span className="text-[10px] md:text-xs text-muted-foreground font-semibold flex items-center gap-1">
                                                             <Clock className="h-3 w-3" /> {formatTime(event.date)}
                                                         </span>
                                                     </div>
-                                                    <CardTitle className="text-xl font-serif font-bold text-maroon leading-tight">
-                                                        <Link href={`/events/${event.id}`} className="hover:text-gold transition-colors">
+                                                    <CardTitle className="text-lg md:text-xl font-serif font-bold text-maroon leading-tight">
+                                                        <Link href={`/events/${event.id}`} className="hover:text-gold transition-colors line-clamp-2">
                                                             {event.title}
                                                         </Link>
                                                     </CardTitle>
-                                                    <CardDescription className="flex items-center gap-1 mt-1 text-sm">
-                                                        <MapPin className="h-3 w-3 text-gold" /> {event.location}
+                                                    <CardDescription className="flex items-center gap-1 mt-1 text-xs md:text-sm">
+                                                        <MapPin className="h-3 w-3 text-gold shrink-0" /> <span className="truncate">{event.location}</span>
                                                     </CardDescription>
                                                 </CardHeader>
-                                                <CardContent>
-                                                    <p className="text-muted-foreground text-base leading-relaxed line-clamp-2 break-words font-medium">
+                                                <CardContent className="flex-1">
+                                                    <p className="text-muted-foreground text-sm md:text-base leading-relaxed line-clamp-3 break-words font-medium">
                                                         {event.description}
                                                     </p>
-                                                    <div className="mt-4 flex items-center gap-2 text-sm text-maroon font-medium">
+                                                    <div className="mt-3 md:mt-4 flex items-center gap-2 text-xs md:text-sm text-maroon font-medium">
                                                         <span>{event._count?.attendees || 0} attending</span>
                                                     </div>
                                                 </CardContent>

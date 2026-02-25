@@ -212,13 +212,13 @@ function CareerSupportContent() {
         <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
             <Navbar />
 
-            <main className="flex-1 container mx-auto px-4 py-8 flex flex-col">
+            <main className="flex-1 container mx-auto px-4 py-6 md:py-8 flex flex-col">
 
                 {/* Header */}
-                <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+                <div className="flex flex-col md:flex-row items-center justify-between mb-6 md:mb-8 gap-4">
                     <div className="text-center md:text-left">
-                        <h1 className="font-serif text-5xl md:text-6xl font-bold text-maroon">Career & Growth</h1>
-                        <p className="text-xl md:text-2xl text-muted-foreground mt-4 leading-relaxed max-w-3xl">Empowering our community through verified opportunities, educational scholarships, and professional guidance.</p>
+                        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-maroon">Career & Growth</h1>
+                        <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground mt-3 md:mt-4 leading-relaxed max-w-3xl">Empowering our community through verified opportunities, educational scholarships, and professional guidance.</p>
                     </div>
                 </div>
 
@@ -403,29 +403,29 @@ function CareerSupportContent() {
                                         jobs.map(job => (
                                             // ... (content of job card kept same, just removing wrapper class)
                                             <Card key={job.id} className="border-l-4 border-l-gold hover:shadow-md transition-shadow">
-                                                <CardContent className="p-6">
-                                                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                                <CardContent className="p-4 md:p-6">
+                                                    <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                                                         <div className="flex-1 min-w-0">
                                                             <div className="flex items-center gap-2 flex-wrap mb-1">
                                                                 <Link href={`/career/jobs/${job.id}`}>
-                                                                    <h3 className="font-bold text-2xl text-maroon hover:text-gold transition-colors cursor-pointer leading-tight">{job.title}</h3>
+                                                                    <h3 className="font-bold text-xl md:text-2xl text-maroon hover:text-gold transition-colors cursor-pointer leading-tight">{job.title}</h3>
                                                                 </Link>
                                                                 {job.status === 'pending' && (
-                                                                    <span className="text-xs bg-gold/10 text-maroon/70 px-2 py-0.5 rounded-full border border-gold/20">Pending</span>
+                                                                    <span className="text-[10px] md:text-xs bg-gold/10 text-maroon/70 px-2 py-0.5 rounded-full border border-gold/20">Pending</span>
                                                                 )}
                                                                 {job.status === 'deleted_by_admin' && (
-                                                                    <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full border border-red-200">Deleted by Admin</span>
+                                                                    <span className="text-[10px] md:text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full border border-red-200">Deleted by Admin</span>
                                                                 )}
                                                             </div>
-                                                            <p className="text-muted-foreground text-lg font-bold">{job.company}</p>
-                                                            <div className="flex items-center gap-5 mt-3 text-base text-muted-foreground flex-wrap font-medium">
-                                                                <span className="flex items-center"><MapPin className="h-4 w-4 mr-1.5" /> {job.location}</span>
-                                                                <span className="flex items-center"><Clock className="h-4 w-4 mr-1.5" /> {job.type}</span>
-                                                                {job.salary && <span className="font-bold text-green-700 text-lg">{job.salary}</span>}
+                                                            <p className="text-muted-foreground text-base md:text-lg font-bold">{job.company}</p>
+                                                            <div className="flex items-center gap-3 md:gap-5 mt-2 md:mt-3 text-sm md:text-base text-muted-foreground flex-wrap font-medium">
+                                                                <span className="flex items-center"><MapPin className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-1.5" /> {job.location}</span>
+                                                                <span className="flex items-center"><Clock className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1 md:mr-1.5" /> {job.type}</span>
+                                                                {job.salary && <span className="font-bold text-green-700 text-sm md:text-lg">{job.salary}</span>}
                                                                 {job.deadline && <span className="text-red-600/70">Deadline: {formatDate(job.deadline)}</span>}
                                                             </div>
                                                             <Link href={`/career/jobs/${job.id}`}>
-                                                                <p className="text-base text-gray-600 mt-3 line-clamp-2 break-all hover:text-maroon transition-colors cursor-pointer leading-relaxed">{job.description}</p>
+                                                                <p className="text-sm md:text-base text-gray-600 mt-2 md:mt-3 line-clamp-2 break-all hover:text-maroon transition-colors cursor-pointer leading-relaxed">{job.description}</p>
                                                             </Link>
                                                         </div>
                                                         <div className="flex gap-2 shrink-0">
@@ -484,28 +484,28 @@ function CareerSupportContent() {
                                     ) : (
                                         scholarships.map(item => (
                                             <Card key={item.id} className="hover:shadow-md transition-shadow">
-                                                <CardHeader>
-                                                    <div className="flex items-start justify-between">
+                                                <CardHeader className="p-4 md:p-6 pb-2">
+                                                    <div className="flex items-start justify-between gap-2">
                                                         <Link href={`/career/scholarships/${item.id}`}>
-                                                            <CardTitle className="text-2xl font-serif flex items-center gap-3 hover:text-gold transition-colors cursor-pointer">
-                                                                <GraduationCap className="h-7 w-7 text-gold shrink-0" />
-                                                                {item.title}
+                                                            <CardTitle className="text-xl md:text-2xl font-serif flex items-center gap-2 md:gap-3 hover:text-gold transition-colors cursor-pointer">
+                                                                <GraduationCap className="h-5 w-5 md:h-7 md:w-7 text-gold shrink-0" />
+                                                                <span className="line-clamp-2 md:line-clamp-none">{item.title}</span>
                                                             </CardTitle>
                                                         </Link>
                                                         {item.status === 'pending' && (
-                                                            <span className="text-xs bg-gold/10 text-maroon/70 px-2 py-0.5 rounded-full border border-gold/20">Pending</span>
+                                                            <span className="shrink-0 text-[10px] md:text-xs bg-gold/10 text-maroon/70 px-2 py-0.5 rounded-full border border-gold/20">Pending</span>
                                                         )}
                                                         {item.status === 'deleted_by_admin' && (
-                                                            <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full border border-red-200">Deleted by Admin</span>
+                                                            <span className="shrink-0 text-[10px] md:text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full border border-red-200">Deleted</span>
                                                         )}
                                                     </div>
-                                                    <CardDescription className="text-lg mt-1">
+                                                    <CardDescription className="text-sm md:text-lg mt-1 md:mt-2">
                                                         <span className="font-bold text-green-700">{item.amount}</span> • Deadline: <span className="text-red-600/70 font-semibold">{formatDate(item.deadline)}</span>
                                                     </CardDescription>
                                                 </CardHeader>
-                                                <CardContent>
-                                                    <p className="text-base text-muted-foreground mb-3"><strong>Eligibility:</strong> {item.eligibility}</p>
-                                                    <p className="text-base text-muted-foreground line-clamp-2 break-all leading-relaxed">{item.description}</p>
+                                                <CardContent className="p-4 md:p-6 pt-0 md:pt-2">
+                                                    <p className="text-sm md:text-base text-muted-foreground mb-2 md:mb-3"><strong>Eligibility:</strong> {item.eligibility}</p>
+                                                    <p className="text-sm md:text-base text-muted-foreground line-clamp-2 break-all leading-relaxed">{item.description}</p>
                                                 </CardContent>
                                                 <CardFooter className="flex gap-2">
                                                     <Link href={`/career/scholarships/${item.id}`} className="flex-1">
@@ -555,8 +555,8 @@ function CareerSupportContent() {
                                     ) : (
                                         mentors.map(m => (
                                             <Card key={m.id} className="hover:shadow-md transition-shadow">
-                                                <CardHeader className="text-center">
-                                                    <div className="mx-auto h-24 w-24 rounded-full bg-cream border-4 border-gold/20 flex items-center justify-center mb-4 overflow-hidden shadow-inner">
+                                                <CardHeader className="text-center p-4 md:p-6 pb-2 md:pb-4">
+                                                    <div className="mx-auto h-20 w-20 md:h-24 md:w-24 rounded-full bg-cream border-4 border-gold/20 flex items-center justify-center mb-3 md:mb-4 overflow-hidden shadow-inner">
                                                         {m.mentor.profileImage ? (
                                                             <Image
                                                                 src={m.mentor.profileImage}
@@ -567,32 +567,32 @@ function CareerSupportContent() {
                                                                 suppressHydrationWarning
                                                             />
                                                         ) : (
-                                                            <div className="text-3xl font-serif font-bold text-maroon">
+                                                            <div className="text-2xl md:text-3xl font-serif font-bold text-maroon">
                                                                 {m.mentor.name?.charAt(0).toUpperCase() || "M"}
                                                             </div>
                                                         )}
                                                     </div>
                                                     <Link href={`/career/mentorship/${m.id}`}>
-                                                        <CardTitle className="text-2xl font-serif font-bold hover:text-gold transition-colors cursor-pointer">{m.mentor.name || "Mentor"}</CardTitle>
+                                                        <CardTitle className="text-xl md:text-2xl font-serif font-bold hover:text-gold transition-colors cursor-pointer">{m.mentor.name || "Mentor"}</CardTitle>
                                                     </Link>
-                                                    <CardDescription>{m.mentor.email}</CardDescription>
+                                                    <CardDescription className="text-xs md:text-sm">{m.mentor.email}</CardDescription>
                                                     {m.status === 'pending' && (
-                                                        <span className="inline-block text-xs bg-gold/10 text-maroon/70 px-2 py-0.5 rounded-full mt-1 border border-gold/20">Pending</span>
+                                                        <span className="inline-block text-[10px] md:text-xs bg-gold/10 text-maroon/70 px-2 py-0.5 rounded-full mt-1 border border-gold/20">Pending</span>
                                                     )}
                                                     {m.status === 'deleted_by_admin' && (
-                                                        <span className="inline-block text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full mt-1 border border-red-200">Deleted by Admin</span>
+                                                        <span className="inline-block text-[10px] md:text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full mt-1 border border-red-200">Deleted by Admin</span>
                                                     )}
                                                 </CardHeader>
-                                                <CardContent className="text-center">
-                                                    <div className="inline-block px-4 py-1.5 bg-gold/10 rounded-full text-sm font-bold text-maroon mb-3 border border-gold/20">
+                                                <CardContent className="text-center p-4 md:p-6 pt-0 md:pt-0">
+                                                    <div className="inline-block px-3 py-1 md:px-4 md:py-1.5 bg-gold/10 rounded-full text-xs md:text-sm font-bold text-maroon mb-2 md:mb-3 border border-gold/20">
                                                         {m.expertise}
                                                     </div>
                                                     {m.mentor.location && (
-                                                        <p className="text-sm text-muted-foreground flex items-center justify-center gap-1 mb-2">
+                                                        <p className="text-xs md:text-sm text-muted-foreground flex items-center justify-center gap-1 mb-2">
                                                             <MapPin className="h-3 w-3" /> {m.mentor.location}
                                                         </p>
                                                     )}
-                                                    <p className="text-base text-gray-600 line-clamp-2 break-all leading-relaxed italic">"{m.bio}"</p>
+                                                    <p className="text-sm md:text-base text-gray-600 line-clamp-2 break-all leading-relaxed italic">"{m.bio}"</p>
                                                 </CardContent>
                                                 <CardFooter className="flex gap-2">
                                                     {user?.email !== m.mentor.email ? (

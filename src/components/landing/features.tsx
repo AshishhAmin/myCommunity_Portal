@@ -57,37 +57,37 @@ const features = [
 
 export function FeaturesSection() {
     return (
-        <section className="py-32 bg-cream/20 relative overflow-hidden">
+        <section className="py-16 md:py-32 bg-cream/20 relative overflow-hidden">
             <div className="container mx-auto px-4">
 
                 {/* Section Header */}
-                <div className="text-center max-w-4xl mx-auto mb-20 animate-slide-up">
-                    <h2 className="font-serif text-4xl md:text-5xl font-bold text-maroon mb-6">
+                <div className="text-center max-w-4xl mx-auto mb-12 md:mb-20 animate-slide-up">
+                    <h2 className="font-serif text-3xl md:text-5xl font-bold text-maroon mb-4 md:mb-6">
                         Our Features
                     </h2>
-                    <div className="w-32 h-1.5 bg-gold mx-auto mb-8 rounded-full shadow-sm"></div>
-                    <p className="text-muted-foreground text-xl md:text-2xl leading-relaxed">
+                    <div className="w-24 md:w-32 h-1.5 bg-gold mx-auto mb-6 md:mb-8 rounded-full shadow-sm"></div>
+                    <p className="text-muted-foreground text-lg md:text-2xl leading-relaxed">
                         Our platform is designed to provide comprehensive support for personal and professional growth while preserving our rich cultural values.
                     </p>
                 </div>
 
                 {/* Features Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
                     {features.map((feature, index) => (
                         <Link href={feature.href} key={index} className="block h-full animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
                             <Card className="border-gold/20 transition-all duration-500 group h-full cursor-pointer shadow-md hover:shadow-2xl">
-                                <CardContent className="p-8">
+                                <CardContent className="p-6 md:p-8">
                                     <div className={`
-                    mb-6 h-16 w-16 rounded-2xl flex items-center justify-center
+                    mb-5 md:mb-6 h-14 w-14 md:h-16 md:w-16 rounded-2xl flex items-center justify-center
                     bg-white border border-gold/20 group-hover:bg-maroon group-hover:border-maroon transition-all duration-500 shadow-sm
                     ${feature.color} group-hover:text-gold
                     `}>
-                                        <feature.icon className="h-8 w-8 transition-transform duration-500 group-hover:scale-110" />
+                                        <feature.icon className="h-7 w-7 md:h-8 md:w-8 transition-transform duration-500 group-hover:scale-110" />
                                     </div>
-                                    <h3 className="font-serif text-2xl font-bold text-maroon mb-4">
+                                    <h3 className="font-serif text-xl md:text-2xl font-bold text-maroon mb-3 md:mb-4">
                                         {feature.title}
                                     </h3>
-                                    <p className="text-lg text-muted-foreground leading-relaxed">
+                                    <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                                         {feature.description}
                                     </p>
                                 </CardContent>

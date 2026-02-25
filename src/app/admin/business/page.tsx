@@ -202,14 +202,14 @@ export default function AdminBusinessPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-5xl font-serif font-bold text-maroon mb-1">Business Moderation</h1>
-                    <p className="text-xl text-muted-foreground">Verify and manage community business listings.</p>
+                    <h1 className="text-3xl md:text-5xl font-serif font-bold text-maroon mb-1">Business Moderation</h1>
+                    <p className="text-base md:text-xl text-muted-foreground">Verify and manage community business listings.</p>
                 </div>
             </div>
 
             {/* Filters and Search */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 border-b border-gold/20 pb-2">
-                <div className="flex gap-10">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 md:gap-6 border-b border-gold/20 pb-2">
+                <div className="flex gap-4 md:gap-10 overflow-x-auto custom-scrollbar w-full lg:w-auto pb-2 whitespace-nowrap">
                     {[
                         { id: 'pending' as const, label: 'Pending Verification' },
                         { id: 'approved' as const, label: 'Active Listings' },
@@ -222,7 +222,7 @@ export default function AdminBusinessPage() {
                                 setStatusFilter(tab.id)
                                 setCurrentPage(1)
                             }}
-                            className={`pb-4 text-lg font-bold transition-all border-b-2 ${statusFilter === tab.id
+                            className={`pb-2 md:pb-4 text-sm md:text-lg shrink-0 font-bold transition-all border-b-2 ${statusFilter === tab.id
                                 ? "text-maroon border-maroon"
                                 : "text-gray-500 border-transparent hover:text-maroon/70"}`}
                         >
@@ -231,14 +231,14 @@ export default function AdminBusinessPage() {
                     ))}
                 </div>
 
-                <div className="flex gap-4 w-full sm:w-auto mb-2">
+                <div className="flex gap-4 w-full lg:w-auto mb-2">
                     <div className="relative w-full sm:w-64">
-                        <Search className="absolute left-3 top-3 h-4 w-4 text-maroon/50" />
+                        <Search className="absolute left-3 top-2.5 md:top-3 h-4 w-4 md:h-5 md:w-5 text-maroon/50" />
                         <Input
                             placeholder="Search businesses..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 h-12 border-gold/30 focus-visible:ring-gold/40 text-lg"
+                            className="pl-9 md:pl-10 h-10 md:h-12 border-gold/30 focus-visible:ring-gold/40 text-sm md:text-lg"
                         />
                     </div>
                 </div>
@@ -297,17 +297,17 @@ export default function AdminBusinessPage() {
                         <table className="w-full text-sm text-left border-collapse">
                             <thead className="bg-[#FAF3E0] text-maroon border-b border-gold/10 sticky top-0 z-10 shadow-sm">
                                 <tr>
-                                    <th className="px-6 py-4 w-10">
+                                    <th className="px-3 md:px-6 py-3 md:py-4 w-10 shrink-0">
                                         <Checkbox
                                             checked={selectedIds.length === businesses.length && businesses.length > 0}
                                             onCheckedChange={toggleSelectAll}
                                         />
                                     </th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Business Name</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Category & City</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Owner</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Status</th>
-                                    <th className="px-6 py-4 font-serif font-bold text-right whitespace-nowrap text-lg">Actions</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Business Name</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Category & City</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Owner</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Status</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold text-right whitespace-nowrap text-sm md:text-base">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gold/10">
@@ -316,41 +316,42 @@ export default function AdminBusinessPage() {
                                         "transition-colors",
                                         selectedIds.includes(business.id) ? "bg-maroon/5" : "hover:bg-[#FAF3E0]/20"
                                     )}>
-                                        <td className="px-6 py-5">
+                                        <td className="px-3 md:px-6 py-4 md:py-5">
                                             <Checkbox
                                                 checked={selectedIds.includes(business.id)}
                                                 onCheckedChange={() => toggleSelect(business.id)}
                                             />
                                         </td>
-                                        <td className="px-6 py-5 font-bold text-gray-900 whitespace-nowrap text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 font-bold text-gray-900 whitespace-nowrap text-sm md:text-base">
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-maroon">{business.name}</span>
-                                                <span className="text-xs text-muted-foreground flex items-center gap-1 font-medium">
-                                                    <Phone className="h-3 w-3" /> {business.contact}
+                                                <span className="text-[10px] md:text-xs text-muted-foreground flex items-center gap-1 font-medium">
+                                                    <Phone className="h-2.5 w-2.5 md:h-3 md:w-3" /> {business.contact}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 text-gray-700 whitespace-nowrap text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 whitespace-nowrap text-sm md:text-base">
                                             <div className="flex flex-col">
-                                                <span className="bg-gold/10 text-maroon/80 px-2 py-0.5 rounded text-[11px] font-bold border border-gold/20 w-fit uppercase tracking-wider">
+                                                <span className="bg-gold/10 text-maroon/80 px-2 py-0.5 rounded text-[9px] md:text-[11px] font-bold border border-gold/20 w-fit uppercase tracking-wider">
                                                     {business.category}
                                                 </span>
                                                 {business.city && (
-                                                    <span className="text-sm text-muted-foreground flex items-center mt-1 font-medium">
-                                                        <MapPin className="h-3.5 w-3.5 mr-1 text-gold" /> {business.city}
+                                                    <span className="text-xs md:text-sm text-muted-foreground flex items-center mt-1 md:mt-1.5 font-medium">
+                                                        <MapPin className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1 text-gold" /> {business.city}
                                                     </span>
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 text-gray-700 text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 text-sm md:text-base">
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-gray-800">{business.owner.name || 'Unknown'}</span>
-                                                <span className="text-xs text-muted-foreground font-medium">{business.owner.email}</span>
+                                                <span className="text-[10px] md:text-xs text-muted-foreground font-medium">{business.owner.email}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 md:px-6 py-3 md:py-4">
                                             <Badge
                                                 className={cn(
+                                                    "text-[10px] md:text-xs px-2 py-0.5",
                                                     business.status === 'approved' ? 'bg-green-100 text-green-800' :
                                                         business.status === 'rejected' ? 'bg-red-100 text-red-800' :
                                                             'bg-amber-100 text-amber-800'
@@ -359,8 +360,8 @@ export default function AdminBusinessPage() {
                                                 {business.status}
                                             </Badge>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex justify-end gap-2">
+                                        <td className="px-3 md:px-6 py-3 md:py-4 text-right">
+                                            <div className="flex justify-end gap-1 md:gap-2">
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"

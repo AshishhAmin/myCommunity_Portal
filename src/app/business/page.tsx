@@ -99,14 +99,14 @@ export default function BusinessDirectoryPage() {
 
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
-                    <div>
-                        <h1 className="font-serif text-5xl md:text-6xl font-bold text-maroon">Business Directory</h1>
-                        <p className="text-xl md:text-2xl text-muted-foreground mt-4 leading-relaxed max-w-2xl">Discover trusted community businesses. Grow your network and support verified enterprises.</p>
+                    <div className="text-center md:text-left">
+                        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-maroon">Business Directory</h1>
+                        <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground mt-3 md:mt-4 leading-relaxed max-w-2xl">Discover trusted community businesses. Grow your network and support verified enterprises.</p>
                     </div>
 
                     {(user?.role === "admin" || user?.role === "member") && (
-                        <Link href="/business/add">
-                            <Button className="bg-maroon text-gold hover:bg-maroon/90">
+                        <Link href="/business/add" className="w-full md:w-auto">
+                            <Button className="w-full md:w-auto bg-maroon text-gold hover:bg-maroon/90 md:h-12 md:px-6">
                                 <Plus className="mr-2 h-4 w-4" /> Add Your Business
                             </Button>
                         </Link>
@@ -116,11 +116,11 @@ export default function BusinessDirectoryPage() {
                 {/* Filter Toggle (Authenticated Only) */}
                 {user && (
                     <div className="flex justify-center mb-6">
-                        <div className="bg-cream/40 p-1.5 rounded-xl border border-gold/30 flex gap-1 shadow-inner">
+                        <div className="bg-cream/40 p-1.5 rounded-xl border border-gold/30 flex gap-1 shadow-inner w-full sm:w-auto justify-center">
                             <button
                                 onClick={() => setFilter('all')}
                                 className={cn(
-                                    "px-4 py-1.5 text-sm font-medium rounded-md transition-all",
+                                    "px-4 py-1.5 text-sm font-medium rounded-md transition-all flex-1 sm:flex-none",
                                     filter === 'all'
                                         ? "bg-maroon text-gold shadow-sm"
                                         : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
@@ -131,7 +131,7 @@ export default function BusinessDirectoryPage() {
                             <button
                                 onClick={() => setFilter('mine')}
                                 className={cn(
-                                    "px-4 py-1.5 text-sm font-medium rounded-md transition-all",
+                                    "px-4 py-1.5 text-sm font-medium rounded-md transition-all flex-1 sm:flex-none",
                                     filter === 'mine'
                                         ? "bg-maroon text-gold shadow-sm"
                                         : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
@@ -144,7 +144,7 @@ export default function BusinessDirectoryPage() {
                 )}
 
                 {/* Search & Filter */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12 bg-cream/40 p-5 rounded-2xl border border-gold/20 shadow-sm backdrop-blur-sm">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-8 md:mb-12 bg-cream/40 p-4 md:p-5 rounded-2xl border border-gold/20 shadow-sm backdrop-blur-sm">
                     <div className="md:col-span-2 relative">
                         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -174,15 +174,11 @@ export default function BusinessDirectoryPage() {
                     </div>
                 ) : (
                     <>
-                        <div className="max-h-[1200px] overflow-y-auto custom-scrollbar pr-4 pb-4">
-                            {/* Removed max-h constraint or increased it significantly as we have pagination now, 
-                                but keeping a large max-height prevents layout shifts or overly long pages if needed. 
-                                Actually, standard pagination usually means we don't need internal scroll. 
-                                I'll remove the scroll container constraint for cleaner UI. */}
+                        <div className="custom-scrollbar pr-0 md:pr-4 pb-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {businesses.map((business) => (
                                     <Link href={`/business/${business.id}`} key={business.id} className="group">
-                                        <Card className="relative h-[400px] hover:shadow-2xl transition-all border-gold/20 group overflow-hidden bg-cream/40 flex flex-col justify-end">
+                                        <Card className="relative h-[300px] md:h-[400px] hover:shadow-2xl transition-all border-gold/20 group overflow-hidden bg-cream/40 flex flex-col justify-end">
                                             {/* Background Image */}
                                             <div
                                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
@@ -195,38 +191,38 @@ export default function BusinessDirectoryPage() {
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
 
                                             {/* Content Overlay */}
-                                            <div className="relative p-8 text-white z-10 w-full">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div className="bg-gold/90 text-maroon text-sm font-bold px-3 py-1 rounded">
+                                            <div className="relative p-6 md:p-8 text-white z-10 w-full">
+                                                <div className="flex flex-wrap gap-2 items-start mb-2">
+                                                    <div className="bg-gold/90 text-maroon text-xs md:text-sm font-bold px-2 py-1 md:px-3 md:py-1 rounded">
                                                         {business.category}
                                                     </div>
                                                     {business.status === 'approved' && (
-                                                        <div className="bg-green-500/90 text-white text-sm px-3 py-1 rounded flex items-center">
+                                                        <div className="bg-green-500/90 text-white text-xs md:text-sm px-2 py-1 md:px-3 rounded flex items-center">
                                                             Verified
                                                         </div>
                                                     )}
                                                     {business.status === 'pending' && (
-                                                        <div className="bg-amber-500/90 text-white text-sm px-3 py-1 rounded flex items-center">
+                                                        <div className="bg-amber-500/90 text-white text-xs md:text-sm px-2 py-1 md:px-3 rounded flex items-center">
                                                             Pending Verification
                                                         </div>
                                                     )}
                                                     {business.status === 'deleted_by_admin' && (
-                                                        <div className="bg-red-500/90 text-white text-sm px-3 py-1 rounded flex items-center">
-                                                            Deleted by Admin
+                                                        <div className="bg-red-500/90 text-white text-xs md:text-sm px-2 py-1 md:px-3 rounded flex items-center">
+                                                            Deleted
                                                         </div>
                                                     )}
                                                 </div>
 
-                                                <h3 className="text-3xl font-serif font-bold mb-3 text-white">{business.name}</h3>
+                                                <h3 className="text-2xl md:text-3xl font-serif font-bold mb-2 md:mb-3 text-white line-clamp-1 group-hover:line-clamp-none transition-all">{business.name}</h3>
 
-                                                <div className="flex items-center gap-2 bg-gold/10 rounded-lg px-2 py-1.5 border border-gold/20 backdrop-blur-sm w-fit text-base">
-                                                    <MapPin className="h-4 w-4 mr-1 text-gold" /> {business.city || "India"}
+                                                <div className="flex items-center gap-2 bg-gold/10 rounded-lg px-2 py-1.5 border border-gold/20 backdrop-blur-sm w-fit text-xs md:text-base">
+                                                    <MapPin className="h-3 w-3 md:h-4 md:w-4 mr-1 text-gold" /> {business.city || "India"}
                                                 </div>
 
-                                                <p className="text-gray-200 text-xl font-medium line-clamp-2 break-all opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 mt-4 leading-relaxed">
+                                                <p className="text-gray-200 text-sm md:text-lg font-medium line-clamp-2 break-all opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 mt-3 md:mt-4 leading-relaxed max-h-[60px] md:max-h-[100px] overflow-hidden">
                                                     {business.description}
                                                 </p>
-                                                <div className="flex justify-end mt-4 gap-1">
+                                                <div className="flex justify-end mt-3 md:mt-4 gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                                     <ShareButton
                                                         url={`/business/${business.id}`}
                                                         title={business.name}

@@ -618,9 +618,9 @@ function HelpContent() {
 
             <main className="flex-1 container mx-auto px-4 py-8">
                 {/* Header */}
-                <div className="mb-12 text-center max-w-2xl mx-auto">
-                    <h1 className="font-serif text-5xl md:text-7xl font-bold text-maroon mb-4">Community Support Center</h1>
-                    <p className="text-muted-foreground text-2xl mb-10 max-w-3xl mx-auto leading-relaxed">
+                <div className="mb-8 md:mb-12 text-center max-w-2xl mx-auto">
+                    <h1 className="font-serif text-3xl md:text-5xl lg:text-7xl font-bold text-maroon mb-2 md:mb-4">Community Support Center</h1>
+                    <p className="text-muted-foreground text-base md:text-xl lg:text-2xl mb-6 md:mb-10 max-w-3xl mx-auto leading-relaxed">
                         We are here to stand by you. Select a category below to request or browse assistance.
                     </p>
                     <div className="flex justify-center gap-4">

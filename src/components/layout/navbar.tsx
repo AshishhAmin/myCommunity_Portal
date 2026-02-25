@@ -44,13 +44,13 @@ export function Navbar() {
 
     return (
         <nav className="sticky top-0 z-50 w-full border-b border-gold/20 bg-gradient-to-b from-cream/98 via-cream/95 to-maroon/5 backdrop-blur-md shadow-sm shadow-maroon/5">
-            <div className="container mx-auto flex h-16 items-center justify-between px-4">
+            <div className="container mx-auto flex h-14 md:h-16 items-center justify-between px-4">
                 {/* Logo / Brand */}
-                <div className="flex items-center gap-3 group cursor-pointer">
-                    <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-maroon flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <Network className="h-5 w-5 md:h-6 md:w-6 text-gold" strokeWidth={2.5} />
+                <div className="flex items-center gap-2.5 md:gap-3 group cursor-pointer">
+                    <div className="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full bg-maroon flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <Network className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gold" strokeWidth={2.5} />
                     </div>
-                    <Link href="/" className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-maroon tracking-tight">
+                    <Link href="/" className="font-serif text-lg sm:text-2xl md:text-3xl font-bold text-maroon tracking-tight">
                         CommuNet
                     </Link>
                 </div>
@@ -172,8 +172,8 @@ export function Navbar() {
                     {/* Mobile Menu Trigger */}
                     <Button
                         variant="ghost"
-                        size="sm"
-                        className="md:hidden"
+                        size="icon"
+                        className="md:hidden h-9 w-9 p-0"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         suppressHydrationWarning
                     >

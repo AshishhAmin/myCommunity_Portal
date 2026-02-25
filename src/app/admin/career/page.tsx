@@ -226,14 +226,14 @@ export default function AdminCareerPage() {
 
     return (
         <div className="space-y-6">
-            <div className="mb-8">
-                <h2 className="text-5xl font-serif font-bold text-maroon mb-1">Career Moderation</h2>
-                <p className="text-xl text-muted-foreground">Review and approve career-related submissions including jobs, scholarships and mentors.</p>
+            <div className="mb-6 md:mb-8">
+                <h2 className="text-3xl md:text-5xl font-serif font-bold text-maroon mb-1">Career Moderation</h2>
+                <p className="text-base md:text-xl text-muted-foreground">Review and approve career-related submissions including jobs, scholarships and mentors.</p>
             </div>
 
             {/* Type & Status Filters */}
-            <div className="space-y-6 border-b border-gold/20 pb-2">
-                <div className="flex gap-10">
+            <div className="space-y-4 md:space-y-6 border-b border-gold/20 pb-2">
+                <div className="flex gap-4 md:gap-10 overflow-x-auto custom-scrollbar w-full pb-2 whitespace-nowrap">
                     {typeTabs.map(tab => (
                         <button
                             key={tab.id}
@@ -244,7 +244,7 @@ export default function AdminCareerPage() {
                                 if (tab.id === 'scholarships') setStatusFilter('approved');
                             }}
                             className={cn(
-                                "pb-4 text-lg font-bold transition-all border-b-2 flex items-center gap-2",
+                                "pb-2 md:pb-4 text-sm md:text-lg font-bold transition-all border-b-2 flex items-center gap-1 md:gap-2 shrink-0",
                                 activeType === tab.id
                                     ? "text-maroon border-maroon"
                                     : "text-gray-500 border-transparent hover:text-maroon/70"
@@ -256,14 +256,14 @@ export default function AdminCareerPage() {
                     ))}
                 </div>
 
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
-                    <div className="flex gap-8">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 md:gap-6">
+                    <div className="flex gap-4 md:gap-8 overflow-x-auto custom-scrollbar w-full lg:w-auto pb-2 whitespace-nowrap">
                         {((activeType === 'scholarships' ? ["approved", "deleted"] : ["pending", "approved", "deleted"]) as StatusFilter[]).map(s => (
                             <button
                                 key={s}
                                 onClick={() => { setStatusFilter(s); setCurrentPage(1); }}
                                 className={cn(
-                                    "pb-2 text-base font-bold uppercase tracking-wider transition-all border-b-2 capitalize",
+                                    "pb-1 md:pb-2 text-xs md:text-base shrink-0 font-bold uppercase tracking-wider transition-all border-b-2 capitalize",
                                     statusFilter === s
                                         ? "text-maroon border-maroon"
                                         : "text-gray-400 border-transparent hover:text-maroon/60"
@@ -275,10 +275,10 @@ export default function AdminCareerPage() {
                     </div>
 
                     <div className="relative w-full sm:w-80">
-                        <Search className="absolute left-3 top-3 h-4 w-4 text-maroon/50" />
+                        <Search className="absolute left-3 top-2.5 md:top-3 h-4 w-4 md:h-5 md:w-5 text-maroon/50" />
                         <Input
                             placeholder={`Search ${activeType}...`}
-                            className="pl-10 h-12 border-gold/30 focus-visible:ring-gold/40 text-lg"
+                            className="pl-9 md:pl-10 h-10 md:h-12 border-gold/30 focus-visible:ring-gold/40 text-sm md:text-lg"
                             value={searchTerm}
                             onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                         />
@@ -343,20 +343,20 @@ export default function AdminCareerPage() {
                         <table className="w-full text-sm text-left border-collapse">
                             <thead className="bg-[#FAF3E0] text-maroon border-b border-gold/10 sticky top-0 z-10 shadow-sm">
                                 <tr>
-                                    <th className="px-6 py-4 w-10">
+                                    <th className="px-3 md:px-6 py-3 md:py-4 w-10 shrink-0">
                                         <Checkbox
                                             checked={selectedIds.length === items.length && items.length > 0}
                                             onCheckedChange={toggleSelectAll}
                                         />
                                     </th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Details</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Details</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">
                                         {activeType === "jobs" ? "Company" : activeType === "scholarships" ? "Amount/Eligibility" : "Mentor Info"}
                                     </th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Submitted By</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Date</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Status</th>
-                                    <th className="px-6 py-4 font-serif font-bold text-right whitespace-nowrap text-lg">Actions</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Submitted By</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Date</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Status</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold text-right whitespace-nowrap text-sm md:text-lg">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gold/10">
@@ -365,32 +365,32 @@ export default function AdminCareerPage() {
                                         "transition-colors",
                                         selectedIds.includes(item.id) ? "bg-maroon/5" : "hover:bg-[#FAF3E0]/20"
                                     )}>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 md:px-6 py-4 md:py-5">
                                             <Checkbox
                                                 checked={selectedIds.includes(item.id)}
                                                 onCheckedChange={() => toggleSelect(item.id)}
                                             />
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900">
-                                            <div className="flex flex-col max-w-[300px]">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 font-medium text-gray-900 text-sm md:text-base">
+                                            <div className="flex flex-col max-w-[200px] md:max-w-[300px]">
                                                 <span className="font-bold text-maroon truncate">{getItemLabel(item)}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-600 whitespace-nowrap">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-600 whitespace-nowrap text-sm md:text-base">
                                             {getItemDetails(item)}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-600 whitespace-nowrap">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-600 whitespace-nowrap text-sm md:text-base">
                                             <div className="flex flex-col">
                                                 <span className="font-medium text-gray-800">{item.poster?.name || item.mentor?.name || 'Unknown'}</span>
-                                                <span className="text-[10px] text-muted-foreground">{getPoster(item)}</span>
+                                                <span className="text-[10px] md:text-xs text-muted-foreground">{getPoster(item)}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-600 whitespace-nowrap">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-600 whitespace-nowrap text-sm md:text-base">
                                             {formatDate(item.createdAt)}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 md:px-6 py-3 md:py-4">
                                             <span className={cn(
-                                                "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border",
+                                                "px-2 py-0.5 md:px-[10px] md:py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-wider border",
                                                 item.status === "pending" ? "bg-amber-100 text-amber-800 border-amber-200"
                                                     : item.status === "approved" ? "bg-green-100 text-green-800 border-green-200"
                                                         : "bg-red-100 text-red-800 border-red-200"
@@ -398,15 +398,15 @@ export default function AdminCareerPage() {
                                                 {item.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
+                                        <td className="px-3 md:px-6 py-3 md:py-4 text-right">
 
-                                            <div className="flex justify-end gap-2">
+                                            <div className="flex justify-end gap-1 md:gap-2">
                                                 {statusFilter === "pending" && activeType !== 'scholarships' && (
-                                                    <>
+                                                    <div className="flex gap-1 md:gap-2">
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
-                                                            className="h-8 text-xs text-green-700 border-green-300 hover:bg-green-50"
+                                                            className="h-7 md:h-8 text-[10px] md:text-xs px-2 md:px-3 text-green-700 border-green-300 hover:bg-green-50"
                                                             disabled={!!actionLoading}
                                                             onClick={() => handleAction(item.id, "approved")}
                                                         >
@@ -414,29 +414,29 @@ export default function AdminCareerPage() {
                                                                 <Loader2 className="h-3 w-3 animate-spin" />
                                                             ) : (
                                                                 <>
-                                                                    <CheckCircle className="h-3.5 w-3.5 mr-1" /> Approve
+                                                                    <CheckCircle className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1 md:mr-1.5" /> Approve
                                                                 </>
                                                             )}
                                                         </Button>
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
-                                                            className="h-8 text-xs text-red-600 border-red-200 hover:bg-red-50"
+                                                            className="h-7 md:h-8 text-[10px] md:text-xs px-2 md:px-3 text-red-600 border-red-200 hover:bg-red-50"
                                                             disabled={!!actionLoading}
                                                             onClick={() => handleAction(item.id, "rejected")}
                                                         >
-                                                            <XCircle className="h-3.5 w-3.5 mr-1" /> Reject
+                                                            <XCircle className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1 md:mr-1.5" /> Reject
                                                         </Button>
-                                                    </>
+                                                    </div>
                                                 )}
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"
-                                                    className="h-8 w-8 p-0 text-muted-foreground hover:text-red-500"
+                                                    className="h-7 w-7 md:h-8 md:w-8 p-0 text-muted-foreground hover:text-red-500"
                                                     onClick={() => handleDeleteClick(item.id)}
                                                     disabled={!!actionLoading}
                                                 >
-                                                    <Trash2 className="h-4 w-4" />
+                                                    <Trash2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
                                                     <span className="sr-only">Delete</span>
                                                 </Button>
                                                 <Link

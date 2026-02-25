@@ -158,14 +158,14 @@ export default function AdminUsersPage() {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 className="text-5xl font-bold tracking-tight text-maroon font-serif mb-1">User Verification</h2>
-                    <p className="text-xl text-muted-foreground">Manage user access and verification requests</p>
+                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-maroon font-serif mb-1">User Verification</h2>
+                    <p className="text-base md:text-xl text-muted-foreground">Manage user access and verification requests</p>
                 </div>
             </div>
 
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 border-b border-gold/20 pb-2">
-                <div className="flex gap-10">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 md:gap-6 border-b border-gold/20 pb-2 w-full">
+                <div className="flex gap-4 md:gap-10 overflow-x-auto custom-scrollbar w-full lg:w-auto pb-2 whitespace-nowrap">
                     {[
                         { id: 'pending' as const, label: 'Pending Requests' },
                         { id: 'approved' as const, label: 'Verified Members' },
@@ -177,7 +177,7 @@ export default function AdminUsersPage() {
                                 setStatusFilter(tab.id)
                                 setCurrentPage(1)
                             }}
-                            className={`pb-4 text-lg font-bold transition-all border-b-2 ${statusFilter === tab.id
+                            className={`pb-2 md:pb-4 text-sm md:text-lg font-bold transition-all border-b-2 shrink-0 ${statusFilter === tab.id
                                 ? "text-maroon border-maroon"
                                 : "text-gray-500 border-transparent hover:text-maroon/70"}`}
                         >
@@ -186,13 +186,13 @@ export default function AdminUsersPage() {
                     ))}
                 </div>
 
-                <div className="relative w-full sm:w-80 mb-2">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-maroon/50" />
+                <div className="relative w-full lg:w-80 mb-2">
+                    <Search className="absolute left-3 top-2.5 md:top-3 h-4 w-4 md:h-5 md:w-5 text-maroon/50" />
                     <Input
                         placeholder="Search by name, email or mobile..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 h-12 border-gold/30 focus-visible:ring-gold/40 text-lg"
+                        className="pl-9 md:pl-10 h-10 md:h-12 border-gold/30 focus-visible:ring-gold/40 text-sm md:text-lg"
                     />
                 </div>
             </div>
@@ -253,18 +253,18 @@ export default function AdminUsersPage() {
                         <table className="w-full text-sm text-left border-collapse">
                             <thead className="bg-[#FAF3E0] text-maroon border-b border-gold/10 sticky top-0 z-10 shadow-sm">
                                 <tr>
-                                    <th className="px-6 py-4 w-10">
+                                    <th className="px-3 md:px-6 py-3 md:py-4 w-10 shrink-0">
                                         <Checkbox
                                             checked={selectedIds.length === users.length && users.length > 0}
                                             onCheckedChange={toggleSelectAll}
                                         />
                                     </th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Name</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Contact Info</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Gotra</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Registered</th>
-                                    <th className="px-6 py-4 font-serif font-bold whitespace-nowrap text-lg">Status</th>
-                                    <th className="px-6 py-4 font-serif font-bold text-right whitespace-nowrap text-lg">Actions</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Name</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Contact Info</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Gotra</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Registered</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Status</th>
+                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold text-right whitespace-nowrap text-sm md:text-lg">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gold/10">
@@ -273,28 +273,28 @@ export default function AdminUsersPage() {
                                         "transition-colors",
                                         selectedIds.includes(user.id) ? "bg-maroon/5" : "hover:bg-[#FAF3E0]/20"
                                     )}>
-                                        <td className="px-6 py-5">
+                                        <td className="px-3 md:px-6 py-4 md:py-5">
                                             <Checkbox
                                                 checked={selectedIds.includes(user.id)}
                                                 onCheckedChange={() => toggleSelect(user.id)}
                                             />
                                         </td>
-                                        <td className="px-6 py-5 font-bold text-gray-900 whitespace-nowrap text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 font-bold text-gray-900 whitespace-nowrap text-sm md:text-base">
                                             {user.name || 'No Name'}
                                         </td>
-                                        <td className="px-6 py-5 text-gray-700 text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 text-sm md:text-base">
                                             <div className="flex flex-col">
                                                 <span className="font-semibold">{user.email}</span>
-                                                <span className="text-xs text-muted-foreground font-medium">{user.mobile || 'No mobile'}</span>
+                                                <span className="text-[10px] md:text-xs text-muted-foreground font-medium">{user.mobile || 'No mobile'}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 text-gray-700 text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 text-sm md:text-base">
                                             {user.gotra || 'N/A'}
                                         </td>
-                                        <td className="px-6 py-5 text-gray-700 whitespace-nowrap text-base">
+                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 whitespace-nowrap text-sm md:text-base">
                                             {user.createdAt ? format(new Date(user.createdAt), 'PPP') : 'N/A'}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 md:px-6 py-3 md:py-4">
                                             <Badge
                                                 className={cn(
                                                     user.status === 'approved' ? 'bg-green-100 text-green-800' :
