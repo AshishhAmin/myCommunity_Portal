@@ -6,11 +6,16 @@ import { cookies } from 'next/headers'
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params
+        const activeUser = await getAuthUser(req)
+
         const event = await prisma.event.findUnique({
             where: { id },
             include: {
                 organizer: {
                     select: { name: true, email: true }
+                },
+                _count: {
+                    select: { attendees: true }
                 }
             }
         })
@@ -19,7 +24,16 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             return NextResponse.json({ message: 'Event not found' }, { status: 404 })
         }
 
-        return NextResponse.json(event)
+        // Check if the current user has RSVP'd
+        let isRsvped = false
+        if (activeUser) {
+            const rsvp = await prisma.eventAttendee.findUnique({
+                where: { eventId_userId: { eventId: id, userId: activeUser.id } }
+            })
+            isRsvped = !!rsvp
+        }
+
+        return NextResponse.json({ ...event, isRsvped })
     } catch (error) {
         console.error('Error fetching event:', error)
         return NextResponse.json(

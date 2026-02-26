@@ -18,6 +18,13 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
         }
 
+        // Verification Lock: Only approved members or admins can post
+        if (user.status !== 'approved' && user.role !== 'admin') {
+            return NextResponse.json({
+                message: 'Account verification required. Please contact admin to verify your account.'
+            }, { status: 403 })
+        }
+
         const achievement = await prisma.achievement.create({
             data: {
                 title,

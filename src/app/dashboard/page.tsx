@@ -62,6 +62,13 @@ const modules = [
         href: "/donations",
         color: "text-gold",
     },
+    {
+        title: "Hostel Directory",
+        description: "Find or list verified, safe community-trusted accommodations.",
+        icon: Building2,
+        href: "/accommodations",
+        color: "text-maroon",
+    },
 ]
 
 export default function DashboardPage() {

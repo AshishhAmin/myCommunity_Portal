@@ -10,6 +10,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Briefcase, MapPin, Clock, DollarSign, Calendar, ArrowLeft, Loader2, Mail, Phone, Globe, Edit, Trash2, Share2, Shield } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ShareButton } from "@/components/ui/share-button"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { formatDate } from "@/lib/utils"
+import { toast } from "sonner"
 
 interface JobDetail {
     id: string
@@ -144,141 +148,193 @@ export default function JobDetailsPage() {
     }
 
     const handleApply = () => {
+        if (user?.role !== 'admin' && user?.status !== 'approved') {
+            toast.error("Action Restricted", {
+                description: "Verification Pending. Your account is currently under review by our community administrators. You'll be able to perform this action once your membership is verified."
+            })
+            return
+        }
         const to = job.contactEmail || job.poster?.email || '';
         const subject = encodeURIComponent(`Application for ${job.title} at ${job.company}`);
         window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(to)}&su=${subject}`, '_blank');
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+        <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
             <Navbar />
 
-            <main className="flex-1 pb-16">
-                {/* Header Section */}
-                <div className="bg-maroon text-white pt-12 pb-24 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-1/3 h-full bg-gold/5 -skew-x-12 transform translate-x-1/2" />
-                    <div className="container mx-auto px-4 relative">
+            <main className="flex-1 pb-24">
+                {/* Hero Header Section */}
+                <div className="bg-maroon text-gold pt-20 pb-32 relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-10 bg-[url('/bg-pattern.png')] bg-repeat" />
+                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gold/5 -skew-x-12 transform translate-x-1/4" />
+
+                    <div className="container mx-auto px-4 relative max-w-6xl">
                         <Link
                             href="/career?tab=jobs"
-                            className="inline-flex items-center text-gold/70 hover:text-gold mb-8 transition-colors text-sm font-medium"
+                            className="inline-flex items-center text-gold/60 hover:text-gold mb-10 transition-all text-sm font-bold uppercase tracking-widest group"
                         >
-                            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Jobs
+                            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Jobs
                         </Link>
 
                         <div className="max-w-4xl">
                             {isDeletedByAdmin && isAdmin && (
-                                <div className="mb-6 bg-red-600/90 text-white p-4 rounded-lg flex items-center gap-3 border border-red-500 shadow-xl animate-pulse">
-                                    <Shield className="h-6 w-6" />
-                                    <div className="flex-1">
-                                        <p className="font-bold">This post has been deleted by an administrator.</p>
-                                        <p className="text-sm opacity-90 text-white/80">It is currently hidden from the public feed and directory.</p>
+                                <div className="mb-8 bg-red-600/90 text-white p-6 rounded-3xl flex items-center gap-4 border border-red-500 shadow-2xl backdrop-blur-sm">
+                                    <div className="h-12 w-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
+                                        <Shield className="h-6 w-6" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-lg">Administrative Action: Post Deleted</p>
+                                        <p className="text-sm opacity-90 text-white/80">This listing is currently hidden from the public feed due to policy violations.</p>
                                     </div>
                                 </div>
                             )}
-                            <h1 className="text-5xl md:text-6xl font-serif font-bold mb-6 leading-tight flex items-center gap-4">
-                                {job.title}
-                                <ShareButton
-                                    url={`/career/jobs/${job.id}`}
-                                    title={job.title}
-                                    variant="icon"
-                                    className="text-white hover:text-gold hover:bg-white/10"
-                                    details={`💼 *Job: ${job.title}*\nCompany: ${job.company}\nLocation: ${job.location}\nType: ${job.type}\nSalary: ${job.salary || 'N/A'}\nDeadline: ${job.deadline ? new Date(job.deadline).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Open'}\nContact Email: ${job.contactEmail || 'N/A'}\nContact Phone: ${job.contactPhone || 'N/A'}\n\n${job.description}`}
-                                />
-                            </h1>
-                            <div className="flex flex-wrap items-center gap-6 text-white/80">
-                                <div className="flex items-center gap-2">
-                                    <Briefcase className="h-5 w-5 text-gold" />
-                                    <span className="font-bold text-white text-xl">{job.company}</span>
+
+                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <Badge className="bg-gold/20 text-gold border-gold/30 px-4 py-1 rounded-full font-bold uppercase tracking-widest text-[10px]">
+                                            Professional Opportunity
+                                        </Badge>
+                                        <Badge className="bg-white/10 text-gold border-none px-4 py-1 rounded-full font-bold uppercase tracking-widest text-[10px]">
+                                            {job.type}
+                                        </Badge>
+                                    </div>
+                                    <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight tracking-tight">
+                                        {job.title}
+                                    </h1>
+                                    <div className="flex flex-wrap items-center gap-8 text-gold/80 font-medium">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center"><Briefcase className="h-5 w-5" /></div>
+                                            <span className="text-2xl font-bold text-white tracking-tight">{job.company}</span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center"><MapPin className="h-5 w-5" /></div>
+                                            <span className="text-lg">{job.location}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <MapPin className="h-5 w-5 text-gold" />
-                                    <span>{job.location}</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Clock className="h-5 w-5 text-gold" />
-                                    <span>{job.type}</span>
+                                <div className="flex gap-4">
+                                    <ShareButton
+                                        url={`/career/jobs/${job.id}`}
+                                        title={job.title}
+                                        variant="button"
+                                        className="bg-white/10 hover:bg-white/20 text-gold border-gold/20 rounded-2xl h-14 px-6 font-bold"
+                                        details={`💼 *Job: ${job.title}*\nCompany: ${job.company}\nLocation: ${job.location}\nType: ${job.type}\nSalary: ${job.salary || 'N/A'}\n\n${job.description}`}
+                                    />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="container mx-auto px-4 -mt-12 relative z-10">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="container mx-auto px-4 -mt-20 relative z-10 max-w-6xl">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                         {/* Main Content */}
-                        <div className="lg:col-span-2 space-y-8">
-                            <Card className="border-gold/10 shadow-xl">
-                                <CardContent className="p-8 md:p-10">
-                                    <h2 className="text-3xl font-serif font-bold text-maroon mb-6 flex items-center gap-3">
-                                        Job Description
-                                        <div className="h-px flex-1 bg-gold/20" />
-                                    </h2>
+                        <div className="lg:col-span-2 space-y-10">
+                            <Card className="border-none shadow-2xl shadow-gold/10 bg-white rounded-[3rem] overflow-hidden">
+                                <CardContent className="p-10 md:p-14">
+                                    <div className="flex items-center gap-4 mb-10">
+                                        <h2 className="text-3xl font-serif font-bold text-gray-900">Job Details</h2>
+                                        <div className="h-px flex-1 bg-gold/10" />
+                                    </div>
 
-                                    <div className="text-gray-700 leading-relaxed space-y-4 whitespace-pre-line text-xl break-all">
+                                    <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed whitespace-pre-line text-lg font-medium italic">
                                         {job.description}
                                     </div>
 
                                     {isOwner && (
-                                        <div className="mt-12 pt-8 border-t border-gold/10 flex flex-wrap gap-4">
+                                        <div className="mt-16 pt-10 border-t border-gold/10 flex flex-wrap gap-4">
                                             <Button
                                                 onClick={() => router.push(`/career/jobs/${job.id}/edit`)}
-                                                className="bg-maroon text-gold hover:bg-maroon/90"
+                                                className="bg-maroon text-gold hover:bg-maroon/90 rounded-2xl h-14 px-8 font-bold shadow-lg shadow-maroon/20"
                                             >
-                                                <Edit className="h-4 w-4 mr-2" /> Edit Posting
+                                                <Edit className="h-5 w-5 mr-2" /> Edit Posting
                                             </Button>
                                             <Button
                                                 variant="outline"
-                                                className="border-red-200 text-red-600 hover:bg-red-50"
+                                                className="border-red-100 text-red-600 hover:bg-red-50 rounded-2xl h-14 px-8 font-bold"
                                                 onClick={handleDelete}
                                                 disabled={isDeleting}
                                             >
-                                                {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Trash2 className="h-4 w-4 mr-2" />}
+                                                {isDeleting ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Trash2 className="h-5 w-5 mr-2" />}
                                                 Remove Post
                                             </Button>
                                         </div>
                                     )}
                                 </CardContent>
                             </Card>
+
+                            <Card className="border-none shadow-xl shadow-gold/5 bg-white rounded-[3rem]">
+                                <CardContent className="p-10">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <h3 className="text-2xl font-serif font-bold text-gray-900">Contact Information</h3>
+                                        <div className="h-px flex-1 bg-gold/5" />
+                                    </div>
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        {job.contactEmail && (
+                                            <div className="flex items-center gap-4 p-6 bg-gray-50 rounded-[2rem]">
+                                                <div className="h-12 w-12 rounded-2xl bg-white flex items-center justify-center text-maroon shadow-sm"><Mail className="h-6 w-6" /></div>
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email</p>
+                                                    <p className="text-lg font-bold text-gray-800">{job.contactEmail}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {job.contactPhone && (
+                                            <div className="flex items-center gap-4 p-6 bg-gray-50 rounded-[2rem]">
+                                                <div className="h-12 w-12 rounded-2xl bg-white flex items-center justify-center text-maroon shadow-sm"><Phone className="h-6 w-6" /></div>
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Phone</p>
+                                                    <p className="text-lg font-bold text-gray-800">{job.contactPhone}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </div>
 
                         {/* Sidebar */}
-                        <div className="space-y-6">
-                            <Card className="border-gold/20 shadow-lg bg-white">
-                                <CardContent className="p-6">
-                                    <h3 className="text-xl font-bold text-maroon mb-6 border-b border-gold/10 pb-2">Quick Overview</h3>
+                        <div className="space-y-8">
+                            <Card className="border-none shadow-2xl shadow-gold/10 bg-white rounded-[3rem] sticky top-24">
+                                <CardContent className="p-10">
+                                    <h3 className="text-xl font-bold text-maroon mb-10 text-center uppercase tracking-widest">Job Overview</h3>
 
-                                    <div className="space-y-6">
+                                    <div className="space-y-8">
                                         {job.salary && (
-                                            <div className="flex items-start gap-4">
-                                                <div className="h-10 w-10 rounded-lg bg-green-50 flex items-center justify-center shrink-0 border border-green-100">
-                                                    <DollarSign className="h-5 w-5 text-green-600" />
+                                            <div className="flex items-center gap-5">
+                                                <div className="h-14 w-14 rounded-2xl bg-green-50 flex items-center justify-center shrink-0 border border-green-100">
+                                                    <DollarSign className="h-7 w-7 text-green-600" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Salary/Package</p>
-                                                    <p className="text-green-700 font-bold">{job.salary}</p>
+                                                    <p className="text-xs text-gray-400 uppercase font-black tracking-widest mb-1">Remuneration</p>
+                                                    <p className="text-2xl font-serif font-bold text-green-700 leading-none">{job.salary}</p>
                                                 </div>
                                             </div>
                                         )}
 
-                                        <div className="flex items-start gap-4">
-                                            <div className="h-10 w-10 rounded-lg bg-gold/5 flex items-center justify-center shrink-0 border border-gold/10">
-                                                <Calendar className="h-5 w-5 text-gold" />
+                                        <div className="flex items-center gap-5">
+                                            <div className="h-14 w-14 rounded-2xl bg-gold/10 flex items-center justify-center shrink-0 border border-gold/20">
+                                                <Calendar className="h-7 w-7 text-maroon" />
                                             </div>
                                             <div>
-                                                <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Application Deadline</p>
-                                                <p className="font-bold text-gray-800">
-                                                    {job.deadline ? new Date(job.deadline).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : "Open until filled"}
+                                                <p className="text-xs text-gray-400 uppercase font-black tracking-widest mb-1">Application By</p>
+                                                <p className="text-xl font-bold text-gray-800 leading-none">
+                                                    {job.deadline ? formatDate(job.deadline) : "Continuous"}
                                                 </p>
                                             </div>
                                         </div>
 
-                                        <div className="mt-8 pt-6 border-t border-gold/10">
+                                        <Separator className="bg-gold/10 my-10" />
+
+                                        <div className="space-y-4">
                                             {!isAuthenticated ? (
-                                                <div className="text-center p-4 bg-cream/30 rounded-xl border border-gold/20">
-                                                    <p className="text-sm text-gray-600 mb-4">You must be logged in to apply for this position.</p>
+                                                <div className="text-center p-8 bg-cream/30 rounded-[2.5rem] border border-gold/20">
+                                                    <p className="text-gray-600 mb-6 font-medium italic leading-relaxed">Join the community to unlock application privileges.</p>
                                                     <Link href="/login" className="block">
-                                                        <Button className="w-full bg-maroon text-gold hover:bg-maroon/90 font-bold">
-                                                            Login to Apply
+                                                        <Button className="w-full bg-maroon text-gold hover:bg-maroon/90 font-bold h-14 rounded-2xl shadow-lg shadow-maroon/20">
+                                                            Identity Login
                                                         </Button>
                                                     </Link>
                                                 </div>
@@ -286,14 +342,18 @@ export default function JobDetailsPage() {
                                                 <div className="space-y-4">
                                                     <Button
                                                         onClick={handleApply}
-                                                        className="w-full bg-maroon text-gold hover:bg-maroon/90 font-bold h-12 shadow-lg shadow-maroon/10"
+                                                        className="w-full bg-maroon text-gold hover:bg-maroon/90 font-bold h-16 rounded-2xl shadow-2xl shadow-maroon/30 text-lg group"
                                                     >
-                                                        Apply with Community Profile
+                                                        Submit Application
+                                                        <Briefcase className="ml-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                                                     </Button>
 
-                                                    <p className="text-[10px] text-center text-muted-foreground">
-                                                        By clicking apply, an email will be opened to the recruiter with your registered community details.
-                                                    </p>
+                                                    <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl justify-center text-center">
+                                                        <Shield className="h-4 w-4 text-green-600" />
+                                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                                                            Verified Opportunity
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
@@ -301,17 +361,17 @@ export default function JobDetailsPage() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="border-gold/10 shadow-md">
-                                <CardContent className="p-6">
-                                    <h3 className="font-bold text-maroon mb-4">About the Poster</h3>
+                            <Card className="border-none shadow-xl shadow-gold/5 bg-white rounded-[2.5rem]">
+                                <CardContent className="p-8">
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-6 text-center">Opportunity Steward</p>
                                     <Link href={`/members/${job.posterId}`}>
-                                        <div className="flex items-center gap-3 hover:bg-gold/5 p-2 rounded-lg transition-colors cursor-pointer">
-                                            <div className="h-10 w-10 rounded-full bg-gold/20 flex items-center justify-center text-maroon font-bold shrink-0">
+                                        <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl hover:bg-gold/5 transition-all group border border-transparent hover:border-gold/10">
+                                            <div className="h-12 w-12 rounded-2xl bg-maroon/5 flex items-center justify-center text-maroon font-serif font-bold text-xl shrink-0 group-hover:bg-maroon group-hover:text-gold transition-colors">
                                                 {job.poster?.name?.charAt(0) || "P"}
                                             </div>
                                             <div className="min-w-0">
-                                                <p className="text-sm font-bold text-gray-800 truncate">{job.poster?.name || "Community Member"}</p>
-                                                <p className="text-xs text-muted-foreground">Verified Member</p>
+                                                <p className="text-base font-bold text-gray-800 truncate leading-none mb-1">{job.poster?.name || "Community Member"}</p>
+                                                <p className="text-[10px] text-gold font-bold uppercase tracking-widest">Chartered Member</p>
                                             </div>
                                         </div>
                                     </Link>

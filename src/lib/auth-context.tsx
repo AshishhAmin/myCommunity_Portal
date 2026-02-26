@@ -58,7 +58,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (firebaseUser) {
                 await fetchUserData(firebaseUser)
             } else {
-                setUser(null)
+                // If not in Firebase, check if we have a server session (for dummy accounts)
+                const res = await fetch("/api/auth/me")
+                if (res.ok) {
+                    const data = await res.json()
+                    setUser(data.user)
+                } else {
+                    setUser(null)
+                }
             }
             setIsLoading(false)
         })
@@ -86,6 +93,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const login = async (email: string, password?: string): Promise<boolean> => {
         setIsLoading(true)
         try {
+            // Check for dummy accounts first
+            const isDummy = (email === 'admin@community.com' || email === 'member@community.com') && (password === 'password123')
+
+            if (isDummy) {
+                const res = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                })
+
+                if (res.ok) {
+                    const data = await res.json()
+                    setUser(data.user)
+                    return true
+                }
+                return false
+            }
+
+            // Normal Firebase login
             await signInWithEmailAndPassword(auth, email, password || "password123")
             return true
         } catch (error) {

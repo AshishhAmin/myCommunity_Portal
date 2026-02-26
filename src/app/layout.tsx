@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   description: "A Trusted Digital Platform for CommuNet Community Growth",
 };
 
+import { Chatbot } from "@/components/support/chatbot";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,6 +34,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           {children}
+          <Chatbot />
           <Toaster richColors position="top-right" />
         </AuthProvider>
       </body>

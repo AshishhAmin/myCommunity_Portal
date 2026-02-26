@@ -9,11 +9,16 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Calendar, MapPin, Clock, Plus, Loader2, Megaphone, Trash2, X } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import Image from "next/image"
+import { Calendar, MapPin, Clock, Plus, Loader2, Megaphone, Trash2, X, Share2, Info, ShieldCheck, Filter } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ShareButton } from "@/components/ui/share-button"
 import { ReportButton } from "@/components/ui/report-button"
 import { Pagination } from "@/components/ui/pagination"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { toast } from "sonner"
 
 interface Event {
     id: string
@@ -48,8 +53,9 @@ interface PaginationState {
 
 export default function EventsPage() {
     const [rsvps, setRsvps] = useState<string[]>([])
-    const { user, isAuthenticated, getToken } = useAuth()
+    const { user, isAuthenticated, isLoading: authLoading, getToken } = useAuth()
     const router = useRouter()
+
 
     // Separate state for sections
     const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([])
@@ -76,7 +82,11 @@ export default function EventsPage() {
             })
             if (viewMode === 'mine') params.append('mode', 'mine')
 
-            const res = await fetch(`/api/events?${params.toString()}`)
+            const token = await getToken()
+            const headers: Record<string, string> = {}
+            if (token) headers['Authorization'] = `Bearer ${token}`
+
+            const res = await fetch(`/api/events?${params.toString()}`, { headers })
             if (res.ok) {
                 const { data, pagination } = await res.json()
                 if (filter === 'upcoming') {
@@ -106,10 +116,15 @@ export default function EventsPage() {
             pastParams.append('filter', 'past')
             pastParams.append('limit', pastPagination.limit.toString())
 
+            // Get auth token for my-rsvps endpoint
+            const token = await getToken()
+            const authHeaders: Record<string, string> = {}
+            if (token) authHeaders['Authorization'] = `Bearer ${token}`
+
             const [upcomingRes, pastRes, rsvpsRes, announceRes] = await Promise.all([
-                fetch(`/api/events?${upcomingParams.toString()}`),
-                fetch(`/api/events?${pastParams.toString()}`),
-                isAuthenticated ? fetch("/api/events/my-rsvps") : Promise.resolve(null),
+                fetch(`/api/events?${upcomingParams.toString()}`, { headers: authHeaders }),
+                fetch(`/api/events?${pastParams.toString()}`, { headers: authHeaders }),
+                isAuthenticated ? fetch("/api/events/my-rsvps", { headers: authHeaders }) : Promise.resolve(null),
                 fetch("/api/announcements")
             ])
 
@@ -142,8 +157,10 @@ export default function EventsPage() {
     }
 
     useEffect(() => {
+        // Wait for auth to finish loading before fetching
+        if (authLoading) return
         fetchData()
-    }, [isAuthenticated, viewMode])
+    }, [authLoading, viewMode])
 
     const handleUpcomingPageChange = (page: number) => {
         fetchEvents('upcoming', page)
@@ -167,16 +184,12 @@ export default function EventsPage() {
             if (res.ok) {
                 const data = await res.json()
 
-                // Helper to update event in a list
+                // Use the real attendee count from the API
                 const updateList = (list: Event[]) => list.map(e => {
                     if (e.id === eventId) {
                         return {
                             ...e,
-                            _count: {
-                                attendees: data.status === 'attending'
-                                    ? (e._count?.attendees || 0) + 1
-                                    : Math.max(0, (e._count?.attendees || 0) - 1)
-                            }
+                            _count: { attendees: data.attendeeCount }
                         }
                     }
                     return e
@@ -241,73 +254,89 @@ export default function EventsPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+        <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
             <Navbar />
 
-            <main className="flex-1 container mx-auto px-4 py-6 md:py-8">
-
-                <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
-                    <div className="text-center md:text-left">
-                        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-maroon">Community Events</h1>
-                        <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground mt-3 md:mt-4 leading-relaxed max-w-3xl">Connect, Celebrate, and Grow Together. Join our community gatherings across India.</p>
+            <main className="flex-1 container mx-auto px-4 py-12">
+                {/* Banner Section */}
+                <div className="relative rounded-[2.5rem] overflow-hidden mb-12 bg-maroon text-gold p-8 md:p-16">
+                    <div className="absolute top-0 right-0 w-1/3 h-full opacity-10 pointer-events-none">
+                        <Calendar className="w-full h-full -mr-20 -mt-20 transform rotate-12" />
                     </div>
 
-                    <div className="flex flex-col sm:flex-row md:flex-col gap-3 items-center sm:items-end w-full md:w-auto">
-                        {user?.role === "admin" && (
-                            <Link href="/events/add" className="w-full sm:w-auto">
-                                <Button className="bg-maroon text-gold hover:bg-maroon/90 w-full md:w-auto md:h-11">
-                                    <Plus className="mr-2 h-4 w-4" /> Organize Event
+                    <div className="relative z-10 max-w-3xl">
+                        <Badge variant="outline" className="border-gold/30 text-gold mb-6 px-4 py-1 rounded-full uppercase tracking-widest text-[10px] font-bold">
+                            Community Gatherings
+                        </Badge>
+                        <h1 className="text-4xl md:text-6xl font-serif font-bold mb-6 leading-tight">
+                            Events & Celebrations
+                        </h1>
+                        <p className="text-gold/80 text-lg md:text-xl max-w-2xl leading-relaxed mb-8">
+                            Connect, celebrate, and grow together. Join our community gatherings across the globe.
+                        </p>
+
+                        <div className="flex flex-wrap gap-4">
+                            {user?.role === "admin" && (
+                                <Button
+                                    className="bg-gold text-maroon hover:bg-gold/90 h-12 px-8 rounded-xl font-bold shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5"
+                                    onClick={() => router.push("/events/add")}
+                                >
+                                    <Plus className="mr-2 h-5 w-5" /> Organize Event
                                 </Button>
-                            </Link>
-                        )}
-                        {user?.role === "admin" && (
-                            <Dialog open={isAnnounceOpen} onOpenChange={setIsAnnounceOpen}>
-                                <DialogTrigger asChild>
-                                    <Button variant="outline" className="border-maroon text-maroon hover:bg-maroon/10 w-full sm:w-auto md:h-11">
-                                        <Megaphone className="mr-2 h-4 w-4" /> Make Announcement
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Add New Announcement</DialogTitle>
-                                    </DialogHeader>
-                                    <Input
-                                        placeholder="Type your announcement here..."
-                                        value={newAnnouncement}
-                                        onChange={(e) => setNewAnnouncement(e.target.value)}
-                                        className="mt-4"
-                                    />
-                                    <DialogFooter className="mt-4">
-                                        <Button onClick={handleAddAnnouncement} disabled={announceLoading} className="bg-maroon text-gold">
-                                            {announceLoading ? <Loader2 className="animate-spin h-4 w-4" /> : "Post Announcement"}
+                            )}
+                            {user?.role === "admin" && (
+                                <Dialog open={isAnnounceOpen} onOpenChange={setIsAnnounceOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline" className="border-gold/30 text-gold hover:bg-gold/10 h-12 px-8 rounded-xl font-bold">
+                                            <Megaphone className="mr-2 h-5 w-5" /> Make Announcement
                                         </Button>
-                                    </DialogFooter>
-                                </DialogContent>
-                            </Dialog>
-                        )}
+                                    </DialogTrigger>
+                                    <DialogContent className="rounded-3xl border-gold/20 shadow-2xl bg-white p-8">
+                                        <DialogHeader>
+                                            <DialogTitle className="font-serif text-2xl font-bold text-maroon">New Community Bulletin</DialogTitle>
+                                        </DialogHeader>
+                                        <div className="pt-4">
+                                            <Textarea
+                                                placeholder="Type your announcement here..."
+                                                value={newAnnouncement}
+                                                onChange={(e) => setNewAnnouncement(e.target.value)}
+                                                className="min-h-[120px] rounded-2xl bg-gray-50 border-gray-100 focus:border-gold focus:ring-gold/20 p-4"
+                                            />
+                                        </div>
+                                        <DialogFooter className="mt-8">
+                                            <Button onClick={handleAddAnnouncement} disabled={announceLoading} className="w-full h-12 bg-maroon text-gold font-bold rounded-xl shadow-lg shadow-maroon/20">
+                                                {announceLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "Publish Announcement"}
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            )}
+                        </div>
                     </div>
                 </div>
 
                 {/* Filter Toggle (Authenticated Only) */}
                 {isAuthenticated && (
-                    <div className="flex justify-center mb-8 md:mb-12">
-                        <div className="bg-cream/40 p-1.5 rounded-xl border border-gold/30 flex gap-1 shadow-inner w-full sm:w-auto justify-center">
+                    <div className="flex justify-center mb-12">
+                        <div className="bg-white p-1.5 rounded-2xl border border-gold/20 flex gap-1 shadow-sm w-full sm:w-auto overflow-x-auto no-scrollbar">
                             <button
                                 onClick={() => setViewMode('all')}
-                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all flex-1 sm:flex-none ${viewMode === 'all'
-                                    ? "bg-maroon text-gold shadow-sm"
-                                    : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
+                                className={`px-6 py-2 text-sm font-bold rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${viewMode === 'all'
+                                    ? "bg-maroon text-gold shadow-md shadow-maroon/10 scale-105 z-10"
+                                    : "text-gray-500 hover:text-maroon hover:bg-maroon/5"
                                     }`}
                             >
+                                <Calendar className="h-4 w-4" />
                                 All Events
                             </button>
                             <button
                                 onClick={() => setViewMode('mine')}
-                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all flex-1 sm:flex-none ${viewMode === 'mine'
-                                    ? "bg-maroon text-gold shadow-sm"
-                                    : "text-muted-foreground hover:text-maroon hover:bg-gold/10"
+                                className={`px-6 py-2 text-sm font-bold rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${viewMode === 'mine'
+                                    ? "bg-maroon text-gold shadow-md shadow-maroon/10 scale-105 z-10"
+                                    : "text-gray-500 hover:text-maroon hover:bg-maroon/5"
                                     }`}
                             >
+                                <ShieldCheck className="h-4 w-4" />
                                 My Events
                             </button>
                         </div>
@@ -404,128 +433,130 @@ export default function EventsPage() {
                             </h2>
                             {upcomingEvents.length > 0 ? (
                                 <>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-6 md:pb-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
                                         {upcomingEvents.map((event) => (
-                                            <Card key={event.id} className="overflow-hidden border-gold/30 hover:shadow-lg transition-shadow bg-white/50 flex flex-col">
+                                            <Card key={event.id} className="group rounded-[2rem] border-gold/20 shadow-xl shadow-gold/5 bg-white overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-gold/10 flex flex-col h-full border-b-4 border-b-maroon/10 hover:border-b-maroon transition-all">
                                                 {/* Event Image */}
-                                                <div className="h-32 md:h-40 w-full bg-gold/5 relative overflow-hidden ring-1 ring-gold/10 group shrink-0">
+                                                <div className="relative aspect-[16/10] bg-gray-100 overflow-hidden">
                                                     {event.images && event.images.length > 0 ? (
-                                                        <img
+                                                        <Image
                                                             src={event.images[0]}
                                                             alt={event.title}
-                                                            className="h-full w-full object-cover"
-                                                            onError={(e) => {
-                                                                const target = e.target as HTMLImageElement
-                                                                target.style.display = 'none'
-                                                                target.parentElement!.querySelector('.fallback')?.classList.remove('hidden')
-                                                            }}
+                                                            fill
+                                                            className="object-cover transition-transform duration-700 group-hover:scale-110"
                                                         />
-                                                    ) : null}
-                                                    <div className={`fallback absolute inset-0 flex items-center justify-center text-muted-foreground/50 font-serif text-xs md:text-sm ${(event.images && event.images.length > 0) ? 'hidden' : ''}`}>
-                                                        Event Image
+                                                    ) : (
+                                                        <div className="absolute inset-0 flex items-center justify-center bg-maroon/5">
+                                                            <Calendar className="h-12 w-12 text-maroon/20" />
+                                                        </div>
+                                                    )}
+                                                    <div className="absolute top-4 left-4">
+                                                        <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-lg border border-gold/10 text-center min-w-[60px]">
+                                                            <div className="text-maroon font-bold text-lg leading-none">{new Date(event.date).getDate()}</div>
+                                                            <div className="text-maroon/60 text-[10px] uppercase font-bold tracking-widest">{new Date(event.date).toLocaleString('default', { month: 'short' })}</div>
+                                                        </div>
                                                     </div>
+                                                    {event.status === 'pending' && (
+                                                        <div className="absolute top-4 right-4">
+                                                            <Badge className="bg-amber-500 text-white border-none rounded-lg px-2 py-1 text-[10px] font-bold uppercase shadow-lg">Pending</Badge>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <CardHeader className="p-4 pb-2">
-                                                    <div className="flex flex-wrap gap-2 justify-between items-start mb-2">
-                                                        <span className="font-bold text-maroon bg-gold/10 px-2 py-1 rounded text-[10px] md:text-xs border border-gold/20">
-                                                            {formatDate(event.date)}
-                                                        </span>
-                                                        {event.status === 'pending' && (
-                                                            <span className="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border border-amber-200">
-                                                                Pending
-                                                            </span>
-                                                        )}
-                                                        {event.status === 'deleted_by_admin' && (
-                                                            <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border border-red-200">
-                                                                Deleted
-                                                            </span>
-                                                        )}
-                                                        <span className="text-[10px] md:text-xs text-muted-foreground font-semibold flex items-center gap-1">
+
+                                                <CardContent className="p-6 md:p-8 flex-1 flex flex-col">
+                                                    <div className="flex items-center gap-3 text-gold mb-3">
+                                                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest">
                                                             <Clock className="h-3 w-3" /> {formatTime(event.date)}
-                                                        </span>
+                                                        </div>
+                                                        <Separator orientation="vertical" className="h-3 bg-gold/30" />
+                                                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest">
+                                                            <MapPin className="h-3 w-3" /> {event.location.split(',')[0]}
+                                                        </div>
                                                     </div>
-                                                    <CardTitle className="text-lg md:text-xl font-serif font-bold text-maroon leading-tight">
-                                                        <Link href={`/events/${event.id}`} className="hover:text-gold transition-colors line-clamp-2">
+
+                                                    <h3 className="text-xl font-serif font-bold text-gray-900 mb-3 group-hover:text-maroon transition-colors line-clamp-2 leading-tight">
+                                                        <Link href={`/events/${event.id}`}>
                                                             {event.title}
                                                         </Link>
-                                                    </CardTitle>
-                                                    <CardDescription className="flex items-center gap-1 mt-1 text-xs md:text-sm">
-                                                        <MapPin className="h-3 w-3 text-gold shrink-0" /> <span className="truncate">{event.location}</span>
-                                                    </CardDescription>
-                                                </CardHeader>
-                                                <CardContent className="flex-1">
-                                                    <p className="text-muted-foreground text-sm md:text-base leading-relaxed line-clamp-3 break-words font-medium">
+                                                    </h3>
+
+                                                    <p className="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-6">
                                                         {event.description}
                                                     </p>
-                                                    <div className="mt-3 md:mt-4 flex items-center gap-2 text-xs md:text-sm text-maroon font-medium">
-                                                        <span>{event._count?.attendees || 0} attending</span>
+
+                                                    <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex -space-x-2">
+                                                                {[1, 2, 3].map(i => (
+                                                                    <div key={i} className="h-7 w-7 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center overflow-hidden">
+                                                                        <div className="h-full w-full bg-maroon/10 text-maroon text-[8px] flex items-center justify-center font-bold">{i}</div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                            <span className="text-xs font-bold text-gray-400">+{event._count?.attendees || 0} Going</span>
+                                                        </div>
+
+                                                        <div className="flex items-center gap-2">
+                                                            <ShareButton
+                                                                url={`/events/${event.id}`}
+                                                                title={event.title}
+                                                                description={`${formatDate(event.date)} • ${event.location}`}
+                                                                className="h-9 w-9 rounded-xl border-gray-100 hover:bg-maroon/5 hover:text-maroon transition-all"
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </CardContent>
-                                                <CardFooter className="flex flex-col gap-4">
-                                                    <div className="flex gap-2 w-full">
-                                                        {user?.email === event.organizer?.email ? (
-                                                            <>
-                                                                <Button
-                                                                    variant="outline"
-                                                                    className="flex-1"
-                                                                    onClick={() => router.push(`/events/${event.id}/edit`)}
-                                                                >
-                                                                    Edit
-                                                                </Button>
-                                                                <Button
-                                                                    variant="outline"
-                                                                    className="flex-1 text-red-600 border-red-200 hover:bg-red-50"
-                                                                    onClick={async () => {
-                                                                        if (confirm("Are you sure you want to delete this event?")) {
-                                                                            const token = await getToken()
-                                                                            const delHeaders: Record<string, string> = {}
-                                                                            if (token) delHeaders['Authorization'] = `Bearer ${token}`
-                                                                            await fetch(`/api/events/${event.id}`, { method: 'DELETE', headers: delHeaders })
-                                                                            window.location.reload()
-                                                                        }
-                                                                    }}
-                                                                >
-                                                                    Delete
-                                                                </Button>
-                                                            </>
-                                                        ) : (
+
+                                                <CardFooter className="p-6 md:p-8 pt-0 flex flex-col gap-3">
+                                                    {user?.email === event.organizer?.email ? (
+                                                        <div className="flex gap-2 w-full">
                                                             <Button
-                                                                className={`flex-1 ${rsvps.includes(event.id) ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-maroon text-gold'}`}
-                                                                onClick={() => handleRSVP(event.id)}
+                                                                variant="outline"
+                                                                className="flex-1 h-12 rounded-xl border-gray-100 font-bold hover:bg-gray-50"
+                                                                onClick={() => router.push(`/events/${event.id}/edit`)}
                                                             >
-                                                                {rsvps.includes(event.id) ? "Going (Cancel RSVP)" : "RSVP Now"}
+                                                                Edit
                                                             </Button>
-                                                        )}
-                                                        <ShareButton
-                                                            url={`/events/${event.id}`}
-                                                            title={event.title}
-                                                            description={`${formatDate(event.date)} • ${event.location}`}
-                                                            details={`📅 *Event: ${event.title}*\nDate: ${formatDate(event.date)}\nTime: ${formatTime(event.date)}\nLocation: ${event.location}\nOrganized by: ${event.organizer?.name || 'N/A'}\n\n${event.description}`}
-                                                        />
-                                                    </div>
+                                                            <Button
+                                                                variant="outline"
+                                                                className="flex-1 h-12 rounded-xl border-red-50 text-red-600 font-bold hover:bg-red-50 hover:border-red-100"
+                                                                onClick={async () => {
+                                                                    if (confirm("Are you sure you want to delete this event?")) {
+                                                                        const token = await getToken()
+                                                                        const delHeaders: Record<string, string> = {}
+                                                                        if (token) delHeaders['Authorization'] = `Bearer ${token}`
+                                                                        await fetch(`/api/events/${event.id}`, { method: 'DELETE', headers: delHeaders })
+                                                                        window.location.reload()
+                                                                    }
+                                                                }}
+                                                            >
+                                                                Delete
+                                                            </Button>
+                                                        </div>
+                                                    ) : (
+                                                        <Button
+                                                            className={`w-full h-12 rounded-xl font-bold shadow-lg transition-all active:scale-95 ${rsvps.includes(event.id)
+                                                                ? 'bg-green-600 hover:bg-green-700 text-white shadow-green-200'
+                                                                : 'bg-maroon text-gold shadow-maroon/20 hover:bg-maroon/95'
+                                                                }`}
+                                                            onClick={() => handleRSVP(event.id)}
+                                                        >
+                                                            {rsvps.includes(event.id) ? "Cancel My RSVP" : "Confirm My Attendance"}
+                                                        </Button>
+                                                    )}
 
                                                     {event.audience === 'members_only' && event.registrationLink && (
                                                         <Button
-                                                            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md transform hover:-translate-y-0.5 transition-all duration-200"
+                                                            variant="outline"
+                                                            className="w-full h-12 rounded-xl border-blue-100 text-blue-600 font-bold hover:bg-blue-50"
                                                             onClick={(e) => {
                                                                 e.stopPropagation()
                                                                 window.open(event.registrationLink!, '_blank')
                                                             }}
                                                         >
-                                                            Register Now
+                                                            Register Separately
                                                         </Button>
                                                     )}
-
-                                                    <div className="w-full mt-2 pt-4 border-t border-white/10 flex justify-between items-center">
-                                                        {/* <ReportButton
-                                                            contentType="event"
-                                                            contentId={event.id}
-                                                            contentTitle={event.title}
-                                                            posterName={event.organizer?.name}
-                                                            posterEmail={event.organizer?.email}
-                                                            className="text-white hover:text-red-400 hover:bg-white/10"
-                                                        /> */}
-                                                    </div>
                                                 </CardFooter>
                                             </Card>
                                         ))}
@@ -546,17 +577,34 @@ export default function EventsPage() {
                         </section>
 
                         {/* Past Events */}
-                        <section>
-                            <h2 className="font-serif text-2xl font-bold text-maroon mb-6 text-opacity-80">Past Events</h2>
+                        <section className="pt-12 border-t border-gold/10">
+                            <div className="flex items-center justify-between mb-8">
+                                <h2 className="font-serif text-2xl md:text-3xl font-bold text-maroon flex items-center gap-3">
+                                    <Clock className="h-6 w-6 opacity-50" /> Memories from Past
+                                </h2>
+                            </div>
+
                             {pastEvents.length > 0 ? (
                                 <>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-8">
                                         {pastEvents.map((event) => (
-                                            <Card key={event.id} className="bg-cream/20 border-gold/10 opacity-75">
-                                                <CardHeader className="py-4">
-                                                    <CardTitle className="text-lg text-maroon/70">{event.title}</CardTitle>
-                                                    <CardDescription className="text-xs">{formatDate(event.date)} • {event.location}</CardDescription>
-                                                </CardHeader>
+                                            <Card key={event.id} className="rounded-2xl border-gray-100 bg-white/50 hover:bg-white transition-all overflow-hidden group">
+                                                <div className="flex items-center p-4 gap-4">
+                                                    <div className="h-16 w-16 rounded-xl bg-gray-50 flex flex-col items-center justify-center border border-gray-100 shrink-0">
+                                                        <div className="text-maroon font-bold leading-none">{new Date(event.date).getDate()}</div>
+                                                        <div className="text-gray-400 text-[8px] uppercase font-bold tracking-widest">{new Date(event.date).toLocaleString('default', { month: 'short' })}</div>
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <h3 className="font-bold text-gray-900 group-hover:text-maroon transition-colors truncate">
+                                                            <Link href={`/events/${event.id}`}>{event.title}</Link>
+                                                        </h3>
+                                                        <div className="flex items-center gap-2 mt-1">
+                                                            <span className="text-[10px] font-bold text-gold uppercase tracking-widest">{event.location.split(',')[0]}</span>
+                                                            <span className="h-1 w-1 bg-gray-200 rounded-full" />
+                                                            <span className="text-[10px] text-gray-400 font-medium">{event._count?.attendees || 0} attended</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </Card>
                                         ))}
                                     </div>
@@ -571,7 +619,9 @@ export default function EventsPage() {
                                     )}
                                 </>
                             ) : (
-                                <p className="text-muted-foreground">No past events recorded.</p>
+                                <div className="text-center py-12 bg-white/30 rounded-[2rem] border border-dashed border-gold/20">
+                                    <p className="text-gray-400 font-medium italic">No past events recorded in the digital archives.</p>
+                                </div>
                             )}
                         </section>
                     </>

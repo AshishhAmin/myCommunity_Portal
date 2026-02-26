@@ -15,6 +15,7 @@ export function AdminSidebar() {
         { name: "Business Moderation", icon: Building2, href: "/admin/business" },
         { name: "Career Moderation", icon: Briefcase, href: "/admin/career" },
         { name: "Events Management", icon: Calendar, href: "/admin/events" },
+        { name: "Accommodations", icon: Building2, href: "/admin/accommodations" },
         { name: "Donations", icon: HandHeart, href: "/admin/donations" },
         // { name: "Reports & Flags", icon: Flag, href: "/admin/reports" },
     ]

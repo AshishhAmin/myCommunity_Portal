@@ -102,6 +102,15 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
         }
 
+        // Verification Lock: Only approved members or admins can post
+        if (user.status !== 'approved' && user.role !== 'admin') {
+            return NextResponse.json({
+                message: 'Account verification required. Please contact admin to verify your account.'
+            }, { status: 403 })
+        }
+
+        const status = userRole === 'admin' ? 'approved' : 'pending'
+
         const job = await prisma.job.create({
             data: {
                 posterId: userId,
@@ -114,9 +123,19 @@ export async function POST(req: Request) {
                 contactEmail: contactEmail || null,
                 contactPhone: contactPhone || null,
                 deadline: deadline ? new Date(deadline) : null,
-                status: userRole === 'admin' ? 'approved' : 'pending',
+                status,
             }
         })
+
+        if (status === 'approved') {
+            const { broadcastNotification } = await import('@/lib/notifications')
+            await broadcastNotification(
+                "New Job Opportunity",
+                `A new job "${job.title}" at ${job.company} has been posted.`,
+                "job",
+                "/career?tab=jobs"
+            )
+        }
 
         return NextResponse.json(job, { status: 201 })
     } catch (error) {

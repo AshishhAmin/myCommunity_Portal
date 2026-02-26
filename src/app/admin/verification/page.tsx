@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Loader2, Check, X, Building2, Calendar, Briefcase, HandHeart, CheckCircle2, CheckCircle, XCircle, Mail, Eye, Flag, Trash2, ShieldAlert, PlusCircle } from "lucide-react"
+import { Loader2, Check, X, Building2, Home, Calendar, Briefcase, HandHeart, CheckCircle2, CheckCircle, XCircle, Mail, Eye, Flag, Trash2, ShieldAlert, PlusCircle, Users } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { toast } from "sonner"
@@ -14,19 +14,21 @@ import { Pagination } from "@/components/ui/pagination"
 import { ConfirmModal } from "@/components/ui/confirm-modal"
 import { useAuth } from "@/lib/auth-context"
 
-type VerificationTab = 'jobs' | 'help' | 'support' | 'reports'
+type VerificationTab = 'users' | 'jobs' | 'accommodations' | 'help' | 'support' | 'reports'
 
 export default function ModerationCenter() {
     const searchParams = useSearchParams()
     const initialTab = searchParams.get('tab') as VerificationTab | null
 
     const [loading, setLoading] = useState(true)
-    const [activeTab, setActiveTab] = useState<VerificationTab>(initialTab || "jobs")
+    const [activeTab, setActiveTab] = useState<VerificationTab>(initialTab || "users")
 
     // Data State
     const [items, setItems] = useState<any[]>([])
     const [counts, setCounts] = useState<Record<VerificationTab, number>>({
+        users: 0,
         jobs: 0,
+        accommodations: 0,
         help: 0,
         support: 0,
         reports: 0
@@ -60,22 +62,28 @@ export default function ModerationCenter() {
             const token = await getToken()
             const headers: Record<string, string> = {}
             if (token) headers['Authorization'] = `Bearer ${token}`
-            const [jobRes, helpRes, supRes, repRes] = await Promise.all([
+            const [userRes, jobRes, accRes, helpRes, supRes, repRes] = await Promise.all([
+                fetch('/api/admin/users?status=pending&limit=1', { headers }),
                 fetch('/api/admin/career?type=jobs&status=pending&limit=1', { headers }),
+                fetch('/api/admin/accommodations?status=pending', { headers }),
                 fetch('/api/admin/content?type=help&status=pending&limit=1', { headers }),
                 fetch('/api/admin/support?status=open&limit=1', { headers }),
                 fetch('/api/reports?status=open&limit=1', { headers })
             ])
 
-            const [jobData, helpData, supData, repData] = await Promise.all([
+            const [userData, jobData, accData, helpData, supData, repData] = await Promise.all([
+                userRes.ok ? userRes.json() : { pagination: { total: 0 } },
                 jobRes.ok ? jobRes.json() : { pagination: { total: 0 } },
+                accRes.ok ? accRes.json() : [],
                 helpRes.ok ? helpRes.json() : { pagination: { total: 0 } },
                 supRes.ok ? supRes.json() : { pagination: { total: 0 } },
                 repRes.ok ? repRes.json() : { pagination: { total: 0 } }
             ])
 
             setCounts({
+                users: userData.pagination?.total || 0,
                 jobs: jobData.pagination?.total || 0,
+                accommodations: Array.isArray(accData) ? accData.length : 0,
                 help: helpData.pagination?.total || 0,
                 support: supData.pagination?.total || 0,
                 reports: repData.pagination?.total || 0
@@ -89,7 +97,9 @@ export default function ModerationCenter() {
         setLoading(true)
         try {
             let endpoint = ""
-            if (activeTab === 'jobs') endpoint = `/api/admin/career?type=jobs&status=pending`
+            if (activeTab === 'users') endpoint = `/api/admin/users?status=pending`
+            else if (activeTab === 'jobs') endpoint = `/api/admin/career?type=jobs&status=pending`
+            else if (activeTab === 'accommodations') endpoint = `/api/admin/accommodations?status=pending`
             else if (activeTab === 'help') endpoint = `/api/admin/content?type=help&status=pending`
             else if (activeTab === 'support') endpoint = `/api/admin/support?status=open`
             else if (activeTab === 'reports') endpoint = `/api/reports?status=open`
@@ -108,13 +118,21 @@ export default function ModerationCenter() {
             if (!res.ok) throw new Error("Failed to fetch items")
 
             const data = await res.json()
-            setItems(data.data || [])
-            setTotalPages(data.pagination?.pages || 1)
 
-            setCounts(prev => ({
-                ...prev,
-                [activeTab]: data.pagination?.total || 0
-            }))
+            // Accommodations API returns a flat array, not paginated
+            if (activeTab === 'accommodations') {
+                const accList = Array.isArray(data) ? data : (data.data || [])
+                setItems(accList)
+                setTotalPages(1)
+                setCounts(prev => ({ ...prev, accommodations: accList.length }))
+            } else {
+                setItems(data.data || [])
+                setTotalPages(data.pagination?.pages || 1)
+                setCounts(prev => ({
+                    ...prev,
+                    [activeTab]: data.pagination?.total || 0
+                }))
+            }
 
         } catch (error) {
             console.error("Failed to fetch items", error)
@@ -157,13 +175,25 @@ export default function ModerationCenter() {
                 let body: any = {}
                 let method = "PATCH"
 
-                if (type === 'jobs') {
+                if (type === 'users') {
+                    endpoint = `/api/admin/users/${id}`
+                    body = { status: action === 'deleted' ? 'rejected' : action }
+                } else if (type === 'jobs') {
                     if (action === 'deleted') {
                         method = "DELETE"
                         endpoint = `/api/admin/career?id=${id}&type=jobs`
                     } else {
                         endpoint = `/api/admin/career`
                         body = { id, type: 'jobs', status: action }
+                    }
+                } else if (type === 'accommodations') {
+                    if (action === 'deleted') {
+                        method = "DELETE"
+                        endpoint = `/api/admin/accommodations?id=${id}`
+                    } else {
+                        method = "PATCH"
+                        endpoint = `/api/admin/accommodations?id=${id}`
+                        body = { status: action }
                     }
                 } else if (type === 'help') {
                     if (action === 'deleted') {
@@ -236,6 +266,7 @@ export default function ModerationCenter() {
             case 'job': endpoint = `/api/admin/career?id=${contentId}&type=jobs`; break;
             case 'scholarship': endpoint = `/api/admin/career?id=${contentId}&type=scholarships`; break;
             case 'mentorship': endpoint = `/api/admin/career?id=${contentId}&type=mentorship`; break;
+            case 'accommodation': endpoint = `/api/admin/accommodations?id=${contentId}`; break;
             case 'achievement': endpoint = `/api/admin/content?id=${contentId}&type=achievements`; break;
             case 'help': endpoint = `/api/admin/content?id=${contentId}&type=help`; break;
         }
@@ -263,6 +294,14 @@ export default function ModerationCenter() {
                 owner: item.reporter?.name || "Anonymous",
                 ownerEmail: item.reporter?.email,
                 description: `Reason: ${item.reason} ${item.details ? `(${item.details})` : ''} - [${item.contentType}]`
+            }
+        }
+        if (activeTab === 'users') {
+            return {
+                title: item.name || "Unknown User",
+                owner: "N/A",
+                ownerEmail: item.email,
+                description: `Mobile: ${item.mobile || 'N/A'}${item.gotra ? ` | Gotra: ${item.gotra}` : ''}`
             }
         }
         const title = item.name || item.title || item.expertise || item.subject || "Untitled"
@@ -294,7 +333,9 @@ export default function ModerationCenter() {
             <Tabs value={activeTab} onValueChange={(val) => { setActiveTab(val as VerificationTab); setCurrentPage(1); }} className="w-full">
                 <TabsList className="bg-transparent border-b border-gold/20 w-full justify-start h-auto p-0 rounded-none gap-8 overflow-x-auto">
                     {[
+                        { id: 'users', label: 'Users', icon: Users },
                         { id: 'jobs', label: 'Jobs', icon: Briefcase },
+                        { id: 'accommodations', label: 'Accommodations', icon: Home },
                         { id: 'help', label: 'Help', icon: HandHeart },
                         { id: 'support', label: 'Support', icon: Mail },
                         { id: 'reports', label: 'Reports', icon: ShieldAlert }
@@ -380,9 +421,13 @@ export default function ModerationCenter() {
                                                                 </>
                                                             )}
                                                         </div>
-                                                        {activeTab !== 'support' && activeTab !== 'reports' && (
+                                                        {activeTab !== 'support' && activeTab !== 'reports' && activeTab !== 'users' && (
                                                             <div className="flex justify-end mt-2">
-                                                                <Link href={activeTab === 'jobs' ? `/career/jobs/${item.id}` : activeTab === 'help' ? `/help/${item.id}` : '#'} target="_blank" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-[10px] font-medium transition-colors h-6 px-2 py-1 text-muted-foreground hover:text-maroon hover:bg-gold/10 gap-1"><Eye className="h-3 w-3" /> View Public Page</Link>
+                                                                <Link href={
+                                                                    activeTab === 'jobs' ? `/career/jobs/${item.id}` :
+                                                                        activeTab === 'accommodations' ? `/accommodations/${item.id}` :
+                                                                            activeTab === 'help' ? `/help/${item.id}` : '#'
+                                                                } target="_blank" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-[10px] font-medium transition-colors h-6 px-2 py-1 text-muted-foreground hover:text-maroon hover:bg-gold/10 gap-1"><Eye className="h-3 w-3" /> View Public Page</Link>
                                                             </div>
                                                         )}
                                                     </td>

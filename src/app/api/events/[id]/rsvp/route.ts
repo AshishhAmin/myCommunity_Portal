@@ -19,10 +19,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
             await prisma.eventAttendee.delete({
                 where: { eventId_userId: { eventId: id, userId: user.id } }
             })
-            return NextResponse.json({ message: 'RSVP removed', status: 'not_attending' })
+            const count = await prisma.eventAttendee.count({ where: { eventId: id } })
+            return NextResponse.json({ message: 'RSVP removed', status: 'not_attending', attendeeCount: count })
         } else {
             await prisma.eventAttendee.create({ data: { eventId: id, userId: user.id } })
-            return NextResponse.json({ message: 'RSVP successful', status: 'attending' })
+            const count = await prisma.eventAttendee.count({ where: { eventId: id } })
+            return NextResponse.json({ message: 'RSVP successful', status: 'attending', attendeeCount: count })
         }
     } catch (error) {
         console.error('Error toggling RSVP:', error)

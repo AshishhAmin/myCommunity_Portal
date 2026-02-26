@@ -4,14 +4,22 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
-import { ArrowLeft, Save, Loader2 } from "lucide-react"
+import { ArrowLeft, Save, Loader2, Building2, UploadCloud, Info, Briefcase, Plus, X } from "lucide-react"
 import { AuthGuard } from "@/components/auth-guard"
 import { validateRequired, validateLength, collectErrors } from "@/lib/validation"
 import { getIdToken } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 import { useAuth } from "@/lib/auth-context"
+import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
+import Image from "next/image"
 
 export default function AddBusinessPage() {
     const router = useRouter()
@@ -145,174 +153,223 @@ export default function AddBusinessPage() {
     const categories = ["Retail", "Jewellery", "Technology", "Food", "Textiles", "Logistics", "Services", "Other"]
 
     return (
-        <AuthGuard allowedRoles={["member", "admin"]}>
-            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+        <AuthGuard allowedRoles={["member", "admin"]} requireVerified={true}>
+            <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
                 <Navbar />
 
-                <main className="flex-1 container mx-auto px-4 py-8 max-w-2xl">
-                    <Button
-                        variant="ghost"
-                        onClick={() => router.back()}
-                        className="mb-6 hover:bg-transparent hover:text-maroon pl-0"
-                    >
-                        <ArrowLeft className="h-4 w-4 mr-2" /> Back to Directory
-                    </Button>
-
-                    <div className="bg-white rounded-lg shadow-lg border border-gold/20 p-8">
-                        <div className="mb-6">
-                            <h1 className="font-serif text-2xl font-bold text-maroon">Add Your Business</h1>
-                            <p className="text-muted-foreground mt-1">
-                                Promote your business to the CommuNet community.
-                            </p>
+                <main className="flex-1 container mx-auto px-4 py-12 max-w-4xl">
+                    {/* Header */}
+                    <div className="mb-10 text-center">
+                        <Link href="/business" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-maroon transition-colors mb-6">
+                            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Directory
+                        </Link>
+                        <div className="flex justify-center mb-4">
+                            <Badge variant="outline" className="border-maroon/20 text-maroon bg-white px-4 py-1 rounded-full uppercase tracking-widest text-[10px] font-bold">
+                                Post an Enterprise
+                            </Badge>
                         </div>
-
-                        {error && (
-                            <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">
-                                {error}
-                            </div>
-                        )}
-
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Business Name *</label>
-                                <Input
-                                    name="name"
-                                    placeholder="e.g. Sri Lakshmi Silks"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    className={errors.name ? 'border-red-500' : ''}
-                                />
-                                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Category</label>
-                                    <select
-                                        name="category"
-                                        className="w-full h-10 rounded-md border border-gold/40 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
-                                        value={formData.category}
-                                        onChange={handleChange}
-                                    >
-                                        {categories.map(cat => (
-                                            <option key={cat} value={cat}>{cat}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">City *</label>
-                                    <Input
-                                        name="city"
-                                        placeholder="e.g. Bangalore"
-                                        value={formData.city}
-                                        onChange={handleChange}
-                                        className={errors.city ? 'border-red-500' : ''}
-                                    />
-                                    {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Address (Optional)</label>
-                                <Input
-                                    name="address"
-                                    placeholder="Full address of your shop/office"
-                                    value={formData.address}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Description *</label>
-                                <textarea
-                                    name="description"
-                                    rows={4}
-                                    className={`w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 ${errors.description ? 'border-red-500' : 'border-gold/40'}`}
-                                    placeholder="Describe your products or services (min 20 characters)..."
-                                    value={formData.description}
-                                    onChange={handleChange}
-                                />
-                                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Contact Number / Email *</label>
-                                <Input
-                                    name="contact"
-                                    placeholder="e.g. 9988776655 or email@example.com"
-                                    value={formData.contact}
-                                    onChange={handleChange}
-                                    className={errors.contact ? 'border-red-500' : ''}
-                                />
-                                {errors.contact && <p className="text-red-500 text-xs mt-1">{errors.contact}</p>}
-                            </div>
-
-                            <div className="space-y-3">
-                                <label className="text-sm font-medium text-gray-700 flex items-center justify-between">
-                                    <span>Business Photos (Max 5)</span>
-                                    <span className="text-xs text-muted-foreground">{formData.images.length} / 5</span>
-                                </label>
-
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                                    {formData.images.map((url, idx) => (
-                                        <div key={idx} className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeImage(idx)}
-                                                className="absolute top-1 right-1 bg-black/60 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    ))}
-
-                                    {formData.images.length < 5 && (
-                                        <div className="relative aspect-video flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group">
-                                            <Input
-                                                type="file"
-                                                accept="image/*"
-                                                multiple
-                                                onChange={handleImageUpload}
-                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                                                disabled={isSubmitting}
-                                            />
-                                            <div className="text-center">
-                                                <svg className="mx-auto h-8 w-8 text-gray-400 group-hover:text-maroon transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                                <p className="mt-1 text-xs text-gray-500 font-medium">Click to upload</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                                <p className="text-xs text-muted-foreground leading-relaxed">
-                                    Upload clear, high-quality images of your business front, interior, products, or service offerings. First image will be used as the main banner.
-                                </p>
-                            </div>
-
-                            <div className="pt-4">
-                                <Button
-                                    type="submit"
-                                    className="w-full bg-maroon text-gold hover:bg-maroon/90 h-10"
-                                    disabled={isSubmitting}
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Save className="mr-2 h-4 w-4" /> Submit Listing
-                                        </>
-                                    )}
-                                </Button>
-                            </div>
-                        </form>
+                        <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">Add Your Business</h1>
+                        <p className="text-gray-600 max-w-xl mx-auto">
+                            Share your business with the community. Verified listings help build trust and grow your network.
+                        </p>
                     </div>
+
+                    <Card className="rounded-3xl border-gold/20 shadow-xl shadow-gold/5 bg-white overflow-hidden">
+                        <div className="h-2 bg-maroon w-full" />
+                        <CardContent className="p-8 md:p-12">
+                            <form onSubmit={handleSubmit} className="space-y-8">
+                                {/* Basic Info Section */}
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-2 text-maroon mb-2">
+                                        <div className="h-8 w-8 rounded-lg bg-maroon/5 flex items-center justify-center">
+                                            <Briefcase className="h-4 w-4" />
+                                        </div>
+                                        <h2 className="font-bold text-lg">Business Details</h2>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="name" className="text-sm font-semibold text-gray-700">Business Name *</Label>
+                                            <Input
+                                                id="name"
+                                                name="name"
+                                                placeholder="e.g. Sri Lakshmi Silks"
+                                                required
+                                                value={formData.name}
+                                                onChange={handleChange}
+                                                className={`h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-gold focus:ring-gold/20 ${errors.name ? 'border-red-500' : ''}`}
+                                            />
+                                            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="category" className="text-sm font-semibold text-gray-700">Category</Label>
+                                            <Select
+                                                value={formData.category}
+                                                onValueChange={(val) => setFormData(prev => ({ ...prev, category: val }))}
+                                            >
+                                                <SelectTrigger className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-gold">
+                                                    <SelectValue placeholder="Select Category" />
+                                                </SelectTrigger>
+                                                <SelectContent className="rounded-xl border-gold/20">
+                                                    {categories.map(cat => (
+                                                        <SelectItem key={cat} value={cat} className="rounded-lg">{cat}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="description" className="text-sm font-semibold text-gray-700">Description *</Label>
+                                        <Textarea
+                                            id="description"
+                                            name="description"
+                                            placeholder="Describe your products or services (min 20 characters)..."
+                                            required
+                                            rows={5}
+                                            value={formData.description}
+                                            onChange={handleChange}
+                                            className={`rounded-xl bg-gray-50 border-gray-200 focus:border-gold focus:ring-gold/20 resize-none p-4 ${errors.description ? 'border-red-500' : ''}`}
+                                        />
+                                        {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
+                                    </div>
+                                </div>
+
+                                <Separator className="bg-gold/10" />
+
+                                {/* Contact Info Section */}
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-2 text-maroon mb-2">
+                                        <div className="h-8 w-8 rounded-lg bg-maroon/5 flex items-center justify-center">
+                                            <Info className="h-4 w-4" />
+                                        </div>
+                                        <h2 className="font-bold text-lg">Contact & Location</h2>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="city" className="text-sm font-semibold text-gray-700">City *</Label>
+                                            <Input
+                                                id="city"
+                                                name="city"
+                                                placeholder="e.g. Bangalore"
+                                                required
+                                                value={formData.city}
+                                                onChange={handleChange}
+                                                className={`h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-gold focus:ring-gold/20 ${errors.city ? 'border-red-500' : ''}`}
+                                            />
+                                            {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="contact" className="text-sm font-semibold text-gray-700">Contact Number / Email *</Label>
+                                            <Input
+                                                id="contact"
+                                                name="contact"
+                                                placeholder="e.g. 9988776655 or email@example.com"
+                                                required
+                                                value={formData.contact}
+                                                onChange={handleChange}
+                                                className={`h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-gold focus:ring-gold/20 ${errors.contact ? 'border-red-500' : ''}`}
+                                            />
+                                            {errors.contact && <p className="text-red-500 text-xs mt-1">{errors.contact}</p>}
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="address" className="text-sm font-semibold text-gray-700">Detailed Address (Optional)</Label>
+                                        <Input
+                                            id="address"
+                                            name="address"
+                                            placeholder="Full address of your shop/office"
+                                            value={formData.address}
+                                            onChange={handleChange}
+                                            className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-gold focus:ring-gold/20"
+                                        />
+                                    </div>
+                                </div>
+
+                                <Separator className="bg-gold/10" />
+
+                                {/* Images Section */}
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-2 text-maroon mb-2">
+                                        <div className="h-8 w-8 rounded-lg bg-maroon/5 flex items-center justify-center">
+                                            <UploadCloud className="h-4 w-4" />
+                                        </div>
+                                        <h2 className="font-bold text-lg">Business Images</h2>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                            {formData.images.map((url, idx) => (
+                                                <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group bg-gray-50 shadow-sm transition-all hover:shadow-md">
+                                                    <Image src={url} alt={`Preview ${idx + 1}`} fill className="object-cover" />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeImage(idx)}
+                                                        className="absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                                                    >
+                                                        <X className="h-3 w-3" />
+                                                    </button>
+                                                </div>
+                                            ))}
+
+                                            {formData.images.length < 5 && (
+                                                <label className="relative aspect-square rounded-2xl border-2 border-dashed border-gold/30 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gold/5 hover:border-gold/50 transition-all bg-white group">
+                                                    <div className="h-10 w-10 rounded-full bg-gold/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                        <Plus className="h-5 w-5 text-maroon" />
+                                                    </div>
+                                                    <span className="text-[10px] font-bold text-maroon uppercase tracking-wider">Add Photo</span>
+                                                    <Input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        multiple
+                                                        onChange={handleImageUpload}
+                                                        className="hidden"
+                                                        disabled={isSubmitting}
+                                                    />
+                                                </label>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-gray-500 flex items-center gap-1.5 leading-relaxed">
+                                            <Info className="h-3.5 w-3.5 text-gold" />
+                                            Upload clear, high-quality images. Recommended: Shop front, interior, or products.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {error && (
+                                    <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium flex items-center gap-2">
+                                        <Info className="h-4 w-4" /> {error}
+                                    </div>
+                                )}
+
+                                <div className="pt-6">
+                                    <Button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="w-full h-14 bg-maroon text-gold hover:bg-maroon/90 text-lg font-bold rounded-2xl shadow-xl shadow-maroon/10 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                                    >
+                                        {isSubmitting ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                                Publishing Listing...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Save className="mr-2 h-4 w-4" /> Submit Listing
+                                            </>
+                                        )}
+                                    </Button>
+                                    <p className="text-center text-gray-400 text-xs mt-6 px-10">
+                                        By posting, you agree to our community guidelines. Every listing is reviewed for quality and authenticity.
+                                    </p>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
                 </main>
 
                 <Footer />

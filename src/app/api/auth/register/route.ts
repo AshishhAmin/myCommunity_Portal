@@ -57,6 +57,7 @@ export async function POST(req: Request) {
                 gotra,
                 firebaseUid,
                 role: 'member',
+                status: 'pending',
             }
         })
 

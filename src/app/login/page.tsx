@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
@@ -13,8 +13,14 @@ export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-    const { login, loginWithGoogle, isLoading } = useAuth()
+    const { user, login, loginWithGoogle, isLoading, isAuthenticated } = useAuth()
     const router = useRouter()
+
+    useEffect(() => {
+        if (isAuthenticated && !isLoading) {
+            router.push("/dashboard")
+        }
+    }, [isAuthenticated, isLoading, router])
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()

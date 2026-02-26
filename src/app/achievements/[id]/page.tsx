@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Trophy, Calendar, ArrowLeft, Loader2, User, Trash2, Edit, Share2, AlertTriangle } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ShareButton } from "@/components/ui/share-button"
+import { toast } from "sonner"
 import {
     Dialog,
     DialogContent,
@@ -39,6 +40,7 @@ export default function AchievementDetailsPage() {
     const params = useParams()
     const router = useRouter()
     const { user, isAuthenticated, getToken } = useAuth()
+
     const id = params.id as string
 
     const [achievement, setAchievement] = useState<AchievementDetail | null>(null)
@@ -266,11 +268,21 @@ export default function AchievementDetailsPage() {
                             <div className="bg-white rounded-2xl p-6 shadow-md border border-gold/10 text-center">
                                 <h4 className="font-bold text-maroon mb-2">Inspired by this?</h4>
                                 <p className="text-sm text-muted-foreground mb-4">Share your own success story with the community.</p>
-                                <Link href="/achievements/add">
-                                    <Button variant="outline" className="w-full border-maroon text-maroon hover:bg-maroon/5 uppercase text-xs font-bold tracking-widest">
-                                        Post Achievement
-                                    </Button>
-                                </Link>
+                                <Button
+                                    variant="outline"
+                                    className="w-full border-maroon text-maroon hover:bg-maroon/5 uppercase text-xs font-bold tracking-widest"
+                                    onClick={() => {
+                                        if (user?.role !== 'admin' && user?.status !== 'approved') {
+                                            toast.error("Action Restricted", {
+                                                description: "Verification Pending. Your account is currently under review by our community administrators. You'll be able to perform this action once your membership is verified."
+                                            })
+                                            return
+                                        }
+                                        router.push("/achievements/add")
+                                    }}
+                                >
+                                    Post Achievement
+                                </Button>
                             </div>
                         </div>
                     </div>

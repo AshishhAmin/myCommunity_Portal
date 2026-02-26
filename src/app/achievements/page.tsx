@@ -13,6 +13,8 @@ import { useAuth } from "@/lib/auth-context"
 import { ShareButton } from "@/components/ui/share-button"
 import { HeroCarousel } from "@/components/achievements/hero-carousel"
 import { Pagination } from "@/components/ui/pagination"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 interface Achievement {
     id: string
@@ -36,6 +38,8 @@ export default function AchievementsPage() {
     const [search, setSearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const { user, isAuthenticated } = useAuth()
+
+    const router = useRouter()
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1)
@@ -157,11 +161,21 @@ export default function AchievementsPage() {
                         />
                     </div>
                     {isAuthenticated && (
-                        <Link href="/achievements/add">
-                            <Button className="bg-maroon text-gold hover:bg-maroon/90 w-full sm:w-auto" suppressHydrationWarning>
-                                <Plus className="h-4 w-4 mr-2" /> Share Achievement
-                            </Button>
-                        </Link>
+                        <Button
+                            className="bg-maroon text-gold hover:bg-maroon/90 w-full sm:w-auto"
+                            suppressHydrationWarning
+                            onClick={() => {
+                                if (user?.status === 'approved' || user?.role === 'admin') {
+                                    router.push("/achievements/add")
+                                } else {
+                                    toast.error("Action Restricted", {
+                                        description: "Verification Pending. Your account is currently under review by our community administrators. You'll be able to perform this action once your membership is verified."
+                                    })
+                                }
+                            }}
+                        >
+                            <Plus className="h-4 w-4 mr-2" /> Share Achievement
+                        </Button>
                     )}
                 </div>
 

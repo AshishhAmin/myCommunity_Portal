@@ -81,6 +81,17 @@ export async function PATCH(req: Request) {
             updated = await prisma.achievement.update({ where: { id }, data: { status } })
         } else if (type === 'help') {
             updated = await prisma.helpRequest.update({ where: { id }, data: { status } })
+
+            // Broadcast emergency alerts when approved
+            if (status === 'approved' && ['Medical Emergency', 'Blood Requirement', 'Medical & Blood Help'].includes(updated.type)) {
+                const { broadcastNotification } = await import('@/lib/notifications')
+                await broadcastNotification(
+                    "EMERGENCY ALERT",
+                    `URGENT: ${updated.title}. Please check the Help Center for details.`,
+                    "emergency",
+                    "/help"
+                )
+            }
         }
 
         return NextResponse.json(updated)

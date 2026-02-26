@@ -22,8 +22,19 @@ export async function PATCH(
         const updatedEvent = await prisma.event.update({
             where: { id },
             data: { status },
-            select: { id: true, title: true, status: true }
+            select: { id: true, title: true, status: true, date: true }
         })
+
+        if (status === 'approved') {
+            const { broadcastNotification } = await import('@/lib/notifications')
+            const dateStr = new Date(updatedEvent.date).toLocaleDateString()
+            await broadcastNotification(
+                "New Event Announced",
+                `The event "${updatedEvent.title}" is scheduled for ${dateStr}.`,
+                "event",
+                `/events/${updatedEvent.id}`
+            )
+        }
 
         return NextResponse.json(updatedEvent)
 

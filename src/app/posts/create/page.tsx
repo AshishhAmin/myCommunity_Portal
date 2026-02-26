@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowLeft, Trophy, Briefcase, Building2, Calendar, GraduationCap, Users } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
+import { toast } from "sonner"
 
 type Category = "achievement" | "job" | "business" | "event" | "scholarship" | "mentorship"
 
@@ -31,9 +32,22 @@ const categories: CategoryOption[] = [
 
 export default function CreatePostPage() {
     const router = useRouter()
-    const { user } = useAuth()
+    const { user, isAuthenticated } = useAuth()
 
     const handleCategorySelect = (category: CategoryOption) => {
+        if (!isAuthenticated) {
+            toast.info("Login Required", { description: "Please login to create a post." })
+            router.push("/login")
+            return
+        }
+
+        if (user?.role !== 'admin' && user?.status !== 'approved') {
+            toast.error("Action Restricted", {
+                description: "Verification Pending. Your account is currently under review by our community administrators. You'll be able to perform this action once your membership is verified."
+            })
+            return
+        }
+
         router.push(category.href)
     }
 
@@ -64,7 +78,7 @@ export default function CreatePostPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-slide-up">
                         {categories
                             .filter(cat => {
-                                if (['event', 'scholarship'].includes(cat.id)) {
+                                if (['scholarship', 'event'].includes(cat.id)) {
                                     return user?.role === 'admin'
                                 }
                                 return true

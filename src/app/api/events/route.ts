@@ -23,7 +23,16 @@ export async function GET(req: Request) {
 
         // Status Logic
         if (viewMode === 'mine' && activeUserId) {
-            queryConditions.push({ organizerId: activeUserId })
+            // For admins: show events they organized
+            // For members: show only events they are attending (RSVP'd)
+            const activeUserRole = activeUser?.role || 'member'
+            if (activeUserRole === 'admin') {
+                queryConditions.push({ organizerId: activeUserId })
+            } else {
+                queryConditions.push({
+                    attendees: { some: { userId: activeUserId } }
+                })
+            }
         } else if (requestedStatus) {
             queryConditions.push({ status: requestedStatus })
         } else {
@@ -129,6 +138,17 @@ export async function POST(req: Request) {
                 status: eventStatus
             }
         })
+
+        if (eventStatus === 'approved') {
+            const { broadcastNotification } = await import('@/lib/notifications')
+            const dateStr = new Date(newEvent.date).toLocaleDateString()
+            await broadcastNotification(
+                "New Event Announced",
+                `The event "${newEvent.title}" is scheduled for ${dateStr}.`,
+                "event",
+                `/events/${newEvent.id}`
+            )
+        }
 
         return NextResponse.json(newEvent, { status: 201 })
     } catch (error) {

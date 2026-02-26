@@ -2,16 +2,22 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
-import { ArrowLeft, Calendar, MapPin, Clock, Save, Loader2 } from "lucide-react"
+import { ArrowLeft, Calendar, MapPin, Clock, Save, Loader2, Megaphone, Target, Users, Globe, Type, ExternalLink, X, Plus } from "lucide-react"
 import { AuthGuard } from "@/components/auth-guard"
 import { validateRequired, validateLength, validateFutureDate, validateUrl, collectErrors } from "@/lib/validation"
 import { getIdToken } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 import { useAuth } from "@/lib/auth-context"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
 
 export default function AddEventPage() {
     const router = useRouter()
@@ -141,223 +147,294 @@ export default function AddEventPage() {
     }
 
     return (
-        <AuthGuard allowedRoles={["member", "admin"]}>
-            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+        <AuthGuard allowedRoles={["member", "admin"]} requireVerified={true}>
+            <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
                 <Navbar />
 
-                <main className="flex-1 container mx-auto px-4 py-8 max-w-2xl">
-                    <Button
-                        variant="ghost"
-                        onClick={() => router.back()}
-                        className="mb-6 hover:bg-transparent hover:text-maroon pl-0"
+                <main className="flex-1 container mx-auto px-4 py-12 max-w-4xl">
+                    <Link
+                        href="/events"
+                        className="flex items-center gap-2 text-maroon hover:text-maroon/70 transition-colors mb-10 w-fit group"
                     >
-                        <ArrowLeft className="h-4 w-4 mr-2" /> Back to Events
-                    </Button>
+                        <div className="h-10 w-10 rounded-full border border-maroon/10 flex items-center justify-center group-hover:bg-maroon/5 transition-all">
+                            <ArrowLeft className="h-5 w-5" />
+                        </div>
+                        <span className="font-bold uppercase tracking-widest text-xs">Back to all events</span>
+                    </Link>
 
-                    <div className="bg-white rounded-lg shadow-lg border border-gold/20 p-8">
-                        <div className="mb-6">
-                            <h1 className="font-serif text-2xl font-bold text-maroon">Organize a Community Event</h1>
-                            <p className="text-muted-foreground mt-1">
-                                Bring the community together. Submit your event details.
-                            </p>
+                    <div className="bg-white rounded-[3rem] shadow-2xl shadow-maroon/5 border border-maroon/5 overflow-hidden">
+                        {/* Header Banner */}
+                        <div className="bg-maroon p-10 md:p-14 text-gold relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+                            <div className="relative z-10">
+                                <Badge variant="outline" className="border-gold/30 text-gold mb-6 px-4 py-1 rounded-full uppercase tracking-widest text-[10px] font-bold">
+                                    Event Organizer
+                                </Badge>
+                                <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+                                    Organize a Gathering
+                                </h1>
+                                <p className="text-gold/70 text-lg max-w-xl leading-relaxed">
+                                    Bring your community together. Fill in the details below to publish your event.
+                                </p>
+                            </div>
                         </div>
 
-                        {error && (
-                            <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">
-                                {error}
-                            </div>
-                        )}
-
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Event Title *</label>
-                                <Input
-                                    name="title"
-                                    placeholder="e.g. Annual Community Picnic"
-                                    value={formData.title}
-                                    onChange={handleChange}
-                                    className={errors.title ? 'border-red-500' : ''}
-                                />
-                                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Date</label>
-                                    <div className="relative">
-                                        <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                                        <Input
-                                            type="date"
-                                            name="date"
-                                            className={`pl-9 ${errors.date ? 'border-red-500' : ''}`}
-                                            value={formData.date}
-                                            onChange={handleChange}
-                                        />
-                                        {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
+                        <div className="p-8 md:p-14">
+                            {error && (
+                                <div className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-2xl mb-8 flex items-center gap-3">
+                                    <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                                        <X className="h-4 w-4" />
                                     </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Time</label>
-                                    <div className="relative">
-                                        <Clock className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                                        <Input
-                                            type="time"
-                                            name="time"
-                                            className={`pl-9 ${errors.time ? 'border-red-500' : ''}`}
-                                            value={formData.time}
-                                            onChange={handleChange}
-                                        />
-                                        {errors.time && <p className="text-red-500 text-xs mt-1">{errors.time}</p>}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Location</label>
-                                <div className="relative">
-                                    <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                                    <Input
-                                        name="location"
-                                        className={`pl-9 ${errors.location ? 'border-red-500' : ''}`}
-                                        placeholder="e.g. Community Hall, Jayanagar"
-                                        value={formData.location}
-                                        onChange={handleChange}
-                                    />
-                                    {errors.location && <p className="text-red-500 text-xs mt-1">{errors.location}</p>}
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Organizer Name</label>
-                                <Input
-                                    name="organizer"
-                                    placeholder="e.g. Community Welfare Association"
-                                    value={formData.organizer}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Audience</label>
-                                <select
-                                    name="audience"
-                                    className="w-full h-10 rounded-md border border-gold/40 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
-                                    value={formData.audience}
-                                    onChange={handleChange}
-                                >
-                                    <option value="public">Public (Open to All)</option>
-                                    <option value="members_only">Members Only (Registration Required)</option>
-                                </select>
-                            </div>
-
-                            {formData.audience === 'members_only' && (
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Registration Link</label>
-                                    <Input
-                                        name="registrationLink"
-                                        placeholder="https://forms.google.com/..."
-                                        value={formData.registrationLink}
-                                        onChange={handleChange}
-                                        required
-                                    />
+                                    <p className="font-medium text-sm">{error}</p>
                                 </div>
                             )}
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Category</label>
-                                <select
-                                    name="category"
-                                    className="w-full h-10 rounded-md border border-gold/40 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
-                                    value={formData.category}
-                                    onChange={handleChange}
-                                >
-                                    <option>Community Meetup</option>
-                                    <option>Cultural Festival</option>
-                                    <option>Workshop</option>
-                                    <option>Charity Drive</option>
-                                    <option>Sports</option>
-                                </select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Description *</label>
-                                <textarea
-                                    name="description"
-                                    rows={4}
-                                    className={`w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 ${errors.description ? 'border-red-500' : 'border-gold/40'}`}
-                                    placeholder="Describe the event, agenda, and expectations (min 20 characters)..."
-                                    value={formData.description}
-                                    onChange={handleChange}
-                                />
-                                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
-                            </div>
-
-                            <div className="space-y-3">
-                                <label className="text-sm font-medium text-gray-700 flex items-center justify-between">
-                                    <span>Event Photos (Max 5)</span>
-                                    <span className="text-xs text-muted-foreground">{formData.images.length} / 5</span>
-                                </label>
-
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                                    {formData.images.map((url, idx) => (
-                                        <div key={idx} className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeImage(idx)}
-                                                className="absolute top-1 right-1 bg-black/60 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                </svg>
-                                            </button>
+                            <form onSubmit={handleSubmit} className="space-y-10">
+                                {/* Basic Info Section */}
+                                <section className="space-y-8">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="h-8 w-8 rounded-xl bg-maroon/5 flex items-center justify-center">
+                                            <Type className="h-4 w-4 text-maroon" />
                                         </div>
-                                    ))}
+                                        <h2 className="text-xl font-serif font-bold text-gray-900">Basic Information</h2>
+                                    </div>
 
-                                    {formData.images.length < 5 && (
-                                        <div className="relative aspect-video flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group">
+                                    <div className="space-y-6">
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-bold text-gray-700 ml-1">Event Title *</Label>
                                             <Input
-                                                type="file"
-                                                accept="image/*"
-                                                multiple
-                                                onChange={handleImageUpload}
-                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                                                disabled={isSubmitting}
+                                                name="title"
+                                                placeholder="e.g. Annual Community Picnic 2026"
+                                                value={formData.title}
+                                                onChange={handleChange}
+                                                className={`h-14 rounded-2xl bg-gray-50 border-gray-100 focus:bg-white transition-all text-lg font-medium px-6 ${errors.title ? 'border-red-300' : 'focus:border-gold'}`}
                                             />
-                                            <div className="text-center">
-                                                <svg className="mx-auto h-8 w-8 text-gray-400 group-hover:text-maroon transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                                <p className="mt-1 text-xs text-gray-500 font-medium">Click to upload</p>
+                                            {errors.title && <p className="text-red-500 text-xs mt-1 ml-1">{errors.title}</p>}
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-bold text-gray-700 ml-1">Date *</Label>
+                                                <div className="relative">
+                                                    <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                    <Input
+                                                        type="date"
+                                                        name="date"
+                                                        value={formData.date}
+                                                        onChange={handleChange}
+                                                        className={`h-14 rounded-2xl bg-gray-50 border-gray-100 focus:bg-white transition-all pl-14 pr-6 ${errors.date ? 'border-red-300' : 'focus:border-gold'}`}
+                                                    />
+                                                </div>
+                                                {errors.date && <p className="text-red-500 text-xs mt-1 ml-1">{errors.date}</p>}
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-bold text-gray-700 ml-1">Time *</Label>
+                                                <div className="relative">
+                                                    <Clock className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                    <Input
+                                                        type="time"
+                                                        name="time"
+                                                        value={formData.time}
+                                                        onChange={handleChange}
+                                                        className={`h-14 rounded-2xl bg-gray-50 border-gray-100 focus:bg-white transition-all pl-14 pr-6 ${errors.time ? 'border-red-300' : 'focus:border-gold'}`}
+                                                    />
+                                                </div>
+                                                {errors.time && <p className="text-red-500 text-xs mt-1 ml-1">{errors.time}</p>}
                                             </div>
                                         </div>
-                                    )}
-                                </div>
-                                <p className="text-xs text-muted-foreground leading-relaxed">
-                                    Upload eye-catching images of your event location or posters. The first image will be used as the main banner.
-                                </p>
-                            </div>
 
-                            <div className="pt-4">
-                                <Button
-                                    type="submit"
-                                    className="w-full bg-maroon text-gold hover:bg-maroon/90 h-10"
-                                    disabled={isSubmitting}
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Save className="mr-2 h-4 w-4" /> Publish Event
-                                        </>
-                                    )}
-                                </Button>
-                            </div>
-                        </form>
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-bold text-gray-700 ml-1">Venue / Location *</Label>
+                                            <div className="relative">
+                                                <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                <Input
+                                                    name="location"
+                                                    placeholder="e.g. Community Hall Basement, 4th Block Jayanagar"
+                                                    value={formData.location}
+                                                    onChange={handleChange}
+                                                    className={`h-14 rounded-2xl bg-gray-50 border-gray-100 focus:bg-white transition-all pl-14 pr-6 ${errors.location ? 'border-red-300' : 'focus:border-gold'}`}
+                                                />
+                                            </div>
+                                            {errors.location && <p className="text-red-500 text-xs mt-1 ml-1">{errors.location}</p>}
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <Separator className="bg-gray-100" />
+
+                                {/* Organization Details Section */}
+                                <section className="space-y-8">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="h-8 w-8 rounded-xl bg-gold/10 flex items-center justify-center">
+                                            <Target className="h-4 w-4 text-gold-600" />
+                                        </div>
+                                        <h2 className="text-xl font-serif font-bold text-gray-900">Organization & Visibility</h2>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-bold text-gray-700 ml-1">Organizer Name *</Label>
+                                            <Input
+                                                name="organizer"
+                                                placeholder="Your Name or Association"
+                                                value={formData.organizer}
+                                                onChange={handleChange}
+                                                className="h-14 rounded-2xl bg-gray-50 border-gray-100 focus:bg-white transition-all px-6 font-medium"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-bold text-gray-700 ml-1">Event Category</Label>
+                                            <Select
+                                                defaultValue={formData.category}
+                                                onValueChange={(val) => setFormData({ ...formData, category: val })}
+                                            >
+                                                <SelectTrigger className="h-14 rounded-2xl bg-gray-50 border-gray-100 focus:bg-white transition-all px-6 font-medium">
+                                                    <SelectValue placeholder="Select Category" />
+                                                </SelectTrigger>
+                                                <SelectContent className="rounded-2xl border-gray-100 shadow-xl">
+                                                    <SelectItem value="Community Meetup">Community Meetup</SelectItem>
+                                                    <SelectItem value="Cultural Festival">Cultural Festival</SelectItem>
+                                                    <SelectItem value="Workshop">Workshop</SelectItem>
+                                                    <SelectItem value="Charity Drive">Charity Drive</SelectItem>
+                                                    <SelectItem value="Sports">Sports</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-bold text-gray-700 ml-1">Target Audience</Label>
+                                            <Select
+                                                defaultValue={formData.audience}
+                                                onValueChange={(val) => setFormData({ ...formData, audience: val })}
+                                            >
+                                                <SelectTrigger className="h-14 rounded-2xl bg-gray-50 border-gray-100 focus:bg-white transition-all px-6 font-medium">
+                                                    <SelectValue placeholder="Who can join?" />
+                                                </SelectTrigger>
+                                                <SelectContent className="rounded-2xl border-gray-100 shadow-xl">
+                                                    <SelectItem value="public">🌍 Public (Open to All)</SelectItem>
+                                                    <SelectItem value="members_only">💼 Members Only</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        {formData.audience === 'members_only' && (
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-bold text-gray-700 ml-1">Registration Link (Optional)</Label>
+                                                <div className="relative">
+                                                    <ExternalLink className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                    <Input
+                                                        name="registrationLink"
+                                                        placeholder="https://forms.google.com/..."
+                                                        value={formData.registrationLink}
+                                                        onChange={handleChange}
+                                                        className="h-14 rounded-2xl bg-gray-50 border-gray-100 focus:bg-white transition-all pl-14 pr-6"
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </section>
+
+                                <Separator className="bg-gray-100" />
+
+                                {/* Detailed Description Section */}
+                                <section className="space-y-8">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="h-8 w-8 rounded-xl bg-blue-50 flex items-center justify-center">
+                                            <Users className="h-4 w-4 text-blue-600" />
+                                        </div>
+                                        <h2 className="text-xl font-serif font-bold text-gray-900">Event Details</h2>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-bold text-gray-700 ml-1 font-serif">Description *</Label>
+                                        <Textarea
+                                            name="description"
+                                            rows={6}
+                                            placeholder="What is this event about? Mention agenda, special guests, and what attendees should bring..."
+                                            value={formData.description}
+                                            onChange={handleChange}
+                                            className={`min-h-[180px] rounded-[2rem] bg-gray-50 border-gray-100 focus:bg-white transition-all p-8 text-lg ${errors.description ? 'border-red-300' : 'focus:border-gold'}`}
+                                        />
+                                        {errors.description && <p className="text-red-500 text-xs mt-1 ml-1">{errors.description}</p>}
+                                    </div>
+                                </section>
+
+                                <Separator className="bg-gray-100" />
+
+                                {/* Visuals Section */}
+                                <section className="space-y-8">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="h-8 w-8 rounded-xl bg-orange-50 flex items-center justify-center">
+                                            <Globe className="h-4 w-4 text-orange-600" />
+                                        </div>
+                                        <h2 className="text-xl font-serif font-bold text-gray-900">Event Visuals</h2>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <Label className="text-sm font-bold text-gray-700 ml-1 flex items-center justify-between">
+                                            <span>Posters & Photos (Max 5)</span>
+                                            <span className="text-xs text-gray-400 italic font-normal">{formData.images.length} of 5 uploaded</span>
+                                        </Label>
+
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                            {formData.images.map((url, idx) => (
+                                                <div key={idx} className="relative aspect-video rounded-3xl overflow-hidden border-2 border-gray-100 group shadow-lg">
+                                                    <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeImage(idx)}
+                                                        className="absolute top-3 right-3 h-8 w-8 bg-black/50 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all backdrop-blur-md"
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+                                            ))}
+
+                                            {formData.images.length < 5 && (
+                                                <div className="relative aspect-video flex flex-col items-center justify-center border-3 border-dashed border-gray-100 rounded-[2rem] hover:bg-maroon/5 hover:border-maroon/20 hover:text-maroon transition-all cursor-pointer group group-hover:shadow-lg">
+                                                    <Input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        multiple
+                                                        onChange={handleImageUpload}
+                                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                                                        disabled={isSubmitting}
+                                                    />
+                                                    <div className="h-12 w-12 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors mb-2">
+                                                        <Plus className="h-6 w-6 text-gray-400 group-hover:text-maroon" />
+                                                    </div>
+                                                    <p className="text-sm font-bold text-gray-400 group-hover:text-maroon">Add Photo</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-gray-400 leading-relaxed font-medium bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                            ✨ <strong className="text-gray-600">Pro tip:</strong> High-quality poster images increase RSVP rates by up to 60%. The first image will be your main event banner.
+                                        </p>
+                                    </div>
+                                </section>
+
+                                <div className="pt-10">
+                                    <Button
+                                        type="submit"
+                                        className="w-full h-16 rounded-[2rem] bg-maroon text-gold hover:bg-maroon/95 font-bold text-xl shadow-2xl shadow-maroon/20 transition-all hover:-translate-y-1 active:scale-95 disabled:scale-100 disabled:opacity-50"
+                                        disabled={isSubmitting}
+                                    >
+                                        {isSubmitting ? (
+                                            <>
+                                                <Loader2 className="mr-3 h-6 w-6 animate-spin" /> Gathering Details...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Save className="mr-3 h-6 w-6" /> Publish Community Event
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </main>
 

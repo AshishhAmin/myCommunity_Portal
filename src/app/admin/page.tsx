@@ -67,6 +67,7 @@ export default function AdminDashboard() {
         { label: "Mentorships", value: totals.mentorships || 0, icon: HeartHandshake, color: "text-pink-600", bg: "bg-pink-50", accent: "border-l-pink-500", link: "/admin/career?type=mentorship&status=approved" },
         { label: "Help Requests", value: totals.helpRequests || 0, icon: Heart, color: "text-red-600", bg: "bg-red-50", accent: "border-l-red-500", link: "/admin/verification?tab=help" },
         { label: "Donations", value: totals.donations || 0, icon: IndianRupee, color: "text-amber-600", bg: "bg-amber-50", accent: "border-l-amber-500", link: "/admin/donations", subtitle: `₹${(totals.donationAmount || 0).toLocaleString('en-IN')} total` },
+        { label: "Hostels", value: totals.accommodations || 0, icon: Building2, color: "text-orange-700", bg: "bg-orange-50", accent: "border-l-orange-700", link: "/admin/accommodations" },
     ]
 
     const pendingCards = [
@@ -74,6 +75,7 @@ export default function AdminDashboard() {
         { label: "Job Posts", value: breakdown.pendingJobs || 0, icon: Briefcase, color: "text-blue-600", bg: "bg-blue-50", accent: "border-l-blue-500", link: "/admin/verification?tab=jobs" },
         { label: "Mentorships", value: breakdown.pendingMentorships || 0, icon: HeartHandshake, color: "text-pink-600", bg: "bg-pink-50", accent: "border-l-pink-500", link: "/admin/career?type=mentorship&status=pending" },
         { label: "Help Requests", value: breakdown.pendingHelpRequests || 0, icon: Heart, color: "text-red-600", bg: "bg-red-50", accent: "border-l-red-500", link: "/admin/verification?tab=help" },
+        { label: "Hostels", value: breakdown.pendingAccommodations || 0, icon: Building2, color: "text-orange-700", bg: "bg-orange-50", accent: "border-l-orange-700", link: "/admin/accommodations" },
         { label: "Members", value: stats?.stats?.totalUsers || 0, icon: Users, color: "text-maroon", bg: "bg-maroon/5", accent: "border-l-maroon", link: "/admin/users?status=pending", subtitle: "Registered users" },
     ]
 
@@ -92,6 +94,7 @@ export default function AdminDashboard() {
             { name: 'Jobs', value: breakdown.pendingJobs || 0, fill: '#3b82f6' },
             { name: 'Mentors', value: breakdown.pendingMentorships || 0, fill: '#ec4899' },
             { name: 'Help', value: breakdown.pendingHelpRequests || 0, fill: '#ef4444' },
+            { name: 'Hostels', value: breakdown.pendingAccommodations || 0, fill: '#c2410c' },
         ]
         : [
             { name: 'Events', value: totals.events || 0, fill: '#22c55e' },
@@ -100,6 +103,7 @@ export default function AdminDashboard() {
             { name: 'Scholar.', value: totals.scholarships || 0, fill: '#a855f7' },
             { name: 'Mentors', value: totals.mentorships || 0, fill: '#ec4899' },
             { name: 'Help', value: totals.helpRequests || 0, fill: '#ef4444' },
+            { name: 'Hostels', value: totals.accommodations || 0, fill: '#c2410c' },
         ]
 
     const growthMetrics = [
@@ -111,6 +115,7 @@ export default function AdminDashboard() {
         { id: 'scholarshipGrowth', label: 'Scholarships', icon: GraduationCap, color: '#a855f7' },
         { id: 'mentorshipGrowth', label: 'Mentorships', icon: HeartHandshake, color: '#ec4899' },
         { id: 'helpGrowth', label: 'Help Needs', icon: Heart, color: '#ef4444' },
+        { id: 'accommodationGrowth', label: 'Hostels', icon: Building2, color: '#c2410c' },
     ]
 
     const selectedMetric = growthMetrics.find(m => m.id === activeGrowthMetric) || growthMetrics[0]

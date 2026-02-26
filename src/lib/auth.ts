@@ -50,7 +50,7 @@ export async function verifyFirebaseToken(req: Request) {
  * Unified auth helper: checks Firebase Bearer token first, then falls back
  * to the old JWT cookie. Returns the user and role, or null if unauthenticated.
  */
-export async function getAuthUser(req: Request): Promise<{ id: string; role: string; name: string | null } | null> {
+export async function getAuthUser(req: Request): Promise<{ id: string; role: string; name: string | null; status: string } | null> {
     // 1. Try Firebase Bearer token (new method)
     try {
         const authHeader = req.headers.get('Authorization')
@@ -60,9 +60,9 @@ export async function getAuthUser(req: Request): Promise<{ id: string; role: str
             if (decodedToken) {
                 const user = await prisma.user.findFirst({
                     where: { firebaseUid: decodedToken.uid },
-                    select: { id: true, role: true, name: true }
+                    select: { id: true, role: true, name: true, status: true }
                 })
-                if (user) return user
+                if (user) return user as any
             }
         }
     } catch (_) { /* fall through */ }
@@ -77,9 +77,9 @@ export async function getAuthUser(req: Request): Promise<{ id: string; role: str
             if (payload?.sub) {
                 const user = await prisma.user.findFirst({
                     where: { id: payload.sub as string },
-                    select: { id: true, role: true, name: true }
+                    select: { id: true, role: true, name: true, status: true }
                 })
-                if (user) return user
+                if (user) return user as any
             }
         }
     } catch (_) { /* fall through */ }

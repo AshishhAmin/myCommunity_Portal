@@ -1,55 +1,38 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { adminAuth } from '@/lib/firebase-admin'
+import { getAuthUser } from '@/lib/auth'
 
 export async function GET(req: Request) {
     try {
-        const authHeader = req.headers.get('Authorization')
-        if (!authHeader?.startsWith('Bearer ')) {
+        const authUser = await getAuthUser(req)
+
+        if (!authUser) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
         }
 
-        const token = authHeader.split('Bearer ')[1]
-        const decodedToken = await adminAuth.verifyIdToken(token)
-        const firebaseUid = decodedToken.uid
-
-        // Try to find user by firebaseUid, fallback to email
-        let user = await prisma.user.findFirst({
-            where: { firebaseUid: firebaseUid }
+        // Fetch full user data including profileImage and other profile fields
+        const user = await prisma.user.findUnique({
+            where: { id: authUser.id },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                status: true,
+                mobile: true,
+                gotra: true,
+                location: true,
+                bio: true,
+                profileImage: true,
+            }
         })
 
-        if (!user && decodedToken.email) {
-            user = await prisma.user.findUnique({
-                where: { email: decodedToken.email }
-            })
-            // If found by email but missing firebaseUid, update it
-            if (user) {
-                await prisma.user.update({
-                    where: { id: user.id },
-                    data: { firebaseUid: firebaseUid }
-                })
-            }
-        }
-
         if (!user) {
-            // Auto-create for social login if missing
-            user = await prisma.user.create({
-                data: {
-                    firebaseUid,
-                    email: decodedToken.email || '',
-                    name: decodedToken.name || '',
-                    password: 'SOCIAL_LOGIN',
-                    role: 'member',
-                    status: 'pending' // Still needs approval? Or auto-approve?
-                }
-            })
-            console.log("Auto-created social user:", user.email)
+            return NextResponse.json({ message: 'User not found' }, { status: 404 })
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password: _, ...userWithoutPassword } = user
-
-        return NextResponse.json({ user: userWithoutPassword }, { status: 200 })
+        return NextResponse.json({ user }, { status: 200 })
     } catch (error) {
         console.error('Auth check error:', error)
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })

@@ -6,9 +6,13 @@ import Link from "next/link"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
-import { MapPin, Phone, Mail, Globe, Clock, ArrowLeft, Star, Loader2, Share2, Shield } from "lucide-react"
+import { MapPin, Phone, Mail, Globe, Clock, ArrowLeft, Star, Loader2, Share2, Shield, Calendar, Edit, Trash2, Info, Building2, ShieldCheck } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ShareButton } from "@/components/ui/share-button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import Image from "next/image"
 
 interface BusinessDetail {
     id: string
@@ -62,6 +66,8 @@ export default function BusinessDetailsPage() {
     const isOwner = user?.email === business?.owner?.email
     const isDeletedByAdmin = business?.status === 'deleted_by_admin'
 
+    const [activeImage, setActiveImage] = useState(0)
+
     if (loading) {
         return (
             <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
@@ -92,7 +98,7 @@ export default function BusinessDetailsPage() {
 
     if (isDeletedByAdmin && !isAdmin) {
         return (
-            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+            <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
                 <Navbar />
                 <div className="flex-1 container mx-auto px-4 py-20 flex flex-col items-center justify-center text-center">
                     <div className="bg-red-50 p-6 rounded-full mb-6 border border-red-100 shadow-sm">
@@ -103,7 +109,7 @@ export default function BusinessDetailsPage() {
                         This business listing has been deleted by an administrator for violating community guidelines.
                     </p>
                     <Link href="/business">
-                        <Button className="bg-maroon text-gold hover:bg-maroon/90 px-8 h-12 text-lg">
+                        <Button className="bg-maroon text-gold hover:bg-maroon/90 px-8 h-12 text-lg rounded-xl">
                             Back to Directory
                         </Button>
                     </Link>
@@ -114,205 +120,220 @@ export default function BusinessDetailsPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+        <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
             <Navbar />
 
-            <main className="flex-1 pb-12">
-                {/* Hero Section */}
-                <div className="relative h-[400px] w-full bg-gray-900">
-                    <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{
-                            backgroundImage: `url(${business.images && business.images.length > 0 ? business.images[0] : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200'})`
-                        }}
-                    >
-                        <div className="absolute inset-0 bg-black/50" />
-                    </div>
+            <main className="flex-1 py-8">
+                <div className="container mx-auto px-4 max-w-6xl">
 
-                    <div className="container mx-auto px-4 relative h-full flex flex-col justify-end pb-8 text-white">
-                        {isDeletedByAdmin && isAdmin && (
-                            <div className="mb-6 bg-red-600/90 text-white p-4 rounded-lg flex items-center gap-3 border border-red-500 shadow-xl animate-pulse">
-                                <Shield className="h-6 w-6" />
-                                <div className="flex-1">
-                                    <p className="font-bold">This post has been deleted by an administrator.</p>
-                                    <p className="text-sm opacity-90 text-white/80">It is currently hidden from the public feed and directory.</p>
-                                </div>
-                            </div>
-                        )}
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-                            <div>
-                                <span className="bg-gold text-maroon text-xs font-bold px-3 py-1 rounded-full w-fit mb-4 inline-block">
-                                    {business.category}
-                                </span>
-                                <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold mb-4">{business.name}</h1>
-                                <div className="flex items-center gap-4 text-gray-200">
-                                    <span className="flex items-center gap-1">
-                                        <MapPin className="h-4 w-4 text-gold" /> {business.city || "Location N/A"}
-                                    </span>
-                                    {business.status === 'approved' && (
-                                        <span className="flex items-center gap-1 text-green-400 font-medium">
-                                            <Star className="h-4 w-4 fill-current" /> Verified Listing
-                                        </span>
-                                    )}
-                                    {business.status === 'pending' && (
-                                        <span className="flex items-center gap-1 text-amber-400 font-medium">
-                                            <Clock className="h-4 w-4" /> Pending Verification
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
+                    {/* Back Button */}
+                    <Link href="/business" className="inline-flex items-center text-gray-500 hover:text-maroon transition-colors mb-6 font-medium">
+                        <ArrowLeft className="h-4 w-4 mr-2" /> Back to Directory
+                    </Link>
 
-                            {/* Actions */}
-                            <div className="flex gap-3">
-                                <ShareButton
-                                    url={`/business/${business.id}`}
-                                    title={business.name}
-                                    variant="button"
-                                    size="sm"
-                                    className="bg-gold text-maroon hover:bg-gold/90 border-none px-6 h-10"
-                                    details={`🏢 *${business.name}*\nCategory: ${business.category}\nLocation: ${business.city || 'India'}\nContact: ${business.contact || 'N/A'}\nEmail: ${business.owner?.email || 'N/A'}\nWebsite: ${business.website || 'N/A'}\n\n${business.description}`}
+                    <div className="grid lg:grid-cols-3 gap-8">
+                        {/* Main Content (Left) */}
+                        <div className="lg:col-span-2 space-y-8">
+
+                            {/* Image Gallery Header */}
+                            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm border border-gold/20 group">
+                                <Image
+                                    src={business.images && business.images.length > 0 ? business.images[activeImage] : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200'}
+                                    alt={business.name}
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                    priority
                                 />
-                                {user?.email === business.owner.email && (
-                                    <>
-                                        <Button
-                                            onClick={() => router.push(`/business/${business.id}/edit`)}
-                                            className="bg-white/10 hover:bg-white/20 text-white border border-white/30 backdrop-blur-sm h-10"
-                                        >
-                                            Edit Details
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            className="bg-red-500/80 hover:bg-red-600/90 backdrop-blur-sm h-10"
-                                            onClick={async () => {
-                                                if (confirm("Are you sure you want to delete this listing?")) {
-                                                    try {
-                                                        const token = await getToken()
-                                                        const delHeaders: Record<string, string> = {}
-                                                        if (token) delHeaders['Authorization'] = `Bearer ${token}`
-                                                        const res = await fetch(`/api/business/${business.id}`, { method: 'DELETE', headers: delHeaders })
-                                                        if (res.ok) {
-                                                            router.push('/business')
-                                                        } else {
-                                                            alert("Failed to delete business")
-                                                        }
-                                                    } catch (e) {
-                                                        console.error(e)
-                                                        alert("An error occurred")
-                                                    }
-                                                }
-                                            }}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="container mx-auto px-4 -mt-8 relative z-10">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-                        {/* Main Content */}
-                        <div className="md:col-span-2 space-y-8">
-                            <div className="bg-white rounded-lg p-8 shadow-md border border-gold/10">
-                                <h2 className="text-3xl md:text-4xl font-bold text-maroon mb-6 font-serif">About Us</h2>
-                                <p className="text-gray-600 leading-relaxed text-xl whitespace-pre-line">
-                                    {business.description}
-                                </p>
-                            </div>
-
-                            {/* Image Gallery */}
-                            {business.images && business.images.length > 1 && (
-                                <div className="bg-white rounded-lg p-8 shadow-md border border-gold/10">
-                                    <h2 className="text-2xl md:text-3xl font-bold text-maroon mb-6 font-serif">Photo Gallery</h2>
-                                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                                        {business.images.slice(1).map((img, idx) => (
-                                            <div key={idx} className="relative aspect-square md:aspect-[4/3] rounded-lg overflow-hidden group border border-gray-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
-                                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                <img
-                                                    src={img}
-                                                    alt={`Gallery image ${idx + 2}`}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                                />
-                                            </div>
-                                        ))}
+                                {/* Image Count Overlay */}
+                                {business.images && business.images.length > 1 && (
+                                    <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-medium">
+                                        {activeImage + 1} / {business.images.length}
                                     </div>
+                                )}
+
+                                {/* Tags overlay */}
+                                <div className="absolute top-4 right-4 flex gap-2">
+                                    <Badge className="bg-white/90 text-maroon hover:bg-white backdrop-blur-md shadow-lg text-sm px-3 py-1">
+                                        {business.category}
+                                    </Badge>
+                                    {business.status === 'approved' && (
+                                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100 px-3 py-1 text-sm flex items-center gap-1">
+                                            <ShieldCheck className="h-3 w-3" /> Verified
+                                        </Badge>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Thumbnail Bar */}
+                            {business.images && business.images.length > 1 && (
+                                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                                    {business.images.map((img, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setActiveImage(idx)}
+                                            className={`relative h-20 w-28 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all ${activeImage === idx ? 'border-maroon ring-2 ring-maroon/20 ring-offset-2' : 'border-transparent hover:border-gray-300'
+                                                }`}
+                                        >
+                                            <Image src={img} alt={`Thumb ${idx}`} fill className="object-cover" />
+                                        </button>
+                                    ))}
                                 </div>
                             )}
+
+                            {/* Title & Basics */}
+                            <div>
+                                <div className="flex justify-between items-start gap-4 mb-4">
+                                    <h1 className="text-3xl sm:text-4xl font-serif font-bold text-gray-900 leading-tight">
+                                        {business.name}
+                                    </h1>
+                                    <div className="flex items-center gap-2">
+                                        {(user?.email === business.owner.email || isAdmin) && (
+                                            <>
+                                                <Link href={`/business/${business.id}/edit`}>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="shrink-0 h-10 border-gold text-maroon hover:bg-gold hover:text-white px-4 rounded-xl"
+                                                    >
+                                                        <Edit className="h-4 w-4 mr-2" /> Edit
+                                                    </Button>
+                                                </Link>
+                                                <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    className="shrink-0 h-10 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border-none px-4 rounded-xl"
+                                                    onClick={async () => {
+                                                        if (confirm("Are you sure you want to delete this listing?")) {
+                                                            try {
+                                                                const token = await getToken()
+                                                                const delHeaders: Record<string, string> = {}
+                                                                if (token) delHeaders['Authorization'] = `Bearer ${token}`
+                                                                const res = await fetch(`/api/business/${business.id}`, { method: 'DELETE', headers: delHeaders })
+                                                                if (res.ok) {
+                                                                    router.push('/business')
+                                                                } else {
+                                                                    alert("Failed to delete business")
+                                                                }
+                                                            } catch (e) {
+                                                                console.error(e)
+                                                                alert("An error occurred")
+                                                            }
+                                                        }
+                                                    }}
+                                                >
+                                                    <Trash2 className="h-4 w-4 mr-2" /> Delete
+                                                </Button>
+                                            </>
+                                        )}
+                                        <ShareButton
+                                            url={`/business/${business.id}`}
+                                            title={business.name}
+                                            variant="button"
+                                            size="sm"
+                                            className="rounded-xl shrink-0 h-10 px-4 bg-gold/10 text-maroon hover:bg-gold/20"
+                                            details={`🏢 *${business.name}*\nCategory: ${business.category}\nLocation: ${business.city || 'India'}\n\n${business.description}`}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-gray-600 font-medium">
+                                    <div className="flex items-center">
+                                        <MapPin className="h-5 w-5 mr-2 text-maroon" />
+                                        {business.address ? `${business.address}, ` : ''}{business.city || "India"}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <Separator className="bg-gold/20" />
+
+                            {/* Description */}
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-4">About the Business</h2>
+                                <div className="prose prose-gray max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap text-lg">
+                                    {business.description}
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Sidebar Info */}
-                        <div className="space-y-6">
-                            <div className="bg-white rounded-lg p-6 shadow-md border border-gold/10">
-                                <h3 className="text-xl font-bold text-maroon mb-4 border-b border-gray-100 pb-2">
-                                    Contact Information
-                                </h3>
+                        {/* Sidebar (Right) */}
+                        <div className="lg:col-span-1">
+                            <div className="sticky top-24 space-y-6">
 
-                                {!isAuthenticated ? (
-                                    <div className="text-center py-4">
-                                        <p className="text-sm text-gray-500 mb-3">Login to view contact details</p>
-                                        <Link href="/login">
-                                            <Button variant="outline" className="w-full border-maroon text-maroon hover:bg-maroon/5">
-                                                Login Now
-                                            </Button>
-                                        </Link>
+                                {/* Contact Card */}
+                                <Card className="border-gold/20 shadow-xl shadow-gold/5 bg-white overflow-hidden rounded-3xl">
+                                    <div className="bg-maroon p-6 text-white text-center relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 p-4 opacity-10"><Building2 className="h-24 w-24" /></div>
+                                        <p className="text-maroon-100 text-sm font-semibold uppercase tracking-wider mb-2 relative z-10">Business Category</p>
+                                        <h3 className="text-3xl font-bold relative z-10">{business.category}</h3>
                                     </div>
-                                ) : (
-                                    <>
-                                        <div className="space-y-4">
-                                            {business.address && (
-                                                <div className="flex items-start gap-3">
-                                                    <MapPin className="h-5 w-5 text-gold shrink-0 mt-0.5" />
-                                                    <p className="text-gray-600 text-sm">{business.address}</p>
-                                                </div>
-                                            )}
-                                            {business.contact && (
-                                                <div className="flex items-center gap-3">
-                                                    <Phone className="h-5 w-5 text-gold shrink-0" />
-                                                    <p className="text-gray-600 text-sm">{business.contact}</p>
-                                                </div>
-                                            )}
-                                            {business.owner?.email && (
-                                                <div className="flex items-center gap-3">
-                                                    <Mail className="h-5 w-5 text-gold shrink-0" />
-                                                    <p className="text-gray-600 text-sm">{business.owner.email}</p>
-                                                </div>
-                                            )}
 
-                                            {/* Placeholder for fields not yet in schema but in UI mock */}
-                                            <div className="flex items-start gap-3">
-                                                <Clock className="h-5 w-5 text-gold shrink-0 mt-0.5" />
-                                                <p className="text-gray-600 text-sm">Contact for hours</p>
+                                    <CardContent className="p-6">
+                                        <h4 className="font-bold text-gray-900 mb-4">Contact Person</h4>
+
+                                        <div className="flex items-center gap-4 mb-6 p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                                            <div className="h-14 w-14 rounded-full bg-maroon/10 text-maroon flex items-center justify-center font-bold text-xl shrink-0">
+                                                {business.owner?.name?.[0] || 'B'}
+                                            </div>
+                                            <div>
+                                                <p className="font-bold text-gray-900">{business.owner?.name || "Business Owner"}</p>
+                                                <p className="text-xs text-gray-500 font-medium">Community Member</p>
                                             </div>
                                         </div>
 
-                                        <div className="mt-6 pt-4 border-t border-gray-100 grid grid-cols-2 gap-3">
-                                            <Button className="w-full bg-maroon text-gold hover:bg-maroon/90">
-                                                Call Now
-                                            </Button>
-                                            <Button variant="outline" className="w-full border-maroon text-maroon hover:bg-maroon/5">
-                                                Message
-                                            </Button>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
+                                        {!isAuthenticated ? (
+                                            <div className="text-center p-6 bg-orange-50 border border-orange-100 rounded-2xl">
+                                                <ShieldCheck className="h-10 w-10 text-orange-400 mx-auto mb-3" />
+                                                <h4 className="font-bold text-gray-900 mb-2">Contact Details Hidden</h4>
+                                                <p className="text-sm text-gray-600 mb-4 text-center">
+                                                    For the safety of our members, contact information is only visible to logged-in community members.
+                                                </p>
+                                                <Link href="/login" className="w-full">
+                                                    <Button className="w-full bg-maroon hover:bg-maroon/90 text-white rounded-full">
+                                                        Login to View Details
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-4">
+                                                {business.contact && (
+                                                    <div className="flex items-center gap-3 p-4 border border-gray-100 rounded-2xl bg-white hover:border-gold/30 transition-colors">
+                                                        <div className="h-10 w-10 flex items-center justify-center bg-green-50 text-green-600 rounded-full shrink-0">
+                                                            <Phone className="h-5 w-5" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs text-gray-500 font-medium">Contact Number</p>
+                                                            <p className="font-bold text-gray-900">{business.contact}</p>
+                                                        </div>
+                                                    </div>
+                                                )}
 
-                            <Button
-                                variant="ghost"
-                                className="w-full text-gray-500 hover:text-maroon"
-                                onClick={() => router.back()}
-                            >
-                                <ArrowLeft className="h-4 w-4 mr-2" /> Back to Directory
-                            </Button>
+                                                {business.owner?.email && (
+                                                    <div className="flex items-center gap-3 p-4 border border-gray-100 rounded-2xl bg-white hover:border-gold/30 transition-colors">
+                                                        <div className="h-10 w-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-full shrink-0">
+                                                            <Mail className="h-5 w-5" />
+                                                        </div>
+                                                        <div className="overflow-hidden">
+                                                            <p className="text-xs text-gray-500 font-medium">Email Address</p>
+                                                            <p className="font-bold text-gray-900 truncate">{business.owner.email}</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <p className="text-xs text-center text-gray-400 mt-4 leading-relaxed">
+                                                    By contacting the owner, you agree to CommuNet's Guidelines.
+                                                </p>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </main >
+            </main>
 
             <Footer />
-        </div >
+        </div>
     )
 }

@@ -24,6 +24,7 @@ export async function GET(req: Request) {
         const totalMentorships = await prisma.mentorship.count()
         const totalHelpRequests = await prisma.helpRequest.count()
         const totalDonations = await prisma.donation.count()
+        const totalAccommodations = await (prisma as any).accommodation.count()
 
         // 3. Pending Counts
         const pendingEvents = await prisma.event.count({ where: { status: 'pending' } })
@@ -32,7 +33,8 @@ export async function GET(req: Request) {
         const pendingScholarships = await prisma.scholarship.count({ where: { status: 'pending' } })
         const pendingMentorships = await prisma.mentorship.count({ where: { status: 'pending' } })
         const pendingHelpRequests = await prisma.helpRequest.count({ where: { status: 'pending' } })
-        const totalPending = pendingEvents + pendingBusinesses + pendingJobs + pendingScholarships + pendingMentorships + pendingHelpRequests
+        const pendingAccommodations = await (prisma as any).accommodation.count({ where: { status: 'pending' } })
+        const totalPending = pendingEvents + pendingBusinesses + pendingJobs + pendingScholarships + pendingMentorships + pendingHelpRequests + pendingAccommodations
 
         // 4. Time Range Setup
         const now = new Date()
@@ -109,6 +111,7 @@ export async function GET(req: Request) {
         const scholarshipGrowth = await getGrowthData(prisma.scholarship)
         const mentorshipGrowth = await getGrowthData(prisma.mentorship)
         const helpGrowth = await getGrowthData(prisma.helpRequest)
+        const accommodationGrowth = await getGrowthData((prisma as any).accommodation)
 
         // 5. Donation stats
         const donationAgg = await prisma.donation.aggregate({ _sum: { amount: true } })
@@ -128,6 +131,7 @@ export async function GET(req: Request) {
                     helpRequests: totalHelpRequests,
                     donations: totalDonations,
                     donationAmount: totalDonationAmount,
+                    accommodations: totalAccommodations,
                 },
                 breakdown: {
                     pendingEvents,
@@ -136,6 +140,7 @@ export async function GET(req: Request) {
                     pendingScholarships,
                     pendingMentorships,
                     pendingHelpRequests,
+                    pendingAccommodations,
                 }
             },
             graphs: {
@@ -146,7 +151,8 @@ export async function GET(req: Request) {
                 donationGrowth,
                 scholarshipGrowth,
                 mentorshipGrowth,
-                helpGrowth
+                helpGrowth,
+                accommodationGrowth
             }
         })
 

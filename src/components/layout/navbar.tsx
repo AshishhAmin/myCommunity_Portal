@@ -14,6 +14,7 @@ import {
 import { LogOut, User, PlusCircle, Briefcase, GraduationCap, Building2, Calendar, Trophy, Users, Menu, ChevronDown, X, Network } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
+import { NotificationBell } from "@/components/notifications/notification-bell"
 
 export function Navbar() {
     const { user, logout, isAuthenticated, isLoading } = useAuth()
@@ -81,6 +82,9 @@ export function Navbar() {
                     </Link>
                     <Link href="/business" className={linkClass("/business")}>
                         Business
+                    </Link>
+                    <Link href="/accommodations" className={linkClass("/accommodations")}>
+                        Hostels
                     </Link>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -150,6 +154,8 @@ export function Navbar() {
                                     </span>
                                 </Link>
 
+                                <NotificationBell />
+
                                 <Button variant="ghost" size="sm" onClick={logout} className="hidden md:flex text-maroon hover:bg-maroon/10 gap-2 px-3" suppressHydrationWarning>
                                     <LogOut className="h-4 w-4" />
                                     <span className="font-semibold">Logout</span>
@@ -206,6 +212,13 @@ export function Navbar() {
                             <Link href="/career?tab=scholarships" className="text-foreground hover:text-maroon">Scholarships</Link>
                             <Link href="/career?tab=mentorship" className="text-foreground hover:text-maroon">Mentorship</Link>
                         </div>
+
+                        {showAuth && isAuthenticated && (
+                            <div className="flex items-center gap-4 py-2">
+                                <span className="text-base font-semibold">Notifications</span>
+                                <NotificationBell />
+                            </div>
+                        )}
 
                         {!isAuthenticated && showAuth && (
                             <div className="pt-4 border-t border-gold/20 flex flex-col gap-3">

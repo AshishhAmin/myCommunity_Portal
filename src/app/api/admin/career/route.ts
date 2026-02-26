@@ -72,7 +72,18 @@ export async function PATCH(req: Request) {
         }
 
         let updated: any
-        if (type === 'jobs') updated = await prisma.job.update({ where: { id }, data: { status } })
+        if (type === 'jobs') {
+            updated = await prisma.job.update({ where: { id }, data: { status } })
+            if (status === 'approved') {
+                const { broadcastNotification } = await import('@/lib/notifications')
+                await broadcastNotification(
+                    "New Job Opportunity",
+                    `A new job "${updated.title}" at ${updated.company} has been posted.`,
+                    "job",
+                    "/career?tab=jobs"
+                )
+            }
+        }
         else if (type === 'scholarships') updated = await prisma.scholarship.update({ where: { id }, data: { status } })
         else if (type === 'mentorship') updated = await prisma.mentorship.update({ where: { id }, data: { status } })
         else return NextResponse.json({ message: 'Invalid type' }, { status: 400 })

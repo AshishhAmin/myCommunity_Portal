@@ -85,6 +85,13 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
         }
 
+        // Verification Lock: Only approved members or admins can register as mentors
+        if (user.status !== 'approved' && user.role !== 'admin') {
+            return NextResponse.json({
+                message: 'Account verification required. Please contact admin to verify your account.'
+            }, { status: 403 })
+        }
+
         const existing = await prisma.mentorship.findFirst({ where: { mentorId: user.id } })
         if (existing) {
             return NextResponse.json({ message: 'You are already registered as a mentor' }, { status: 409 })
