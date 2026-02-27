@@ -25,11 +25,13 @@ export function Navbar() {
 
     // Close mobile menu on route change
     useEffect(() => {
-        setIsMobileMenuOpen(false)
+        const t = setTimeout(() => setIsMobileMenuOpen(false), 0)
+        return () => clearTimeout(t)
     }, [pathname])
 
     useEffect(() => {
-        setMounted(true)
+        const t = setTimeout(() => setMounted(true), 0)
+        return () => clearTimeout(t)
     }, [])
 
     // Only render auth-dependent UI after client mount to avoid hydration mismatch
@@ -41,17 +43,17 @@ export function Navbar() {
     }
 
     const linkClass = (path: string) =>
-        `text-base font-semibold transition-all duration-300 border-b-2 pb-1 ${isActive(path) ? "text-maroon border-maroon" : "border-transparent text-foreground hover:text-maroon hover:scale-105"}`
+        `text-sm md:text-base font-medium transition-all duration-300 border-b-2 pb-1 ${isActive(path) ? "text-primary border-primary" : "border-transparent text-foreground/80 hover:text-primary hover:border-primary/50"}`
 
     return (
-        <nav className="sticky top-0 z-50 w-full border-b border-gold/20 bg-gradient-to-b from-cream/98 via-cream/95 to-maroon/5 backdrop-blur-md shadow-sm shadow-maroon/5">
+        <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md shadow-sm">
             <div className="container mx-auto flex h-14 md:h-16 items-center justify-between px-4">
                 {/* Logo / Brand */}
                 <div className="flex items-center gap-2.5 md:gap-3 group cursor-pointer">
-                    <div className="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full bg-maroon flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <Network className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gold" strokeWidth={2.5} />
+                    <div className="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-xl bg-primary flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300">
+                        <Network className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white" strokeWidth={2.5} />
                     </div>
-                    <Link href="/" className="font-serif text-lg sm:text-2xl md:text-3xl font-bold text-maroon tracking-tight">
+                    <Link href="/" className="font-sans text-lg sm:text-2xl md:text-3xl font-bold text-foreground tracking-tight">
                         CommuNet
                     </Link>
                 </div>
@@ -93,10 +95,10 @@ export function Navbar() {
                                 <ChevronDown className="h-4 w-4 opacity-50" />
                             </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="w-52 p-2 bg-cream/95 backdrop-blur-md border-gold/20 shadow-xl">
+                        <DropdownMenuContent align="start" className="w-52 p-2 bg-background/95 backdrop-blur-md border border-border shadow-xl rounded-xl">
                             <DropdownMenuItem asChild>
-                                <Link href="/career?tab=jobs" className="cursor-pointer py-2 px-3 rounded-lg hover:bg-maroon hover:text-gold transition-colors group flex items-center w-full">
-                                    <Briefcase className="h-4 w-4 mr-2 text-maroon group-hover:text-gold" />
+                                <Link href="/career?tab=jobs" className="cursor-pointer py-2 px-3 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors group flex items-center w-full">
+                                    <Briefcase className="h-4 w-4 mr-2 text-primary/70 group-hover:text-primary" />
                                     <span className="font-medium">Job Listings</span>
                                 </Link>
                             </DropdownMenuItem>
@@ -107,14 +109,14 @@ export function Navbar() {
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                                <Link href="/career?tab=mentorship" className="cursor-pointer py-2 px-3 rounded-lg hover:bg-maroon hover:text-gold transition-colors group flex items-center w-full">
-                                    <Users className="h-4 w-4 mr-2 text-maroon group-hover:text-gold" />
+                                <Link href="/career?tab=mentorship" className="cursor-pointer py-2 px-3 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors group flex items-center w-full">
+                                    <Users className="h-4 w-4 mr-2 text-primary/70 group-hover:text-primary" />
                                     <span className="font-medium">Mentorship</span>
                                 </Link>
                             </DropdownMenuItem>
-                            <div className="h-px bg-gold/10 my-1" />
+                            <div className="h-px bg-border my-1" />
                             <DropdownMenuItem asChild>
-                                <Link href="/career" className="cursor-pointer py-2 px-3 rounded-lg hover:bg-maroon/5 text-maroon/70 hover:text-maroon transition-colors flex items-center w-full">
+                                <Link href="/career" className="cursor-pointer py-2 px-3 rounded-lg hover:bg-primary/5 text-primary/80 hover:text-primary transition-colors flex items-center w-full">
                                     <span className="text-xs font-bold uppercase tracking-widest pl-6">View All Careers</span>
                                 </Link>
                             </DropdownMenuItem>
@@ -128,14 +130,14 @@ export function Navbar() {
                         isAuthenticated ? (
                             <div className="flex items-center gap-4">
                                 <Link href="/posts/create" className="hidden md:flex">
-                                    <Button variant="ghost" className="text-maroon hover:bg-maroon/10 gap-2 px-3" suppressHydrationWarning>
+                                    <Button variant="ghost" className="text-primary hover:bg-primary/10 gap-2 px-3 font-medium" suppressHydrationWarning>
                                         <PlusCircle className="h-4 w-4" />
-                                        <span className="font-semibold">Create Post</span>
+                                        <span>Create Post</span>
                                     </Button>
                                 </Link>
 
-                                <Link href="/profile" className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-maroon/10 transition-all duration-300 group">
-                                    <div className="h-8 w-8 rounded-full border-2 border-gold/40 overflow-hidden relative shadow-sm group-hover:border-gold transition-all duration-300">
+                                <Link href="/profile" className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-primary/5 transition-all duration-300 group">
+                                    <div className="h-8 w-8 rounded-full border-2 border-primary/20 overflow-hidden relative shadow-sm group-hover:border-primary transition-all duration-300">
                                         {user?.profileImage ? (
                                             <Image
                                                 src={user.profileImage}
@@ -144,21 +146,21 @@ export function Navbar() {
                                                 className="object-cover"
                                             />
                                         ) : (
-                                            <div className="h-full w-full bg-maroon/10 flex items-center justify-center text-maroon text-xs font-bold uppercase">
+                                            <div className="h-full w-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold uppercase">
                                                 {user?.name?.[0] || "M"}
                                             </div>
                                         )}
                                     </div>
-                                    <span className="hidden lg:inline text-sm text-maroon font-semibold transition-colors">
+                                    <span className="hidden lg:inline text-sm text-foreground font-medium transition-colors">
                                         {user?.name ? user.name.split(" ")[0] : "Member"}
                                     </span>
                                 </Link>
 
                                 <NotificationBell />
 
-                                <Button variant="ghost" size="sm" onClick={logout} className="hidden md:flex text-maroon hover:bg-maroon/10 gap-2 px-3" suppressHydrationWarning>
+                                <Button variant="ghost" size="sm" onClick={logout} className="hidden md:flex text-primary hover:bg-primary/10 gap-2 px-3 font-medium" suppressHydrationWarning>
                                     <LogOut className="h-4 w-4" />
-                                    <span className="font-semibold">Logout</span>
+                                    <span>Logout</span>
                                 </Button>
                             </div>
                         ) : (
@@ -194,7 +196,7 @@ export function Navbar() {
 
             {/* Mobile Menu Overlay */}
             {isMobileMenuOpen && (
-                <div className="md:hidden border-t border-gold/10 bg-cream/98 px-4 py-6 shadow-inner absolute top-16 left-0 w-full z-40 max-h-[calc(100vh-4rem)] overflow-y-auto">
+                <div className="md:hidden border-t border-border bg-background/98 backdrop-blur-md px-4 py-6 shadow-inner absolute top-14 sm:top-16 left-0 w-full z-40 max-h-[calc(100vh-3.5rem)] overflow-y-auto">
                     <div className="flex flex-col gap-4">
                         <Link href="/" className={linkClass("/")}>Home</Link>
                         {showAuth && isAuthenticated && (
@@ -206,11 +208,11 @@ export function Navbar() {
                         <Link href="/social" className={linkClass("/social")}>Social</Link>
                         <Link href="/events" className={linkClass("/events")}>Events</Link>
                         <Link href="/business" className={linkClass("/business")}>Business</Link>
-                        <div className="flex flex-col space-y-2 border-l-2 border-gold/30 pl-4 py-1">
-                            <span className="text-sm font-bold text-maroon/70 uppercase">Careers</span>
-                            <Link href="/career?tab=jobs" className="text-foreground hover:text-maroon">Job Listings</Link>
-                            <Link href="/career?tab=scholarships" className="text-foreground hover:text-maroon">Scholarships</Link>
-                            <Link href="/career?tab=mentorship" className="text-foreground hover:text-maroon">Mentorship</Link>
+                        <div className="flex flex-col space-y-2 border-l-2 border-border pl-4 py-1">
+                            <span className="text-sm font-bold text-primary uppercase">Careers</span>
+                            <Link href="/career?tab=jobs" className="text-foreground/80 hover:text-primary transition-colors">Job Listings</Link>
+                            <Link href="/career?tab=scholarships" className="text-foreground/80 hover:text-primary transition-colors">Scholarships</Link>
+                            <Link href="/career?tab=mentorship" className="text-foreground/80 hover:text-primary transition-colors">Mentorship</Link>
                         </div>
 
                         {showAuth && isAuthenticated && (
@@ -221,29 +223,29 @@ export function Navbar() {
                         )}
 
                         {!isAuthenticated && showAuth && (
-                            <div className="pt-4 border-t border-gold/20 flex flex-col gap-3">
+                            <div className="pt-4 border-t border-border flex flex-col gap-3">
                                 <Link href="/login" className="w-full">
-                                    <Button variant="outline" className="w-full border-maroon text-maroon">Login</Button>
+                                    <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary/5">Login</Button>
                                 </Link>
                                 <Link href="/join" className="w-full">
-                                    <Button variant="primary" className="w-full">Join Community</Button>
+                                    <Button className="w-full bg-primary hover:bg-primary/90 text-white">Join Community</Button>
                                 </Link>
                             </div>
                         )}
 
                         {isAuthenticated && showAuth && (
-                            <div className="pt-4 border-t border-gold/20 flex flex-col gap-3 mb-4">
+                            <div className="pt-4 border-t border-border flex flex-col gap-3 mb-4">
                                 <Link href="/posts/create" className="w-full">
-                                    <Button variant="outline" className="w-full border-gold text-maroon gap-2">
+                                    <Button variant="outline" className="w-full border-border text-primary gap-2 hover:bg-primary/5">
                                         <PlusCircle className="h-4 w-4" /> Create Post
                                     </Button>
                                 </Link>
                                 <Link href="/profile" className="w-full">
-                                    <Button variant="ghost" className="w-full border border-gold/20 text-maroon hover:bg-maroon/5 justify-start gap-2">
+                                    <Button variant="ghost" className="w-full border border-border text-foreground hover:bg-primary/5 justify-start gap-2">
                                         <User className="h-4 w-4" /> View Profile
                                     </Button>
                                 </Link>
-                                <Button variant="ghost" onClick={logout} className="w-full text-maroon hover:bg-red-50 justify-start gap-2 overflow-hidden">
+                                <Button variant="ghost" onClick={logout} className="w-full text-destructive hover:bg-destructive/10 justify-start gap-2 overflow-hidden">
                                     <LogOut className="h-4 w-4 shrink-0" /> Logout
                                 </Button>
                             </div>

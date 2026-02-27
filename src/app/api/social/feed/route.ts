@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
         }))
 
         // Combine and sort by date descending
-        let allPosts = [...normalizedEvents, ...normalizedBusinesses, ...normalizedAchievements]
+        const allPosts = [...normalizedEvents, ...normalizedBusinesses, ...normalizedAchievements]
         allPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
         // Pagination logic: Take the slice for current page

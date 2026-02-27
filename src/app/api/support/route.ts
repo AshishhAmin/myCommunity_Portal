@@ -11,7 +11,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'Category, subject, and body are required' }, { status: 400 })
         }
 
-        let senderEmail = 'Guest'
+        const senderEmail = 'Guest'
         let senderName = 'Guest User'
         let userId: string | undefined = undefined
 
