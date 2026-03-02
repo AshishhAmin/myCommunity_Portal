@@ -38,46 +38,46 @@ function RequestCard({ req, variant = "full", currentUserId, onMarkReceived }: {
 
     if (variant === "simple") {
         return (
-            <Card className="overflow-hidden border border-border shadow-sm h-full bg-card group hover:border-primary/50 transition-colors">
+            <Card className="overflow-hidden border border-slate-100 shadow-[0_20px_60px_-15px_rgba(59,130,246,0.05)] rounded-[2.5rem] h-full bg-white group hover:shadow-[0_20px_60px_-15px_rgba(59,130,246,0.15)] hover:-translate-y-1 hover:border-secondary/30 transition-all duration-300">
                 <CardContent className="p-5 h-full flex flex-col justify-between">
                     <div>
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="h-14 w-14 rounded-2xl bg-background flex items-center justify-center shrink-0 border border-border shadow-sm animate-pulse-slow">
-                                <AlertCircle className="h-8 w-8 text-destructive animate-float" />
+                        <div className="flex items-center gap-4 mb-8">
+                            <div className="h-16 w-16 rounded-[1.25rem] bg-secondary/10 flex items-center justify-center shrink-0 border border-secondary/20 shadow-sm animate-pulse-slow">
+                                <AlertCircle className="h-8 w-8 text-red-500 animate-float" strokeWidth={2.5} />
                             </div>
                             <div className="flex-1">
                                 <div className="flex items-center justify-between gap-4 flex-wrap">
-                                    <h3 className="text-lg font-bold text-foreground line-clamp-1">
+                                    <h3 className="text-xl font-bold text-slate-900 line-clamp-1 tracking-tight">
                                         {req.title}
                                     </h3>
-                                    <div className="flex items-center gap-2 px-4 py-1.5 bg-destructive/10 border border-destructive/20 rounded-full">
-                                        <span className="h-2.5 w-2.5 rounded-full bg-destructive animate-pulse" />
-                                        <span className="text-sm font-bold text-destructive uppercase tracking-widest">Active Bulletin</span>
+                                    <div className="flex items-center gap-2 px-4 py-1.5 bg-red-50 border border-red-100 rounded-full">
+                                        <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
+                                        <span className="text-[11px] font-bold text-red-600 uppercase tracking-[0.2em]">Active Bulletin</span>
                                     </div>
                                 </div>
-                                <p className="text-muted-foreground text-sm flex items-center gap-1.5 mt-2 font-medium">
+                                <p className="text-slate-500 text-sm flex items-center gap-1.5 mt-3 font-semibold">
                                     <Clock className="h-4 w-4" />
                                     Posted {timeAgo(req.createdAt)}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="mb-10 p-8 bg-muted/50 rounded-3xl border border-border relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                                <Quote className="h-24 w-24 text-primary" />
+                        <div className="mb-10 p-8 bg-slate-50 rounded-[2rem] border border-slate-100 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity">
+                                <Quote className="h-32 w-32 text-slate-900" />
                             </div>
-                            <p className="text-xl md:text-xl text-foreground leading-relaxed font-sans italic relative z-10">
+                            <p className="text-lg md:text-xl text-slate-700 leading-relaxed font-sans italic relative z-10 font-medium">
                                 &quot;{req.description}&quot;
                             </p>
                         </div>
                     </div>
-                    <div className="mt-3 flex items-center justify-between">
-                        <span className="text-muted-foreground text-[10px] font-medium uppercase tracking-wider">{req.user.location}</span>
-                        <div className="flex items-center gap-1.5">
-                            <div className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[8px] font-bold">
+                    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-5">
+                        <span className="text-slate-500 text-[11px] font-bold uppercase tracking-widest">{req.user.location}</span>
+                        <div className="flex items-center gap-2">
+                            <div className="h-6 w-6 rounded-full bg-secondary/10 flex items-center justify-center text-secondary text-[10px] font-black uppercase">
                                 {req.user.name[0]}
                             </div>
-                            <span className="text-muted-foreground text-[10px]">{req.user.name}</span>
+                            <span className="text-slate-600 font-bold text-xs">{req.user.name}</span>
                         </div>
                     </div>
                 </CardContent>
@@ -86,52 +86,52 @@ function RequestCard({ req, variant = "full", currentUserId, onMarkReceived }: {
     }
 
     return (
-        <Card className="overflow-hidden border border-border shadow-md bg-card">
+        <Card className="overflow-hidden border border-slate-100 shadow-[0_20px_60px_-15px_rgba(59,130,246,0.1)] rounded-[2.5rem] bg-white">
             <CardContent className="p-0">
-                <div className="bg-destructive text-white px-4 md:px-6 py-2.5 md:py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4 animate-pulse shrink-0" />
-                        <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] truncate">Emergency Assistance Required</span>
+                <div className="bg-gradient-to-r from-red-600 to-red-500 text-white px-6 md:px-8 py-3.5 md:py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <AlertCircle className="h-5 w-5 animate-pulse shrink-0" strokeWidth={2.5} />
+                        <span className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] truncate">Emergency Assistance Required</span>
                     </div>
-                    <span className="text-[9px] md:text-[10px] opacity-80 shrink-0 ml-2">{timeAgo(req.createdAt)}</span>
+                    <span className="text-[10px] md:text-xs font-bold opacity-90 shrink-0 ml-2 tracking-wider">{timeAgo(req.createdAt)}</span>
                 </div>
 
-                <div className="p-5 md:p-8">
-                    <div className="flex flex-col md:flex-row md:items-start gap-6">
-                        <div className="flex-1 space-y-4">
+                <div className="p-8 md:p-12">
+                    <div className="flex flex-col md:flex-row md:items-start gap-8 md:gap-12">
+                        <div className="flex-1 space-y-6">
                             <div>
-                                <h3 className="text-2xl md:text-4xl font-sans font-bold text-foreground mb-4 leading-tight">{req.title}</h3>
-                                <div className="flex flex-col sm:flex-row gap-4 md:gap-8 items-start sm:items-center w-full">
-                                    <div className="flex items-center gap-3 md:gap-4 bg-background/60 p-2.5 md:p-3 rounded-2xl border border-border shadow-sm w-full sm:w-auto">
-                                        <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                                            <MapPin className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                                <h3 className="text-3xl md:text-4xl lg:text-5xl font-sans font-black text-slate-900 mb-6 md:mb-8 leading-[1.1] tracking-tight">{req.title}</h3>
+                                <div className="flex flex-col sm:flex-row gap-4 md:gap-6 items-start sm:items-center w-full">
+                                    <div className="flex items-center gap-4 bg-slate-50 p-4 md:p-5 rounded-2xl border border-slate-100 shadow-sm w-full sm:w-auto hover:border-gold-200 transition-colors group">
+                                        <div className="h-12 w-12 md:h-14 md:w-14 rounded-xl bg-white flex items-center justify-center shrink-0 border border-slate-100 group-hover:bg-gold-50 transition-colors">
+                                            <MapPin className="h-6 w-6 text-secondary" />
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Location</p>
-                                            <p className="font-sans font-bold text-lg md:text-xl text-foreground truncate">{req.user.location}</p>
+                                            <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-500 mb-1">Location</p>
+                                            <p className="font-sans font-bold text-lg md:text-xl text-slate-900 truncate">{req.user.location}</p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 md:gap-4 bg-background/60 p-2.5 md:p-3 rounded-2xl border border-border shadow-sm w-full sm:w-auto">
-                                        <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                                            <Phone className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                                    <div className="flex items-center gap-4 bg-slate-50 p-4 md:p-5 rounded-2xl border border-slate-100 shadow-sm w-full sm:w-auto hover:border-red-200 transition-colors group">
+                                        <div className="h-12 w-12 md:h-14 md:w-14 rounded-xl bg-white flex items-center justify-center shrink-0 border border-slate-100 group-hover:bg-red-50 transition-colors">
+                                            <Phone className="h-6 w-6 text-red-500" />
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Urgent Contact</p>
-                                            <p className="font-sans font-bold text-lg md:text-xl text-foreground truncate">{req.contact}</p>
+                                            <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-500 mb-1">Urgent Contact</p>
+                                            <p className="font-sans font-bold text-lg md:text-xl text-slate-900 truncate">{req.contact}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <p className="text-foreground/90 text-lg md:text-2xl border-l-2 border-border pl-3 md:pl-4 py-1">
+                            <p className="text-slate-600 font-medium text-lg md:text-2xl border-l-4 border-gold-200 pl-4 md:pl-6 py-2 leading-relaxed">
                                 {req.description}
                             </p>
 
-                            <div className="flex flex-wrap gap-2 md:gap-3 pt-4">
+                            <div className="flex flex-wrap gap-3 md:gap-4 pt-6">
                                 <a href={`tel:${req.contact}`} className="w-full sm:w-auto">
-                                    <Button className="w-full sm:w-auto bg-destructive text-white hover:bg-destructive/90 font-bold px-4 md:px-6 shadow-sm">
-                                        <Phone className="h-4 w-4 mr-2" />
+                                    <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-red-600 to-red-500 hover:opacity-90 text-white font-bold px-6 md:px-8 h-14 rounded-xl shadow-lg shadow-red-500/30 hover:shadow-red-500/50 transition-all border-0 text-base">
+                                        <Phone className="h-5 w-5 mr-2.5" />
                                         Call Emergency Contact
                                     </Button>
                                 </a>
@@ -164,15 +164,15 @@ function RequestCard({ req, variant = "full", currentUserId, onMarkReceived }: {
                             </div>
                         </div>
 
-                        <div className="hidden md:block w-px bg-border self-stretch" />
+                        <div className="hidden md:block w-px bg-slate-100 self-stretch my-2" />
 
-                        <div className="flex flex-row md:flex-col items-center md:items-center justify-start md:justify-center md:w-48 pt-4 md:pt-0 gap-3 md:gap-2 border-t md:border-t-0 border-border mt-2 md:mt-0 w-full">
-                            <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary text-base md:text-lg font-bold shrink-0">
+                        <div className="flex flex-row md:flex-col items-center md:items-center justify-start md:justify-center md:w-56 pt-6 md:pt-0 gap-4 md:gap-3 border-t md:border-t-0 border-slate-100 mt-4 md:mt-0 w-full bg-slate-50 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
+                            <div className="h-14 w-14 md:h-20 md:w-20 rounded-[1.25rem] md:rounded-full bg-white md:bg-gold-50 flex items-center justify-center text-gold-600 text-xl md:text-3xl font-black shrink-0 border border-slate-100 md:border-gold-100 shadow-sm">
                                 {req.user.name[0]}
                             </div>
                             <div className="flex flex-col md:items-center">
-                                <p className="text-foreground font-sans text-sm font-bold md:text-center line-clamp-1">{req.user.name}</p>
-                                <p className="text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider md:text-center mt-0.5">Community Member</p>
+                                <p className="text-slate-900 font-sans text-base md:text-lg font-bold md:text-center line-clamp-1">{req.user.name}</p>
+                                <p className="text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-widest md:text-center mt-1">Community Member</p>
                             </div>
                         </div>
                     </div>
@@ -234,20 +234,19 @@ export function EmergencyAlerts() {
 
     return (
         <section
-            className="bg-background py-10 md:py-16 scroll-mt-20 border-y border-border"
+            className="bg-[#FAF9F6] py-16 md:py-24 scroll-mt-20 border-y border-slate-100"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >
-            <div className="container mx-auto px-4 max-w-6xl">
+            <div className="container mx-auto px-4 max-w-7xl">
                 <ScrollAnimation animation="fade-right">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mb-8 md:mb-10">
-                        <div className="space-y-2">
-                            <div className="inline-flex items-center gap-2 text-destructive font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em]">
-                                <span className="w-6 md:w-8 h-px bg-destructive/30" />
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8 mb-10 md:mb-14">
+                        <div className="space-y-4">
+                            <div className="inline-flex items-center gap-2.5 text-red-600 font-bold text-[11px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] bg-red-50 border border-red-100 px-4 py-2 rounded-full shadow-sm">
+                                <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
                                 Urgent Community Bulletin
-                                <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-destructive animate-pulse shadow-[0_0_10px_rgba(220,38,38,0.5)]" />
                             </div>
-                            <h2 className="font-sans text-3xl md:text-5xl lg:text-6xl font-bold text-foreground">Active Community Requests</h2>
+                            <h2 className="font-sans text-4xl md:text-5xl lg:text-5xl font-black text-slate-900 tracking-tight">Active Community Requests</h2>
                         </div>
                     </div>
                 </ScrollAnimation>
@@ -258,17 +257,17 @@ export function EmergencyAlerts() {
                             variant="outline"
                             onClick={prev}
                             disabled={!hasMultiple}
-                            className="rounded-full border-border text-foreground hover:border-primary hover:bg-primary hover:text-white w-10 h-10 md:w-12 md:h-12 p-0 transition-all duration-300"
+                            className="rounded-xl border-slate-200 bg-white text-slate-600 hover:border-gold-200 hover:bg-gold-50 hover:text-gold-600 w-12 h-12 md:w-14 md:h-14 p-0 transition-all duration-300 shadow-sm"
                         >
-                            <ChevronLeft className="h-4 w-4 md:h-5 md:w-5" />
+                            <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
                         </Button>
                         <Button
                             variant="outline"
                             onClick={next}
                             disabled={!hasMultiple}
-                            className="rounded-full border-border text-foreground hover:border-primary hover:bg-primary hover:text-white w-10 h-10 md:w-12 md:h-12 p-0 transition-all duration-300"
+                            className="rounded-xl border-slate-200 bg-white text-slate-600 hover:border-gold-200 hover:bg-gold-50 hover:text-gold-600 w-12 h-12 md:w-14 md:h-14 p-0 transition-all duration-300 shadow-sm"
                         >
-                            <ChevronRight className="h-4 w-4 md:h-5 md:w-5" />
+                            <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
                         </Button>
                     </div>
                 </div>
@@ -299,8 +298,8 @@ export function EmergencyAlerts() {
                                 key={idx}
                                 onClick={() => setCurrent(idx)}
                                 className={cn(
-                                    "h-1.5 rounded-full transition-all duration-500",
-                                    current === idx ? "w-10 bg-primary" : "w-1.5 bg-primary/20 hover:bg-primary/40"
+                                    "h-2 rounded-full transition-all duration-500",
+                                    current === idx ? "w-12 bg-secondary" : "w-2 bg-slate-200 hover:bg-slate-300"
                                 )}
                             />
                         ))}

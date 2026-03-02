@@ -20,30 +20,39 @@ export function HeroSection() {
         return () => clearTimeout(t)
     }, [])
 
+    const formatStat = (num: number) => {
+        if (num >= 1e9) return `${(num / 1e9).toFixed(1)}B`
+        if (num >= 1e7) return `${(num / 1e7).toFixed(1)}Cr`
+        if (num >= 1e6) return `${(num / 1e6).toFixed(1)}M`
+        if (num >= 1e5) return `${(num / 1e5).toFixed(1)}L`
+        if (num >= 1e3) return `${(num / 1e3).toFixed(1)}K`
+        return num.toString()
+    }
+
     return (
-        <section className="relative overflow-hidden pt-12 pb-16 md:pt-32 md:pb-40">
+        <section className="relative overflow-hidden pt-12 pb-16 md:pt-32 md:pb-40 bg-[#FAF9F6]">
             {/* Background Decorative Elements */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none opacity-20">
-                <div className="absolute top-[10%] left-[10%] w-64 h-64 rounded-full bg-secondary blur-3xl"></div>
-                <div className="absolute bottom-[10%] right-[10%] w-96 h-96 rounded-full bg-primary blur-3xl"></div>
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none opacity-40">
+                <div className="absolute top-[10%] left-[10%] w-64 h-64 rounded-full bg-secondary/20 blur-[100px]"></div>
+                <div className="absolute bottom-[10%] right-[10%] w-96 h-96 rounded-full bg-slate-200/20 blur-[120px]"></div>
             </div>
 
             <div className="container relative mx-auto px-4 text-center">
                 <ScrollAnimation animation="fade-up" delay={0.1}>
-                    <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs md:text-sm font-bold text-primary mb-6 md:mb-8 animate-slide-up shadow-sm">
-                        <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
+                    <div className="inline-flex items-center rounded-full border border-secondary/20 bg-white px-5 py-2 text-xs md:text-sm font-bold text-secondary mb-6 md:mb-8 animate-slide-up shadow-sm">
+                        <span className="flex h-2.5 w-2.5 rounded-full bg-secondary mr-2.5 animate-pulse"></span>
                         Welcome to CommuNet
                     </div>
                 </ScrollAnimation>
 
                 <ScrollAnimation animation="fade-up" delay={0.2}>
-                    <h1 className="mx-auto max-w-5xl font-sans text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground animate-slide-up [animation-delay:200ms]">
-                        A Trusted Digital Platform for community - <span className="text-primary">CommuNet</span>
+                    <h1 className="mx-auto max-w-5xl font-sans text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight text-slate-900 animate-slide-up [animation-delay:200ms] leading-[1.1]">
+                        A Trusted Digital Platform for community  <span className="text-secondary">CommuNet</span>
                     </h1>
                 </ScrollAnimation>
 
                 <ScrollAnimation animation="fade-up" delay={0.4}>
-                    <p className="mx-auto mt-4 md:mt-6 max-w-3xl text-base md:text-xl text-muted-foreground leading-relaxed animate-slide-up [animation-delay:400ms]">
+                    <p className="mx-auto mt-6 md:mt-8 max-w-3xl text-lg md:text-2xl text-slate-600 leading-relaxed font-medium animate-slide-up [animation-delay:400ms]">
                         Uniting members through business enablement, career development, and dedicated support.
                         A secure space to connect, grow, and uphold our shared heritage.
                     </p>
@@ -51,14 +60,14 @@ export function HeroSection() {
 
                 {mounted && !isLoading && !isAuthenticated && (
                     <ScrollAnimation animation="fade-up" delay={0.6}>
-                        <div className="mt-8 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 animate-slide-up [animation-delay:600ms]">
+                        <div className="mt-10 md:mt-14 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 animate-slide-up [animation-delay:600ms]">
                             <Link href="/join" className="w-full sm:w-auto">
-                                <Button size="lg" className="w-full sm:w-auto min-w-[200px] text-base md:text-xl h-12 md:h-14 bg-primary hover:bg-primary/90 text-white shadow-lg hover:scale-105 transition-transform">
+                                <Button size="lg" className="w-full sm:w-auto min-w-[220px] text-base md:text-xl h-14 md:h-16 rounded-2xl font-bold bg-secondary text-slate-900 shadow-lg shadow-secondary/20 hover:shadow-secondary/40 hover:scale-105 transition-all border-0">
                                     Join Community
                                 </Button>
                             </Link>
                             <Link href="/login" className="w-full sm:w-auto">
-                                <Button variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px] text-base md:text-xl h-12 md:h-14 bg-background/50 backdrop-blur-sm border-primary/20 text-primary shadow-sm hover:scale-105 transition-transform">
+                                <Button variant="outline" size="lg" className="w-full sm:w-auto min-w-[220px] text-base md:text-xl h-14 md:h-16 rounded-2xl font-bold bg-white border-slate-200 text-slate-700 shadow-sm hover:bg-slate-50 hover:scale-105 transition-all">
                                     Member Login
                                 </Button>
                             </Link>
@@ -68,9 +77,9 @@ export function HeroSection() {
 
                 {mounted && !isLoading && isAuthenticated && (
                     <ScrollAnimation animation="fade-up" delay={0.6}>
-                        <div className="mt-8 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 animate-slide-up [animation-delay:600ms]">
+                        <div className="mt-10 md:mt-14 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 animate-slide-up [animation-delay:600ms]">
                             <Link href="/dashboard" className="w-full sm:w-auto">
-                                <Button size="lg" className="w-full sm:w-auto min-w-[200px] text-base md:text-xl h-12 md:h-14 bg-primary hover:bg-primary/90 text-white shadow-lg hover:scale-105 transition-transform">
+                                <Button size="lg" className="w-full sm:w-auto min-w-[220px] text-base md:text-xl h-14 md:h-16 rounded-2xl font-bold bg-secondary text-slate-900 shadow-lg shadow-secondary/20 hover:shadow-secondary/40 hover:scale-105 transition-all border-0">
                                     Go to Dashboard
                                 </Button>
                             </Link>
@@ -80,22 +89,22 @@ export function HeroSection() {
 
                 {/* Trust Indicators */}
                 <ScrollAnimation animation="fade-up" delay={0.8}>
-                    <div className="mt-12 md:mt-20 grid grid-cols-2 gap-8 md:gap-10 md:grid-cols-4 border-t border-border pt-10 md:pt-12 max-w-5xl mx-auto animate-slide-up [animation-delay:800ms]">
-                        <div className="flex flex-col items-center group">
-                            <span className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold text-primary group-hover:scale-110 transition-transform">{stats ? `${stats.members}+` : "..."}</span>
-                            <span className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Verified Members</span>
+                    <div className="mt-16 md:mt-24 grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 border-t border-slate-200 pt-12 md:pt-16 max-w-6xl mx-auto animate-slide-up [animation-delay:800ms] text-slate-800">
+                        <div className="flex flex-col items-center group p-4 md:p-6 rounded-[2rem] hover:bg-white hover:shadow-xl hover:shadow-secondary/5 transition-all duration-500">
+                            <span className="font-sans text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 group-hover:scale-110 transition-transform group-hover:text-secondary">{stats ? `${formatStat(stats.members)}+` : "..."}</span>
+                            <span className="text-xs md:text-sm text-slate-500 mt-3 font-semibold uppercase tracking-wider">Verified Members</span>
                         </div>
-                        <div className="flex flex-col items-center group">
-                            <span className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold text-primary group-hover:scale-110 transition-transform">{stats ? `${stats.businesses}+` : "..."}</span>
-                            <span className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Businesses</span>
+                        <div className="flex flex-col items-center group p-4 md:p-6 rounded-[2rem] hover:bg-white hover:shadow-xl hover:shadow-secondary/5 transition-all duration-500">
+                            <span className="font-sans text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 group-hover:scale-110 transition-transform group-hover:text-secondary">{stats ? `${formatStat(stats.businesses)}+` : "..."}</span>
+                            <span className="text-xs md:text-sm text-slate-500 mt-3 font-semibold uppercase tracking-wider">Businesses</span>
                         </div>
-                        <div className="flex flex-col items-center group">
-                            <span className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold text-primary group-hover:scale-110 transition-transform">{stats ? `₹${(stats.donations / 1000000).toFixed(1)}M+` : "..."}</span>
-                            <span className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Donations Raised</span>
+                        <div className="flex flex-col items-center group p-4 md:p-6 rounded-[2rem] hover:bg-white hover:shadow-xl hover:shadow-secondary/5 transition-all duration-500">
+                            <span className="font-sans text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 group-hover:scale-110 transition-transform group-hover:text-secondary">{stats ? `₹${formatStat(stats.donations)}+` : "..."}</span>
+                            <span className="text-xs md:text-sm text-slate-500 mt-3 font-semibold uppercase tracking-wider">Donations Raised</span>
                         </div>
-                        <div className="flex flex-col items-center group">
-                            <span className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold text-primary group-hover:scale-110 transition-transform">{stats ? `${stats.events}+` : "..."}</span>
-                            <span className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Community Events</span>
+                        <div className="flex flex-col items-center group p-4 md:p-6 rounded-[2rem] hover:bg-white hover:shadow-xl hover:shadow-secondary/5 transition-all duration-500">
+                            <span className="font-sans text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 group-hover:scale-110 transition-transform group-hover:text-secondary">{stats ? `${formatStat(stats.events)}+` : "..."}</span>
+                            <span className="text-xs md:text-sm text-slate-500 mt-3 font-semibold uppercase tracking-wider">Community Events</span>
                         </div>
                     </div>
                 </ScrollAnimation>

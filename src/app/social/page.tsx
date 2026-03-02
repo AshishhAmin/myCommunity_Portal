@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { SocialPostCard } from "@/components/social/SocialPostCard"
-import { Loader2, Users, Activity, MessageCircle, Link as LinkIcon, Briefcase, Calendar } from "lucide-react"
+import { Loader2, Users, Activity, MessageCircle, Link as LinkIcon, Briefcase, Calendar, ChevronRight } from "lucide-react"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import Image from "next/image"
@@ -103,176 +103,223 @@ export default function SocialFeedPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+        <div className="min-h-screen flex flex-col bg-[#FAF9F6] selection:bg-secondary/20">
             <Navbar />
 
-            <main className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
-
+            <main className="flex-1 pb-24">
                 {/* Header Section */}
-                <div className="text-center mb-6 md:mb-8 sticky top-[64px] z-30 bg-[#FAF3E0]/95 backdrop-blur-md pt-6 pb-4 border-b border-gold/10 -mx-4 px-4 sm:mx-0 sm:px-0 sm:rounded-b-xl shadow-sm lg:static lg:bg-transparent lg:shadow-none lg:border-none lg:pt-0">
-                    <div className="inline-flex items-center justify-center p-3 bg-maroon/10 rounded-full mb-4 lg:mt-0">
-                        <Activity className="h-8 w-8 text-maroon" />
+                <div className="bg-white border-b border-slate-100 pt-16 pb-20 mb-8">
+                    <div className="container mx-auto px-4 text-center max-w-4xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 mb-8">
+                            <Activity className="h-4 w-4 text-secondary" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-secondary">Real-time pulses</span>
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none mb-8">
+                            Community <span className="text-secondary">Pulse</span>
+                        </h1>
+                        <p className="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-2xl mx-auto">
+                            Stay connected with the latest events, business updates, and member achievements across our global network.
+                        </p>
                     </div>
-                    <h1 className="text-3xl md:text-5xl font-serif font-bold text-maroon mb-2 md:mb-4 tracking-tight">
-                        Community Feed
-                    </h1>
-                    <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Stay connected with the latest events, business updates, and member achievements across our global network.
-                    </p>
                 </div>
 
-                {/* Main Content Area - Grid Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+                <div className="container mx-auto px-4 -mt-12">
+                    {/* Main Content Area - Grid Layout */}
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
 
-                    {/* Left Sidebar - Profile & Quick Links */}
-                    <div className="hidden lg:block lg:sticky lg:top-24 space-y-6">
-                        {isAuthenticated && user ? (
-                            <div className="bg-white rounded-xl shadow-sm border border-gold/20 overflow-hidden">
-                                <div className="h-16 bg-gradient-to-r from-maroon/80 to-maroon w-full"></div>
-                                <div className="px-4 pb-4 flex flex-col items-center -mt-8 relative">
-                                    <div className="h-16 w-16 bg-white rounded-full p-1 border border-gold/30">
-                                        <div className="h-full w-full rounded-full bg-maroon/5 flex items-center justify-center overflow-hidden relative">
-                                            {user.profileImage ? (
-                                                <Image src={user.profileImage} alt={user.name || "User"} fill className="object-cover" />
-                                            ) : (
-                                                <span className="text-maroon font-serif font-bold text-xl">{user.name?.[0]?.toUpperCase() || 'M'}</span>
-                                            )}
-                                        </div>
+                        {/* Left Sidebar - Profile & Quick Links */}
+                        <div className="hidden lg:block lg:sticky lg:top-24 space-y-8">
+                            {isAuthenticated && user ? (
+                                <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                                    <div className="h-24 bg-gradient-to-br from-slate-900 to-slate-800 w-full relative">
+                                        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
                                     </div>
-                                    <h3 className="mt-2 font-bold text-gray-900">{user.name}</h3>
-                                    <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
+                                    <div className="px-6 pb-8 flex flex-col items-center -mt-12 relative z-10">
+                                        <div className="h-24 w-24 bg-white rounded-3xl p-1 shadow-2xl shadow-slate-900/10 border border-slate-100">
+                                            <div className="h-full w-full rounded-[1.25rem] bg-slate-50 flex items-center justify-center overflow-hidden relative">
+                                                {user.profileImage ? (
+                                                    <Image src={user.profileImage} alt={user.name || "User"} fill className="object-cover" />
+                                                ) : (
+                                                    <span className="text-slate-900 font-black text-3xl">{user.name?.[0]?.toUpperCase() || 'M'}</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <h3 className="mt-4 font-black text-xl text-slate-900 tracking-tight">{user.name}</h3>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">{user.role}</p>
+
+                                        <Link href="/dashboard" className="mt-8 group w-full">
+                                            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 group-hover:bg-slate-900 group-hover:border-slate-900 transition-all duration-300">
+                                                <span className="font-black uppercase tracking-widest text-[10px] text-slate-500 group-hover:text-white">Dashboard</span>
+                                                <LinkIcon className="h-4 w-4 text-slate-300 group-hover:text-secondary" />
+                                            </div>
+                                        </Link>
+                                    </div>
                                 </div>
-                                <div className="border-t border-gold/10 px-4 py-3">
-                                    <Link href="/dashboard" className="text-sm font-medium text-maroon hover:underline flex items-center justify-between">
-                                        View Dashboard
-                                        <LinkIcon className="h-3 w-3" />
+                            ) : (
+                                <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-8 text-center">
+                                    <div className="h-16 w-16 rounded-3xl bg-secondary/10 flex items-center justify-center mx-auto mb-6">
+                                        <Users className="h-8 w-8 text-secondary" />
+                                    </div>
+                                    <h3 className="font-black text-xl text-slate-900 tracking-tight mb-2">Join Pulsing</h3>
+                                    <p className="text-slate-500 text-sm font-medium mb-8 leading-relaxed">Log in to interact with posts, RSVP to events, and more.</p>
+                                    <Link href="/login" className="block w-full h-14 rounded-2xl bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] flex items-center justify-center hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 active:scale-95">
+                                        Log In Now
                                     </Link>
                                 </div>
+                            )}
+
+                            <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-8">
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-8 ml-1">Quick Discovery</h3>
+                                <nav className="space-y-3">
+                                    <Link href="/events" className="flex items-center justify-between p-2 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all group">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-10 w-10 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary transition-all">
+                                                <Calendar className="h-5 w-5 text-secondary group-hover:text-white" />
+                                            </div>
+                                            <span className="text-sm font-bold">Events</span>
+                                        </div>
+                                        <ChevronRight className="h-4 w-4 text-slate-200" />
+                                    </Link>
+                                    <Link href="/business" className="flex items-center justify-between p-2 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all group">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-slate-900 transition-all">
+                                                <Briefcase className="h-5 w-5 text-slate-400 group-hover:text-white" />
+                                            </div>
+                                            <span className="text-sm font-bold">Business</span>
+                                        </div>
+                                        <ChevronRight className="h-4 w-4 text-slate-200" />
+                                    </Link>
+                                    <Link href="/achievements" className="flex items-center justify-between p-2 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all group">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-slate-900 transition-all">
+                                                <Activity className="h-5 w-5 text-slate-400 group-hover:text-white" />
+                                            </div>
+                                            <span className="text-sm font-bold">Achievements</span>
+                                        </div>
+                                        <ChevronRight className="h-4 w-4 text-slate-200" />
+                                    </Link>
+                                </nav>
                             </div>
-                        ) : (
-                            <div className="bg-white rounded-xl shadow-sm border border-gold/20 p-5 text-center">
-                                <h3 className="font-bold text-maroon mb-2">Join the Community</h3>
-                                <p className="text-sm text-muted-foreground mb-4">Log in to interact with posts, RSVP to events, and more.</p>
-                                <Link href="/login" className="block w-full py-2 bg-maroon text-gold font-medium rounded-lg hover:bg-maroon/90 transition-colors">
-                                    Log In
-                                </Link>
-                            </div>
-                        )}
-
-                        <div className="bg-white rounded-xl shadow-sm border border-gold/20 p-4">
-                            <h3 className="font-serif font-bold text-maroon mb-3 border-b border-gold/10 pb-2">Quick Navigation</h3>
-                            <nav className="space-y-1">
-                                <Link href="/events" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-maroon/5 rounded-md transition-colors">
-                                    <Calendar className="h-4 w-4 text-maroon/70" /> All Events
-                                </Link>
-                                <Link href="/business" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-maroon/5 rounded-md transition-colors">
-                                    <Briefcase className="h-4 w-4 text-maroon/70" /> Business Directory
-                                </Link>
-                                <Link href="/achievements" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-maroon/5 rounded-md transition-colors">
-                                    <Activity className="h-4 w-4 text-maroon/70" /> Member Achievements
-                                </Link>
-                            </nav>
-                        </div>
-                    </div>
-
-                    {/* Main Feed Container (Center) */}
-                    <div className="lg:col-span-2 space-y-6">
-
-                        {/* Filter Bar */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gold/20 p-2 sticky top-[160px] md:top-[180px] lg:top-24 z-20 flex overflow-x-auto hide-scrollbar gap-2">
-                            {['all', 'event', 'business', 'achievement'].map((type) => (
-                                <button
-                                    key={type}
-                                    onClick={() => setFilterType(type as any)}
-                                    className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors flex-1 ${filterType === type
-                                        ? 'bg-maroon text-gold'
-                                        : 'text-gray-600 hover:bg-maroon/5'
-                                        }`}
-                                >
-                                    {type === 'all' ? 'All Updates' : type.charAt(0).toUpperCase() + type.slice(1) + 's'}
-                                </button>
-                            ))}
                         </div>
 
-                        {loading ? (
-                            <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                                <Loader2 className="h-10 w-10 animate-spin text-maroon" />
-                                <p className="text-muted-foreground font-medium animate-pulse">Loading community updates...</p>
-                            </div>
-                        ) : posts.length === 0 ? (
-                            <div className="bg-white rounded-xl shadow-sm border border-gold/20 p-12 text-center">
-                                <Users className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                                <h3 className="text-xl font-serif font-bold text-gray-900 mb-2">It's quiet here</h3>
-                                <p className="text-muted-foreground">There are no updates to display at the moment. Check back soon!</p>
-                            </div>
-                        ) : (
-                            <>
-                                {posts.map((post, index) => (
-                                    <SocialPostCard key={`${post.type}-${post.id}-${index}`} post={post} />
+                        {/* Main Feed Container (Center) */}
+                        <div className="lg:col-span-2 space-y-10">
+                            {/* Filter Bar */}
+                            <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-3 sticky top-24 z-20 flex overflow-x-auto hide-scrollbar gap-2">
+                                {['all', 'event', 'business', 'achievement'].map((type) => (
+                                    <button
+                                        key={type}
+                                        onClick={() => setFilterType(type as any)}
+                                        className={`h-12 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex-1 ${filterType === type
+                                            ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/20'
+                                            : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
+                                            }`}
+                                    >
+                                        {type === 'all' ? 'Everything' : type}
+                                    </button>
                                 ))}
+                            </div>
 
-                                {/* Load More Trigger */}
-                                {hasMore && (
-                                    <div className="pt-6 pb-12 text-center">
-                                        <button
-                                            onClick={loadMore}
-                                            disabled={loadingMore}
-                                            className="px-6 py-2 bg-white border border-gold/30 text-maroon font-semibold rounded-full hover:bg-maroon/5 transition-colors disabled:opacity-50 shadow-sm"
-                                        >
-                                            {loadingMore ? (
-                                                <span className="flex items-center gap-2">
-                                                    <Loader2 className="h-4 w-4 animate-spin" /> Loading...
-                                                </span>
-                                            ) : (
-                                                "Load More Content"
-                                            )}
-                                        </button>
+                            {loading ? (
+                                <div className="flex flex-col items-center justify-center py-32 space-y-6">
+                                    <div className="relative">
+                                        <Loader2 className="h-16 w-16 animate-spin text-secondary/20" />
+                                        <Loader2 className="h-16 w-16 animate-spin text-secondary absolute inset-0 [animation-delay:-0.5s]" />
                                     </div>
-                                )}
-
-                                {!hasMore && posts.length > 0 && (
-                                    <div className="py-8 text-center text-muted-foreground font-medium flex items-center justify-center gap-2">
-                                        <div className="h-px bg-gold/30 flex-1 max-w-[100px]" />
-                                        You've reached the end
-                                        <div className="h-px bg-gold/30 flex-1 max-w-[100px]" />
+                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Syncing Feed...</p>
+                                </div>
+                            ) : posts.length === 0 ? (
+                                <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-20 text-center">
+                                    <div className="h-24 w-24 rounded-[2rem] bg-slate-50 flex items-center justify-center mx-auto mb-8">
+                                        <Users className="h-12 w-12 text-slate-200" />
                                     </div>
-                                )}
-                            </>
-                        )}
+                                    <h3 className="text-3xl font-black text-slate-900 tracking-tight mb-4">Complete Silence</h3>
+                                    <p className="text-slate-500 text-lg font-medium leading-relaxed max-w-sm mx-auto">There are no updates to display at the moment. Be the first to start the pulse!</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-10">
+                                    {posts.map((post, index) => (
+                                        <SocialPostCard key={`${post.type}-${post.id}-${index}`} post={post} />
+                                    ))}
 
-                    </div>
+                                    {/* Load More Trigger */}
+                                    {hasMore && (
+                                        <div className="pt-6 pb-20 text-center">
+                                            <button
+                                                onClick={loadMore}
+                                                disabled={loadingMore}
+                                                className="h-16 px-10 rounded-2xl bg-white border-2 border-slate-100 text-slate-900 font-black uppercase tracking-widest text-[10px] hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all disabled:opacity-50 shadow-xl shadow-slate-200/50 active:scale-95"
+                                            >
+                                                {loadingMore ? (
+                                                    <span className="flex items-center gap-3">
+                                                        <Loader2 className="h-5 w-5 animate-spin" /> Fetching Deep...
+                                                    </span>
+                                                ) : (
+                                                    "Discover More"
+                                                )}
+                                            </button>
+                                        </div>
+                                    )}
 
-                    {/* Right Sidebar - Trending & About */}
-                    <div className="hidden lg:block lg:sticky lg:top-24 space-y-6">
-                        <div className="bg-white rounded-xl shadow-sm border border-gold/20 p-4">
-                            <h3 className="font-serif font-bold text-maroon mb-3 border-b border-gold/10 pb-2">Platform Stats</h3>
-                            <div className="grid grid-cols-2 gap-3 text-center">
-                                <div className="bg-maroon/5 p-3 rounded-lg">
-                                    <div className="text-2xl font-bold text-maroon">{platformStats.events}+</div>
-                                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mt-1">Events</div>
+                                    {!hasMore && posts.length > 0 && (
+                                        <div className="py-20 text-center flex flex-col items-center gap-6">
+                                            <div className="h-1 w-12 rounded-full bg-slate-100" />
+                                            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">End of flow</p>
+                                            <div className="h-1 w-12 rounded-full bg-slate-100" />
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="bg-gold/10 p-3 rounded-lg">
-                                    <div className="text-2xl font-bold text-yellow-700">{platformStats.businesses}+</div>
-                                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mt-1">Businesses</div>
+                            )}
+
+                        </div>
+
+                        {/* Right Sidebar - Platform Data */}
+                        <div className="hidden lg:block lg:sticky lg:top-24 space-y-8">
+                            <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-8">
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-8 ml-1">Platform Impact</h3>
+                                <div className="space-y-6">
+                                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 p-4 opacity-5 translate-x-1 translate-y--1 group-hover:scale-150 transition-transform">
+                                            <Calendar className="h-12 w-12 text-slate-900" />
+                                        </div>
+                                        <div className="relative z-10">
+                                            <div className="text-4xl font-black text-slate-900 tracking-tighter">{platformStats.events}+</div>
+                                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">Active Events</div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-secondary/10 rounded-2xl p-6 border border-secondary/20 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 p-4 opacity-5 translate-x-1 translate-y--1 group-hover:scale-150 transition-transform">
+                                            <Briefcase className="h-12 w-12 text-secondary" />
+                                        </div>
+                                        <div className="relative z-10">
+                                            <div className="text-4xl font-black text-secondary tracking-tighter">{platformStats.businesses}+</div>
+                                            <div className="text-[10px] font-black uppercase tracking-widest text-secondary/80 mt-2">Local Ventures</div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-slate-900 rounded-2xl p-6 border border-slate-800 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 p-4 opacity-10 translate-x-1 translate-y--1 group-hover:scale-150 transition-transform">
+                                            <Users className="h-12 w-12 text-white" />
+                                        </div>
+                                        <div className="relative z-10">
+                                            <div className="text-4xl font-black text-white tracking-tighter">{platformStats.members}+</div>
+                                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">Connected Hearts</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="bg-emerald-50 p-3 rounded-lg col-span-2">
-                                    <div className="text-2xl font-bold text-emerald-700">{platformStats.members}+</div>
-                                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mt-1">Members Connected</div>
+                            </div>
+
+                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-300 text-center space-y-4 px-8">
+                                <div className="flex justify-center flex-wrap gap-x-6 gap-y-2">
+                                    <Link href="/about" className="hover:text-slate-900 transition-colors">About</Link>
+                                    <Link href="/help" className="hover:text-slate-900 transition-colors">Help</Link>
+                                    <Link href="/privacy" className="hover:text-slate-900 transition-colors">Privacy</Link>
+                                    <Link href="/terms" className="hover:text-slate-900 transition-colors">Terms</Link>
                                 </div>
+                                <p className="pt-4 border-t border-slate-100 opacity-50">© 2026 CommuNet Platform</p>
                             </div>
                         </div>
 
-                        <div className="text-xs text-muted-foreground text-center space-y-2 px-4">
-                            <div className="flex justify-center flex-wrap gap-x-3 gap-y-1">
-                                <Link href="/about" className="hover:underline">About</Link>
-                                <Link href="/help" className="hover:underline">Help</Link>
-                                <Link href="/privacy" className="hover:underline">Privacy</Link>
-                                <Link href="/terms" className="hover:underline">Terms</Link>
-                            </div>
-                            <p className="mt-4">© 2026 CommuNet Platform</p>
-                        </div>
                     </div>
-
                 </div>
             </main>
 

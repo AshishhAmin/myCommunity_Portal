@@ -86,119 +86,125 @@ export default function JoinPage() {
     }
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-[#FAF3E0] p-4">
-            <div className="w-full max-w-md">
+        <main className="min-h-screen flex items-center justify-center bg-[#FAF9F6] p-4 sm:p-6 md:p-8 relative overflow-hidden">
+            {/* Background decorative elements */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold-400/10 rounded-full blur-3xl -mt-48 -mr-48 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-slate-400/10 rounded-full blur-3xl -mb-48 -ml-48 pointer-events-none" />
 
-                <div className="text-center mb-8">
-                    <div className="mx-auto h-16 w-16 rounded-full bg-maroon flex items-center justify-center mb-4 shadow-lg border-2 border-gold/50">
-                        <span className="text-gold font-serif text-2xl font-bold">AV</span>
+            <div className="w-full max-w-lg relative z-10 py-10 md:py-16">
+
+                <div className="transition-all duration-700 hover:scale-105 mb-6 md:mb-8">
+                    <div className="mx-auto h-16 w-16 md:h-20 md:w-20 rounded-[1.25rem] bg-secondary flex items-center justify-center mb-4 md:mb-6 shadow-lg shadow-secondary/20 text-slate-900 font-sans text-2xl md:text-3xl font-black">
+                        C
                     </div>
-                    <h1 className="font-serif text-3xl font-bold text-maroon">Join the Community</h1>
-                    <p className="text-muted-foreground mt-2">Connect, Grow, and Support</p>
+                    <h1 className="font-sans text-3xl md:text-4xl font-black text-slate-900 mb-2 tracking-tight">
+                        Be a <span className="text-secondary">Member</span>
+                    </h1>
+                    <p className="text-base md:text-lg text-slate-500 mt-2 font-medium">Connect, Grow, and Support</p>
                 </div>
 
-                <Card className="border-gold/40 shadow-xl bg-cream/40 backdrop-blur-sm">
-                    <CardHeader className="text-center border-b-0 pb-2">
-                        <CardTitle className="text-xl">
+                <Card className="bg-white border-transparent shadow-[0_20px_60px_-15px_rgba(59,130,246,0.05)] rounded-[2.5rem] overflow-hidden">
+                    <CardHeader className="text-center border-b border-slate-100 pb-6 pt-8 bg-slate-50/50">
+                        <CardTitle className="text-xl md:text-2xl font-black text-slate-900">
                             Create Account
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="text-sm md:text-base text-slate-500 font-medium mt-1.5">
                             Enter your details to register as a member.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleRegister} className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-maroon">Full Name</label>
+                    <CardContent className="p-8">
+                        <form onSubmit={handleRegister} className="space-y-5 md:space-y-6">
+                            <div className="space-y-2.5">
+                                <label className="text-xs md:text-sm font-bold text-slate-700 uppercase tracking-wider">Full Name</label>
                                 <Input
                                     name="name"
-                                    placeholder="Enter your full name"
+                                    placeholder="Ashish Amin"
+                                    className={`pl-5 text-base h-12 md:h-14 rounded-2xl bg-slate-50 border-slate-200 focus:border-secondary focus:ring-secondary/20 transition-colors ${errors.name ? 'border-red-500 bg-red-50/50' : ''}`}
                                     value={formData.name}
-                                    onChange={handleChange}
-                                    className={errors.name ? 'border-red-500' : ''}
                                 />
-                                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                                {errors.name && <p className="text-red-500 text-xs font-medium mt-1.5">{errors.name}</p>}
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-maroon">Mobile Number</label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                                <div className="space-y-2.5">
+                                    <label className="text-xs md:text-sm font-bold text-slate-700 uppercase tracking-wider">Mobile Number</label>
                                     <Input
                                         name="mobile"
                                         type="tel"
-                                        placeholder="Mobile Number"
-                                        value={formData.mobile}
                                         onChange={(e) => {
                                             const val = e.target.value.replace(/\D/g, '').slice(0, 10)
                                             setFormData({ ...formData, mobile: val })
                                             if (errors.mobile) setErrors(prev => { const n = { ...prev }; delete n.mobile; return n })
                                         }}
                                         maxLength={10}
-                                        className={errors.mobile ? 'border-red-500' : ''}
+                                        placeholder="91XXXXXXXX"
+                                        className={`pl-5 text-base h-12 md:h-14 rounded-2xl bg-slate-50 border-slate-200 focus:border-secondary focus:ring-secondary/20 transition-colors ${errors.mobile ? 'border-red-500 bg-red-50/50' : ''}`}
+                                        value={formData.mobile}
                                     />
-                                    {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
+                                    {errors.mobile && <p className="text-red-500 text-xs font-medium mt-1.5">{errors.mobile}</p>}
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-maroon">Email</label>
+                                <div className="space-y-2.5">
+                                    <label className="text-xs md:text-sm font-bold text-slate-700 uppercase tracking-wider">Email</label>
                                     <Input
                                         name="email"
                                         type="email"
-                                        placeholder="Email Address"
-                                        value={formData.email}
                                         onChange={handleChange}
-                                        className={errors.email ? 'border-red-500' : ''}
+                                        placeholder="ashish@example.com"
+                                        className={`pl-5 text-base h-12 md:h-14 rounded-2xl bg-slate-50 border-slate-200 focus:border-secondary focus:ring-secondary/20 transition-colors ${errors.email ? 'border-red-500 bg-red-50/50' : ''}`}
+                                        value={formData.email}
                                     />
-                                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                                    {errors.email && <p className="text-red-500 text-xs font-medium mt-1.5">{errors.email}</p>}
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-maroon">Gotra (Optional)</label>
+                            <div className="space-y-2.5">
+                                <label className="text-xs md:text-sm font-bold text-slate-700 uppercase tracking-wider">Gotra (Optional)</label>
                                 <Input
                                     name="gotra"
-                                    placeholder="Enter your Gotra"
-                                    value={formData.gotra}
                                     onChange={handleChange}
+                                    placeholder="Enter your Gotra"
+                                    className="pl-5 text-base h-12 md:h-14 rounded-2xl bg-slate-50 border-slate-200 focus:border-secondary focus:ring-secondary/20 transition-colors"
+                                    value={formData.gotra}
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-maroon">Password</label>
+                            <div className="space-y-2.5">
+                                <label className="text-xs md:text-sm font-bold text-slate-700 uppercase tracking-wider">Password</label>
                                 <Input
                                     name="password"
                                     type="password"
-                                    placeholder="Create a password (min 6 characters)"
-                                    value={formData.password}
                                     onChange={handleChange}
-                                    className={errors.password ? 'border-red-500' : ''}
+                                    placeholder="Create a password (min 6 characters)"
+                                    className={`pl-5 text-base h-12 md:h-14 rounded-2xl bg-slate-50 border-slate-200 focus:border-secondary focus:ring-secondary/20 transition-colors ${errors.password ? 'border-red-500 bg-red-50/50' : ''}`}
+                                    value={formData.password}
                                 />
-                                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                                {errors.password && <p className="text-red-500 text-xs font-medium mt-1.5">{errors.password}</p>}
                             </div>
 
-                            <Button type="submit" className="w-full text-lg h-12 mt-4" disabled={isLoading}>
+                            <Button type="submit" className="w-full text-lg h-14 bg-slate-900 hover:bg-secondary hover:text-slate-900 text-white font-bold rounded-2xl shadow-lg shadow-slate-200 transition-all hover:-translate-y-0.5 mt-2" disabled={isLoading}>
                                 {isLoading ? (
                                     <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating...
+                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Creating...
                                     </>
                                 ) : (
                                     <>
-                                        Register <ArrowRight className="ml-2 h-4 w-4" />
+                                        Register <ArrowRight className="ml-2 h-5 w-5" />
                                     </>
                                 )}
                             </Button>
 
-                            <div className="relative my-6">
+                            <div className="relative my-8">
                                 <div className="absolute inset-0 flex items-center">
-                                    <span className="w-full border-t border-gold/20"></span>
+                                    <span className="w-full border-t border-slate-100"></span>
                                 </div>
-                                <div className="relative flex justify-center text-xs uppercase">
-                                    <span className="bg-[#FAF3E0] px-2 text-muted-foreground font-medium">Or continue with</span>
+                                <div className="relative flex justify-center text-xs uppercase font-bold tracking-wider">
+                                    <span className="bg-white px-4 text-slate-400">Or continue with</span>
                                 </div>
                             </div>
 
                             <Button
                                 type="button"
                                 variant="outline"
-                                className="w-full border-gold/30 text-maroon hover:bg-gold/10 hover:text-maroon h-11"
+                                className="w-full border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 h-14 rounded-2xl font-bold text-base transition-colors"
                                 onClick={handleGoogleLogin}
                                 disabled={isLoading}
                             >
@@ -224,9 +230,9 @@ export default function JoinPage() {
                             </Button>
                         </form>
 
-                        <div className="mt-6 flex flex-col items-center gap-2 border-t border-gold/10 pt-4">
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground text-center">
-                                <ShieldCheck className="h-3 w-3 text-maroon" />
+                        <div className="mt-8 flex flex-col items-center gap-2 border-t border-slate-100 pt-6">
+                            <div className="flex items-start gap-4 p-5 md:p-6 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:border-secondary/20 hover:bg-white animate-in slide-in-from-right duration-500 [animation-delay:200ms]">
+                                <ShieldCheck className="h-4 w-4 md:h-5 md:w-5 text-secondary shrink-0" />
                                 <span>Your information is secure and used for verification only.</span>
                             </div>
                         </div>
@@ -234,12 +240,9 @@ export default function JoinPage() {
                     </CardContent>
                 </Card>
 
-                <div className="text-center mt-6">
-                    <p className="text-sm text-muted-foreground">
-                        Already a member?{" "}
-                        <Link href="/login" className="font-bold text-maroon hover:text-gold transition-colors">
-                            Login here
-                        </Link>
+                <div className="text-center mt-8">
+                    <p className="text-center text-slate-500 font-medium pb-8">
+                        Already a member? <Link href="/login" className="text-secondary font-black hover:underline">Sign in</Link>
                     </p>
                 </div>
 

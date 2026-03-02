@@ -1,11 +1,15 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
-import { createPortal } from "react-dom"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Share2, Copy, Check } from "lucide-react"
+import { Share2, Copy, Check, Twitter, Facebook, Link2 } from "lucide-react"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 
-// Social media brand icons as inline SVGs for crisp rendering
+// Social media brand icons as inline SVGs
 function WhatsAppIcon({ className }: { className?: string }) {
     return (
         <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -14,36 +18,11 @@ function WhatsAppIcon({ className }: { className?: string }) {
     )
 }
 
-function FacebookIcon({ className }: { className?: string }) {
-    return (
-        <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-        </svg>
-    )
-}
-
-function XIcon({ className }: { className?: string }) {
-    return (
-        <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-        </svg>
-    )
-}
-
-function LinkedInIcon({ className }: { className?: string }) {
-    return (
-        <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-        </svg>
-    )
-}
-
 interface ShareButtonProps {
     url: string
     title: string
     description?: string
-    details?: string // Custom formatted string for sharing/copying
-    showLink?: boolean // Whether to include the link in the shared text
+    details?: string
     variant?: "icon" | "button"
     size?: "sm" | "default"
     className?: string
@@ -54,173 +33,89 @@ export function ShareButton({
     title,
     description = "",
     details = "",
-    showLink = false, // Default to NOT providing the link as per user request
     variant = "icon",
     size = "sm",
     className = ""
 }: ShareButtonProps) {
     const [open, setOpen] = useState(false)
     const [copied, setCopied] = useState(false)
-    const btnRef = useRef<HTMLButtonElement>(null)
-    const dropRef = useRef<HTMLDivElement>(null)
-    const [pos, setPos] = useState({ top: 0, left: 0 })
-
-    // Close dropdown on click outside or scroll
-    useEffect(() => {
-        if (!open) return
-        const handleClose = (e: MouseEvent) => {
-            if (dropRef.current && !dropRef.current.contains(e.target as Node) &&
-                btnRef.current && !btnRef.current.contains(e.target as Node)) {
-                setOpen(false)
-            }
-        }
-        const handleScroll = () => setOpen(false)
-        document.addEventListener("mousedown", handleClose)
-        window.addEventListener("scroll", handleScroll, true)
-        return () => {
-            document.removeEventListener("mousedown", handleClose)
-            window.removeEventListener("scroll", handleScroll, true)
-        }
-    }, [open])
-
-    // Calculate position when opening
-    const handleToggle = (e: React.MouseEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
-        if (!open && btnRef.current) {
-            const rect = btnRef.current.getBoundingClientRect()
-            setPos({
-                top: rect.bottom + window.scrollY + 8,
-                left: Math.max(8, rect.right + window.scrollX - 208)
-            })
-        }
-        setOpen(!open)
-    }
 
     const fullUrl = typeof window !== "undefined" ? `${window.location.origin}${url}` : url
-    const baseText = details ? details : `${title}\n${description ? description + "\n" : ""}`
-    const shareText = showLink ? `${baseText}\n${fullUrl}` : baseText
+    const shareText = details || `${title}\n${description ? description + "\n" : ""}`
 
-    const encodedShareText = encodeURIComponent(shareText)
-    const encodedUrl = encodeURIComponent(fullUrl)
-    const encodedTitle = encodeURIComponent(title)
-
-    const shareLinks = [
-        {
-            name: "WhatsApp",
-            icon: <WhatsAppIcon className="h-4 w-4" />,
-            href: `https://wa.me/?text=${encodedShareText}`,
-            color: "hover:bg-green-50 hover:text-green-600",
-            iconColor: "text-green-600"
-        },
-        {
-            name: "Facebook",
-            icon: <FacebookIcon className="h-4 w-4" />,
-            href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-            color: "hover:bg-blue-50 hover:text-blue-600",
-            iconColor: "text-blue-600"
-        },
-        {
-            name: "X (Twitter)",
-            icon: <XIcon className="h-4 w-4" />,
-            href: `https://twitter.com/intent/tweet?text=${encodedShareText}`,
-            color: "hover:bg-gray-50 hover:text-black",
-            iconColor: "text-black"
-        },
-        {
-            name: "LinkedIn",
-            icon: <LinkedInIcon className="h-4 w-4" />,
-            href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-            color: "hover:bg-sky-50 hover:text-sky-700",
-            iconColor: "text-sky-700"
-        },
+    const platforms = [
+        { name: "WhatsApp", icon: WhatsAppIcon, url: `https://wa.me/?text=${encodeURIComponent(shareText + " " + fullUrl)}` },
+        { name: "Twitter", icon: Twitter, url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(fullUrl)}` },
+        { name: "Facebook", icon: Facebook, url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}` },
+        { name: "LinkedIn", icon: Link2, url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fullUrl)}` },
     ]
 
-    const handleCopy = async () => {
-        const textToCopy = shareText
+    const copyToClipboard = async () => {
         try {
-            await navigator.clipboard.writeText(textToCopy)
+            await navigator.clipboard.writeText(fullUrl)
             setCopied(true)
             setTimeout(() => setCopied(false), 2000)
-        } catch {
-            // Fallback for older browsers
-            const textarea = document.createElement("textarea")
-            textarea.value = textToCopy
-            document.body.appendChild(textarea)
-            textarea.select()
-            document.execCommand("copy")
-            document.body.removeChild(textarea)
-            setCopied(true)
-            setTimeout(() => setCopied(false), 2000)
+        } catch (err) {
+            console.error("Failed to copy!", err)
         }
     }
 
-    const dropdown = (
-        <div
-            ref={dropRef}
-            className="bg-white rounded-xl shadow-2xl border border-gray-200 py-2 w-52"
-            style={{ position: 'absolute', top: pos.top, left: pos.left, zIndex: 99999 }}
-        >
-            <div className="px-3 py-1.5 border-b border-gray-50 mb-1">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Share via</p>
-            </div>
-            {shareLinks.map((link) => (
-                <button
-                    key={link.name}
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(link.href, '_blank', 'noopener,noreferrer') }}
-                    className={`flex items-center gap-3 px-3 py-2 text-sm transition-colors w-full text-left ${link.color}`}
-                >
-                    <span className={link.iconColor}>{link.icon}</span>
-                    {link.name}
-                </button>
-            ))}
-            <div className="border-t border-gray-50 mt-1 pt-1">
-                <button
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleCopy() }}
-                    className="flex items-center gap-3 px-3 py-2 text-sm w-full text-left hover:bg-gray-50 transition-colors"
-                >
-                    {copied ? (
-                        <>
-                            <Check className="h-4 w-4 text-green-600" />
-                            <span className="text-green-600 font-medium">Link Copied!</span>
-                        </>
-                    ) : (
-                        <>
-                            <Copy className="h-4 w-4 text-muted-foreground" />
-                            Copy Link
-                        </>
-                    )}
-                </button>
-            </div>
-        </div>
-    )
-
     return (
-        <div className="relative inline-block">
-            {variant === "icon" ? (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
                 <Button
-                    variant="ghost"
-                    ref={btnRef}
-                    onClick={handleToggle}
-                    className={`h-8 w-8 p-0 rounded-full text-muted-foreground hover:text-maroon hover:bg-maroon/5 ${className}`}
+                    variant={variant === "icon" ? "ghost" : "outline"}
+                    size={size}
+                    className={variant === "icon" ?
+                        `h-8 w-8 p-0 rounded-full text-slate-400 hover:text-secondary hover:bg-slate-50 ${className}` :
+                        `border-slate-200 text-slate-900 hover:bg-slate-50 font-black uppercase tracking-widest text-[10px] ${className}`
+                    }
                     title="Share"
                 >
-                    <Share2 className="h-4 w-4" />
+                    <Share2 className={variant === "icon" ? "h-4 w-4" : "h-3.5 w-3.5 mr-1.5"} />
+                    {variant !== "icon" && "Share"}
                 </Button>
-            ) : (
-                <Button
-                    variant="outline"
-                    size={size}
-                    ref={btnRef}
-                    onClick={handleToggle}
-                    className={`border-gold/30 text-maroon hover:bg-gold/5 font-bold ${className}`}
-                >
-                    <Share2 className="h-3.5 w-3.5 mr-1.5" />
-                    Share
-                </Button>
-            )}
-
-            {open && typeof document !== "undefined" && createPortal(dropdown, document.body)}
-        </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-72 p-0 rounded-[2rem] border-slate-100 shadow-2xl overflow-hidden" align="end">
+                <div className="p-5 bg-slate-900 text-white">
+                    <h3 className="font-black text-lg tracking-tight uppercase">Share this post</h3>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Spread the story with your network</p>
+                </div>
+                <div className="p-4 grid grid-cols-4 gap-4 bg-white">
+                    {platforms.map((p) => (
+                        <button
+                            key={p.name}
+                            onClick={() => {
+                                window.open(p.url, '_blank')
+                                setOpen(false)
+                            }}
+                            className="flex flex-col items-center gap-2 group"
+                        >
+                            <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-secondary transition-all shadow-sm">
+                                <p.icon className="h-5 w-5" />
+                            </div>
+                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">{p.name}</span>
+                        </button>
+                    ))}
+                </div>
+                <div className="p-4 bg-slate-50 border-t border-slate-100">
+                    <Button
+                        variant="outline"
+                        className="w-full h-10 rounded-xl border-slate-200 text-slate-900 hover:bg-slate-900 hover:text-white font-black uppercase tracking-widest text-[9px] transition-all"
+                        onClick={copyToClipboard}
+                    >
+                        {copied ? (
+                            <span className="flex items-center gap-1.5">
+                                <Check className="h-3 w-3" /> Copied!
+                            </span>
+                        ) : (
+                            <span className="flex items-center gap-1.5">
+                                <Copy className="h-3 w-3" /> Copy Link
+                            </span>
+                        )}
+                    </Button>
+                </div>
+            </PopoverContent>
+        </Popover>
     )
 }

@@ -42,6 +42,7 @@ model User {
   notifications      Notification[]      @relation("UserNotifications")
   accommodations     Accommodation[]     @relation("UserAccommodations")
   accommodationApps  AccommodationApplication[]
+  businessCollabs    BusinessCollaboration[]
 }
 
 model Business {
@@ -318,4 +319,18 @@ model AccommodationApplication {
   user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([accommodationId, userId])
+}
+
+model BusinessCollaboration {
+  id              String   @id @default(cuid())
+  authorId        String
+  title           String
+  description     String
+  partnershipType String   // e.g., 'Co-founder', 'Strategic Alliance', 'Joint Venture'
+  skillsRequired  String[] // Array of required skills/resources
+  status          String   @default("pending") // 'pending', 'approved', 'rejected'
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  author          User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }

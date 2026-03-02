@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Building2, MapPin, Search, Users, ShieldCheck, Mail, Phone, Wifi, Coffee, Wind, Info } from "lucide-react"
+import { Building2, MapPin, Search, Users, ShieldCheck, Mail, Phone, Wifi, Coffee, Wind, Info, Loader2 } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
@@ -92,78 +92,80 @@ export default function AccommodationsPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
+        <div className="min-h-screen flex flex-col bg-[#FAF9F6] selection:bg-secondary/20">
             <Navbar />
-            <main className="flex-1 py-12">
+            <main className="flex-1 pb-24">
                 {/* Header Hero */}
-                <div className="container mx-auto px-4 mb-12 text-center">
-                    <Badge variant="outline" className="mb-4 border-maroon text-maroon hover:bg-maroon/5 uppercase tracking-wider font-semibold">
-                        <Building2 className="mr-2 h-3.5 w-3.5" /> Trusted Housing
-                    </Badge>
-                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6">
-                        Verified Hostels
-                    </h1>
-                    <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-                        Find safe, comfortable, and community-trusted accommodations for students and working professionals.
-                        Listed directly by CommuNet verified members.
-                    </p>
+                <div className="bg-white border-b border-slate-100 pt-16 pb-20 mb-12">
+                    <div className="container mx-auto px-4 text-center max-w-4xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 mb-8">
+                            <Building2 className="h-4 w-4 text-secondary" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-secondary">Verified Housing</span>
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none mb-8">
+                            Trusted <span className="text-secondary">Hostels</span>
+                        </h1>
+                        <p className="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-2xl mx-auto mb-10">
+                            Find safe, comfortable, and community-trusted accommodations. Listed directly by CommuNet verified members.
+                        </p>
 
-                    {isAuthenticated && (
-                        <Button
-                            className="bg-maroon hover:bg-maroon/90 text-white rounded-full px-8"
-                            onClick={() => {
-                                if (user?.status === 'approved' || user?.role === 'admin') {
-                                    router.push("/accommodations/add")
-                                } else {
-                                    toast.error("Action Restricted", {
-                                        description: "Verification Pending. Your account is currently under review by our community administrators. You'll be able to perform this action once your membership is verified."
-                                    })
-                                }
-                            }}
-                        >
-                            List Your Property
-                        </Button>
-                    )}
+                        {isAuthenticated && (
+                            <Button
+                                className="h-14 px-10 rounded-2xl bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 active:scale-95"
+                                onClick={() => {
+                                    if (user?.status === 'approved' || user?.role === 'admin') {
+                                        router.push("/accommodations/add")
+                                    } else {
+                                        toast.error("Action Restricted", {
+                                            description: "Verification Pending. Your account is currently under review by our community administrators."
+                                        })
+                                    }
+                                }}
+                            >
+                                List Your Property
+                            </Button>
+                        )}
+                    </div>
                 </div>
 
                 <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-4 gap-8">
 
                     {/* Desktop Sidebar Filters */}
-                    <div className="lg:col-span-1 space-y-8">
-                        <div className="bg-white p-6 rounded-2xl border border-gold/20 shadow-sm sticky top-24">
-                            <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
-                                <Search className="h-5 w-5 text-maroon" /> Filters
+                    <div className="lg:col-span-1 space-y-8 lg:sticky lg:top-24">
+                        <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100">
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-8 ml-1">
+                                Preferences
                             </h3>
 
-                            <div className="space-y-6">
+                            <div className="space-y-8">
                                 {/* City Search */}
                                 <div>
-                                    <label className="text-sm font-semibold text-gray-700 mb-2 block">Search by City</label>
-                                    <div className="relative">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-3 block ml-1">City Location</label>
+                                    <div className="relative group">
                                         <Input
-                                            placeholder="E.g., Mumbai, Pune..."
+                                            placeholder="Mumbai, Pune..."
                                             value={searchCity}
                                             onChange={(e) => setSearchCity(e.target.value)}
-                                            className="pl-9 bg-gray-50 border-gray-200 focus-visible:ring-maroon"
+                                            className="h-12 pl-11 bg-slate-50 border-slate-100 rounded-2xl focus-visible:ring-secondary focus-visible:bg-white transition-all font-bold text-sm"
                                         />
-                                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-secondary transition-colors" />
                                     </div>
                                 </div>
 
                                 {/* Gender Filter */}
                                 <div>
-                                    <label className="text-sm font-semibold text-gray-700 mb-3 block">Tenant Rule</label>
-                                    <div className="flex flex-wrap gap-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 block ml-1">Tenant Rules</label>
+                                    <div className="grid grid-cols-2 gap-2">
                                         {['all', 'Boys', 'Girls', 'Co-ed'].map((gender) => (
                                             <button
                                                 key={gender}
                                                 onClick={() => setSelectedGender(gender)}
-                                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedGender === gender
-                                                    ? 'bg-maroon text-white shadow-md'
-                                                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
+                                                className={`h-11 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${selectedGender === gender
+                                                    ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/10'
+                                                    : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600'
                                                     }`}
                                             >
-                                                {gender.charAt(0).toUpperCase() + gender.slice(1)}
+                                                {gender}
                                             </button>
                                         ))}
                                     </div>
@@ -174,142 +176,150 @@ export default function AccommodationsPage() {
                                     <div className="pt-2">
                                         <button
                                             onClick={() => setShowMyOnly(!showMyOnly)}
-                                            className={`w-full py-3 rounded-xl text-sm font-semibold transition-all border flex items-center justify-center gap-2 ${showMyOnly
-                                                ? 'bg-maroon text-white border-maroon shadow-md'
-                                                : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 text-maroon'
+                                            className={`w-full h-14 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border-2 flex items-center justify-center gap-3 ${showMyOnly
+                                                ? 'bg-secondary border-secondary text-slate-900 shadow-xl shadow-secondary/20'
+                                                : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200 hover:text-slate-600'
                                                 }`}
                                         >
                                             <Building2 className="h-4 w-4" />
-                                            {showMyOnly ? "Showing My Listings" : "Show My Listings Only"}
+                                            {showMyOnly ? "My Assets" : "Own Assets Only"}
                                         </button>
                                     </div>
                                 )}
                             </div>
+                        </div>
+
+                        <div className="bg-secondary/5 rounded-[2rem] border border-secondary/10 p-6">
+                            <div className="flex items-center gap-3 mb-3">
+                                <ShieldCheck className="h-5 w-5 text-secondary" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-secondary">Safety First</span>
+                            </div>
+                            <p className="text-[10px] font-bold text-secondary/70 leading-relaxed uppercase tracking-wider">
+                                All properties are verified by community moderators for safety and quality standards.
+                            </p>
                         </div>
                     </div>
 
                     {/* Listings Grid */}
                     <div className="lg:col-span-3">
                         {isLoading ? (
-                            <div className="grid sm:grid-cols-2 gap-6">
-                                {[1, 2, 3, 4].map(n => (
-                                    <Card key={n} className="overflow-hidden border-none shadow-md">
-                                        <Skeleton className="h-48 w-full" />
-                                        <CardContent className="p-5 space-y-4">
-                                            <Skeleton className="h-6 w-3/4" />
-                                            <Skeleton className="h-4 w-1/2" />
-                                            <div className="flex gap-2"><Skeleton className="h-8 w-16" /><Skeleton className="h-8 w-16" /></div>
-                                        </CardContent>
-                                    </Card>
-                                ))}
+                            <div className="flex flex-col items-center justify-center py-32 space-y-6">
+                                <div className="relative">
+                                    <Loader2 className="h-16 w-16 animate-spin text-secondary/20" />
+                                    <Loader2 className="h-16 w-16 animate-spin text-secondary absolute inset-0 [animation-delay:-0.5s]" />
+                                </div>
+                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Scanning Housing...</p>
                             </div>
                         ) : accommodations.length === 0 ? (
-                            <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-300">
-                                <Building2 className="h-16 w-16 text-gray-200 mx-auto mb-4" />
-                                <h3 className="text-xl font-bold text-gray-700 mb-2">No accommodations found</h3>
-                                <p className="text-gray-500 max-w-sm mx-auto">
-                                    Try adjusting your filters or search criteria.
+                            <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-20 text-center">
+                                <div className="h-24 w-24 rounded-[2rem] bg-slate-50 flex items-center justify-center mx-auto mb-8">
+                                    <Building2 className="h-12 w-12 text-slate-200" />
+                                </div>
+                                <h3 className="text-3xl font-black text-slate-900 tracking-tight mb-4">No Shelters Found</h3>
+                                <p className="text-slate-500 text-lg font-medium leading-relaxed max-w-sm mx-auto">
+                                    Try adjusting your filters or search criteria. More listings are being verified every day.
                                 </p>
                             </div>
                         ) : (
-                            <div className="grid sm:grid-cols-2 gap-6">
+                            <div className="grid sm:grid-cols-2 gap-8">
                                 {accommodations.map((acc) => (
                                     <Link href={`/accommodations/${acc.id}`} key={acc.id} className="group">
-                                        <Card className="h-full overflow-hidden border border-gold/20 shadow-sm hover:shadow-xl transition-all duration-300 bg-white flex flex-col group-hover:-translate-y-1">
+                                        <Card className="h-full overflow-hidden border border-slate-100 shadow-2xl shadow-slate-200/30 hover:shadow-secondary/10 transition-all duration-500 bg-white flex flex-col rounded-[2.5rem] group-hover:-translate-y-2">
                                             {/* Image Box */}
-                                            <div className="relative h-48 sm:h-56 w-full bg-gray-100 overflow-hidden">
+                                            <div className="relative h-64 w-full bg-slate-100 overflow-hidden">
                                                 {acc.images && acc.images.length > 0 ? (
                                                     <Image
                                                         src={acc.images[0]}
                                                         alt={acc.name}
                                                         fill
-                                                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                                        className="object-cover group-hover:scale-110 transition-transform duration-700"
                                                     />
                                                 ) : (
-                                                    <Image
-                                                        src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2069&auto=format&fit=crop"
-                                                        alt={acc.name}
-                                                        fill
-                                                        className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
-                                                    />
+                                                    <div className="h-full w-full bg-slate-900 flex items-center justify-center">
+                                                        <Building2 className="h-12 w-12 text-slate-800" />
+                                                    </div>
                                                 )}
 
-                                                <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
-                                                    <Badge className="bg-white/95 text-maroon hover:bg-white font-bold shadow-sm backdrop-blur-sm">
+                                                <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
+                                                    <div className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-md border border-white text-[10px] font-black uppercase tracking-widest text-slate-900 shadow-xl">
                                                         {acc.type}
-                                                    </Badge>
-                                                    <Badge className={
-                                                        acc.gender === 'Girls' ? 'bg-pink-100 text-pink-700 hover:bg-pink-100' :
-                                                            acc.gender === 'Boys' ? 'bg-blue-100 text-blue-700 hover:bg-blue-100' :
-                                                                'bg-purple-100 text-purple-700 hover:bg-purple-100'
-                                                    }>
-                                                        {acc.gender} Only
-                                                    </Badge>
+                                                    </div>
+                                                    <div className={`px-3 py-1 rounded-full backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest text-white shadow-xl ${acc.gender === 'Girls' ? 'bg-pink-500/80' :
+                                                        acc.gender === 'Boys' ? 'bg-blue-500/80' :
+                                                            'bg-purple-500/80'
+                                                        }`}>
+                                                        {acc.gender}
+                                                    </div>
 
                                                     {acc.status !== 'approved' && (
-                                                        <Badge variant="destructive" className="bg-orange-500 text-white hover:bg-orange-600 font-bold uppercase text-[10px]">
+                                                        <div className="px-3 py-1 rounded-full bg-secondary text-slate-900 text-[10px] font-black uppercase tracking-widest shadow-xl">
                                                             {acc.status}
-                                                        </Badge>
+                                                        </div>
                                                     )}
                                                 </div>
 
                                                 {/* Price Tag */}
-                                                <div className="absolute bottom-3 left-3 bg-gray-900/80 backdrop-blur-md text-white px-3 py-1.5 rounded-lg font-bold shadow-lg text-sm border border-white/10">
-                                                    {acc.pricing}
+                                                <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 bg-slate-900/90 backdrop-blur-md text-white px-4 py-2 rounded-2xl font-black shadow-2xl border border-white/10">
+                                                    <span className="text-[10px] uppercase tracking-widest text-slate-400">INR</span>
+                                                    <span className="text-lg tracking-tighter">{acc.pricing}</span>
                                                 </div>
                                             </div>
 
-                                            <CardContent className="p-5 flex-1 flex flex-col">
-                                                <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-maroon transition-colors line-clamp-1">
+                                            <CardContent className="p-8 flex-1 flex flex-col">
+                                                <h3 className="text-2xl font-black text-slate-900 mb-2 group-hover:text-secondary transition-colors tracking-tight line-clamp-1">
                                                     {acc.name}
                                                 </h3>
 
-                                                <div className="flex items-center text-gray-500 text-sm mb-4">
-                                                    <MapPin className="h-4 w-4 mr-1 shrink-0" />
-                                                    <span className="line-clamp-1">{acc.location}{acc.city ? `, ${acc.city}` : ''}</span>
+                                                <div className="flex items-center text-slate-400 text-[10px] font-black uppercase tracking-widest mb-6">
+                                                    <MapPin className="h-3.5 w-3.5 mr-2 text-secondary" />
+                                                    <span className="line-clamp-1">{acc.city || acc.location}</span>
                                                 </div>
 
                                                 {/* Amenities Mini-list */}
-                                                <div className="flex flex-wrap gap-1.5 mb-6">
+                                                <div className="flex flex-wrap gap-2 mb-8">
                                                     {acc.amenities.slice(0, 3).map(amenity => (
-                                                        <span key={amenity} className="inline-flex items-center gap-1 text-xs bg-gray-50 border border-gray-100 text-gray-600 px-2 py-1 rounded-md">
+                                                        <span key={amenity} className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-slate-50 border border-slate-100/50 text-slate-500 px-3 py-1.5 rounded-xl">
                                                             {AMENITY_ICONS[amenity] || <Info className="h-3 w-3" />} {amenity}
                                                         </span>
                                                     ))}
                                                     {acc.amenities.length > 3 && (
-                                                        <span className="text-xs text-gray-400 font-medium px-1 flex items-center">
-                                                            +{acc.amenities.length - 3} more
+                                                        <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest px-2 py-1.5 ">
+                                                            +{acc.amenities.length - 3}
                                                         </span>
                                                     )}
                                                 </div>
 
-                                                <div className="mt-auto pt-4 border-t border-gray-100">
+                                                <div className="mt-auto pt-6 border-t border-slate-50">
                                                     {/* Contact Preview logic */}
                                                     {!authLoading && !isAuthenticated ? (
-                                                        <div className="flex items-center justify-between bg-orange-50/50 p-2.5 rounded-lg border border-orange-100">
-                                                            <span className="text-xs text-orange-800 font-medium flex items-center gap-1.5">
-                                                                <ShieldCheck className="h-3.5 w-3.5 text-orange-500" />
-                                                                Contact hidden
-                                                            </span>
-                                                            <span className="text-xs font-bold text-maroon uppercase tracking-wide">Login to View</span>
+                                                        <div className="flex items-center justify-between bg-secondary/5 p-4 rounded-2xl border border-secondary/10">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="h-8 w-8 rounded-full bg-secondary/10 flex items-center justify-center">
+                                                                    <ShieldCheck className="h-4 w-4 text-secondary" />
+                                                                </div>
+                                                                <span className="text-[10px] text-secondary font-black uppercase tracking-widest">
+                                                                    Data Locked
+                                                                </span>
+                                                            </div>
+                                                            <span className="text-[10px] font-black text-secondary uppercase tracking-widest">Login</span>
                                                         </div>
                                                     ) : (
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="h-8 w-8 rounded-full overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="h-10 w-10 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                                                                 {acc.owner.profileImage ? (
-                                                                    <Image src={acc.owner.profileImage} alt={acc.owner.name} width={32} height={32} className="object-cover h-full w-full" />
+                                                                    <Image src={acc.owner.profileImage} alt={acc.owner.name} width={40} height={40} className="object-cover h-full w-full" />
                                                                 ) : (
-                                                                    <div className="h-full w-full flex items-center justify-center text-gray-400 text-xs font-bold bg-maroon/5 text-maroon">
+                                                                    <div className="h-full w-full flex items-center justify-center text-slate-400 text-sm font-black bg-slate-50">
                                                                         {acc.owner.name[0]}
                                                                     </div>
                                                                 )}
                                                             </div>
                                                             <div className="flex-1 min-w-0">
-                                                                <p className="text-xs text-gray-500">Listed by member</p>
-                                                                <p className="text-sm font-semibold truncate text-gray-900">{acc.owner.name}</p>
+                                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Host</p>
+                                                                <p className="text-sm font-black truncate text-slate-900 tracking-tight">{acc.owner.name}</p>
                                                             </div>
-                                                            <div className="px-3 py-1 text-sm border border-gold text-maroon rounded-md group-hover:bg-gold group-hover:text-white transition-colors shrink-0">
-                                                                Details
+                                                            <div className="h-10 px-4 flex items-center justify-center text-[10px] font-black uppercase tracking-widest bg-slate-900 text-white rounded-xl group-hover:bg-secondary group-hover:text-slate-900 transition-all shadow-lg shadow-slate-900/10">
+                                                                View
                                                             </div>
                                                         </div>
                                                     )}

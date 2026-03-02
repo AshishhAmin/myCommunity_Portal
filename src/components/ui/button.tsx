@@ -16,9 +16,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         const baseStyles = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
 
         const variants = {
-            primary: "bg-gold text-maroon hover:bg-[#C5A028]",
-            secondary: "bg-maroon text-white hover:bg-[#660000]",
-            outline: "border border-gold text-maroon hover:bg-gold/10",
+            primary: "bg-slate-900 text-white hover:bg-secondary hover:text-slate-900 transition-all",
+            secondary: "bg-secondary text-slate-900 hover:bg-slate-900 hover:text-white transition-all",
+            outline: "border border-slate-200 text-slate-900 hover:bg-slate-900 hover:text-white transition-all",
             ghost: "hover:bg-accent hover:text-accent-foreground",
             link: "text-primary underline-offset-4 hover:underline",
             destructive: "bg-red-600 text-white hover:bg-red-700",

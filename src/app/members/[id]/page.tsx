@@ -91,87 +91,99 @@ export default function MemberProfilePage() {
 
     return (
         <AuthGuard allowedRoles={["member", "admin"]}>
-            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
                 <main className="flex-1 container mx-auto px-4 py-8 max-w-3xl">
-                    <Button variant="ghost" onClick={() => router.back()} className="mb-6 hover:bg-transparent hover:text-maroon pl-0">
-                        <ArrowLeft className="h-4 w-4 mr-2" /> Back
+                    <Button variant="ghost" onClick={() => router.back()} className="mb-8 hover:bg-transparent text-slate-400 hover:text-slate-900 pl-0 font-black uppercase tracking-[0.2em] text-[10px]">
+                        <ArrowLeft className="h-4 w-4 mr-2" /> Protocol Return
                     </Button>
 
                     {loading ? (
-                        <div className="flex justify-center py-20">
-                            <Loader2 className="h-10 w-10 animate-spin text-maroon" />
+                        <div className="flex justify-center py-24">
+                            <Loader2 className="h-12 w-12 animate-spin text-secondary" />
                         </div>
                     ) : !member ? (
                         <p className="text-center text-muted-foreground py-16">Member not found.</p>
                     ) : (
-                        <div className="space-y-6">
+                        <div className="space-y-12">
                             {/* Profile Header */}
-                            <Card className="border-gold/20">
-                                <CardContent className="p-6 sm:p-8 text-center">
-                                    <div className="mx-auto h-24 w-24 rounded-full bg-cream border-2 border-gold flex items-center justify-center mb-4 text-3xl font-serif font-bold text-maroon overflow-hidden relative">
+                            <div className="bg-white border border-slate-100 rounded-[3rem] p-10 md:p-14 text-center shadow-2xl shadow-slate-200/50 relative overflow-hidden group">
+                                <div className="absolute -right-24 -top-24 w-64 h-64 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 transition-all duration-700" />
+                                <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-slate-900/5 rounded-full blur-3xl group-hover:bg-slate-900/10 transition-all duration-700" />
+
+                                <div className="relative z-10 flex flex-col items-center">
+                                    <div className="h-32 w-32 md:h-40 md:w-40 rounded-[2.5rem] bg-slate-50 border-4 border-white flex items-center justify-center mb-8 text-5xl font-black text-slate-200 overflow-hidden relative shadow-2xl group-hover:rotate-3 transition-transform duration-500">
                                         {member.profileImage ? (
-                                            <Image src={member.profileImage} alt={member.name || 'Member'} fill className="object-cover" />
+                                            <Image src={member.profileImage} alt={member.name || 'Member'} fill className="object-cover transition-transform group-hover:scale-110" />
                                         ) : (
                                             member.name?.charAt(0).toUpperCase() || "?"
                                         )}
                                     </div>
-                                    <h1 className="font-serif text-2xl font-bold text-maroon">{member.name || "Anonymous"}</h1>
-                                    <p className="text-sm text-muted-foreground">{member.email}</p>
+                                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] mb-4">Classified Member</p>
+                                    <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight uppercase leading-none">{member.name || "Anonymous"}</h1>
+                                    <p className="text-sm font-bold text-slate-400 mt-4 tracking-wide">{member.email}</p>
 
-                                    <div className="flex items-center justify-center gap-4 mt-2 text-sm text-muted-foreground">
+                                    <div className="flex items-center justify-center gap-6 mt-8">
                                         {member.location && (
-                                            <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {member.location}</span>
+                                            <span className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-4 py-2 rounded-full border border-slate-100"><MapPin className="h-3 w-3 text-secondary" /> {member.location}</span>
                                         )}
                                         {member.gotra && (
-                                            <span className="px-2 py-0.5 rounded-full bg-gold/10 text-maroon text-xs font-medium">{member.gotra}</span>
+                                            <span className="text-[10px] font-black text-white uppercase tracking-widest bg-slate-900 px-4 py-2 rounded-full shadow-lg shadow-slate-900/10 border border-slate-900">{member.gotra}</span>
                                         )}
                                     </div>
 
                                     {member.bio && (
-                                        <p className="text-sm text-gray-600 mt-3 max-w-md mx-auto">{member.bio}</p>
+                                        <p className="text-slate-500 font-medium mt-10 max-w-lg mx-auto leading-relaxed text-sm italic">"{member.bio}"</p>
                                     )}
 
-                                    <div className="flex justify-center gap-6 mt-4 text-sm">
-                                        <span><strong className="text-maroon">{member.followerCount}</strong> followers</span>
-                                        <span><strong className="text-maroon">{member.followingCount}</strong> following</span>
+                                    <div className="flex justify-center gap-12 mt-12 pt-10 border-t border-slate-50 w-full mb-8">
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-3xl font-black text-slate-900">{member.followerCount}</span>
+                                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mt-1">Founders List</span>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-3xl font-black text-slate-900">{member.followingCount}</span>
+                                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mt-1">Following Hub</span>
+                                        </div>
                                     </div>
 
-                                    <p className="text-xs text-muted-foreground mt-2">Member since {formatDate(member.createdAt)}</p>
+                                    <div className="flex flex-col md:flex-row items-center gap-6">
+                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Commissioned {formatDate(member.createdAt)}</p>
 
-                                    {isAuthenticated && user?.email !== member.email && (
-                                        <Button
-                                            className={`mt-4 ${member.isFollowing
-                                                ? 'bg-white text-maroon border border-maroon/30 hover:bg-red-50'
-                                                : 'bg-maroon text-gold hover:bg-maroon/90'
-                                                }`}
-                                            disabled={followLoading}
-                                            onClick={toggleFollow}
-                                        >
-                                            {followLoading ? (
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                            ) : member.isFollowing ? (
-                                                <><UserCheck className="h-4 w-4 mr-2" /> Following</>
-                                            ) : (
-                                                <><UserPlus className="h-4 w-4 mr-2" /> Follow</>
-                                            )}
-                                        </Button>
-                                    )}
-                                </CardContent>
-                            </Card>
+                                        {isAuthenticated && user?.email !== member.email && (
+                                            <Button
+                                                className={`h-14 px-10 rounded-full font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl transition-all ${member.isFollowing
+                                                    ? 'bg-white text-slate-400 border border-slate-100 hover:text-red-500 hover:border-red-50 hover:bg-red-50'
+                                                    : 'bg-slate-900 text-white hover:bg-secondary hover:text-slate-900 shadow-slate-900/10'
+                                                    }`}
+                                                disabled={followLoading}
+                                                onClick={toggleFollow}
+                                            >
+                                                {followLoading ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                ) : member.isFollowing ? (
+                                                    <><UserCheck className="h-4 w-4 mr-2" /> Deactivate Link</>
+                                                ) : (
+                                                    <><UserPlus className="h-4 w-4 mr-2" /> Establish Protocol</>
+                                                )}
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
 
                             {/* Tabs */}
-                            <div className="flex justify-center border-b border-gold/20">
-                                <div className="flex space-x-6">
+                            <div className="flex justify-center border-b border-slate-100">
+                                <div className="flex space-x-12">
                                     {tabs.map(tab => (
                                         <button
                                             key={tab.id}
                                             onClick={() => setActiveTab(tab.id)}
                                             className={cn(
-                                                "pb-3 text-sm font-medium transition-colors border-b-2",
+                                                "pb-6 text-[10px] font-black uppercase tracking-[0.3em] transition-all border-b-2",
                                                 activeTab === tab.id
-                                                    ? "border-maroon text-maroon"
-                                                    : "border-transparent text-muted-foreground hover:text-maroon"
+                                                    ? "border-secondary text-slate-900"
+                                                    : "border-transparent text-slate-300 hover:text-slate-900"
                                             )}
                                         >
                                             {tab.label}
@@ -181,67 +193,65 @@ export default function MemberProfilePage() {
                             </div>
 
                             {/* Tab Content */}
-                            {activeTab === "posts" && (
-                                <div className="space-y-4">
-                                    {member.jobs.length === 0 && member.businesses.length === 0 && member.events.length === 0 ? (
-                                        <p className="text-center text-muted-foreground py-8">No approved posts yet.</p>
-                                    ) : (
-                                        <>
-                                            {member.jobs.map((job: any) => (
-                                                <Card key={job.id} className="border-l-4 border-l-blue-400">
-                                                    <CardContent className="p-4">
-                                                        <div className="flex items-center gap-2 text-xs text-blue-600 mb-1">
-                                                            <Briefcase className="h-3 w-3" /> Job Posting
+                            <div className="pb-12">
+                                {activeTab === "posts" && (
+                                    <div className="grid gap-6">
+                                        {member.jobs.length === 0 && member.businesses.length === 0 && member.events.length === 0 ? (
+                                            <div className="text-center py-20 bg-white rounded-[2rem] border border-slate-100 shadow-inner">
+                                                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No approved operations logged</p>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {member.jobs.map((job: any) => (
+                                                    <div key={job.id} className="bg-white border border-slate-50 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden border-l-4 border-l-secondary">
+                                                        <div className="flex items-center gap-3 text-[10px] font-black text-secondary mb-4 uppercase tracking-widest">
+                                                            <Briefcase className="h-3 w-3" /> Career Assignment
                                                         </div>
-                                                        <h3 className="font-bold text-maroon">{job.title}</h3>
-                                                        <p className="text-sm text-muted-foreground">{job.company} • {job.location}</p>
-                                                        <p className="text-xs text-muted-foreground mt-1">{formatDate(job.createdAt)}</p>
-                                                    </CardContent>
-                                                </Card>
-                                            ))}
-                                            {member.businesses.map((biz: any) => (
-                                                <Card key={biz.id} className="border-l-4 border-l-green-400">
-                                                    <CardContent className="p-4">
-                                                        <div className="flex items-center gap-2 text-xs text-green-600 mb-1">
-                                                            <Store className="h-3 w-3" /> Business
+                                                        <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight group-hover:text-secondary transition-colors">{job.title}</h3>
+                                                        <p className="text-slate-400 font-bold mt-2">{job.company} • {job.location}</p>
+                                                        <p className="text-[10px] font-black text-slate-200 uppercase tracking-widest mt-6">{formatDate(job.createdAt)}</p>
+                                                    </div>
+                                                ))}
+                                                {member.businesses.map((biz: any) => (
+                                                    <div key={biz.id} className="bg-white border border-slate-50 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden border-l-4 border-l-slate-900">
+                                                        <div className="flex items-center gap-3 text-[10px] font-black text-slate-900 mb-4 uppercase tracking-widest">
+                                                            <Store className="h-3 w-3" /> Business Protocol
                                                         </div>
                                                         <Link href={`/business/${biz.id}`}>
-                                                            <h3 className="font-bold text-maroon hover:underline">{biz.name}</h3>
+                                                            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight group-hover:text-secondary transition-colors cursor-pointer">{biz.name}</h3>
                                                         </Link>
-                                                        <p className="text-sm text-muted-foreground">{biz.category}</p>
-                                                        <p className="text-xs text-muted-foreground mt-1">{formatDate(biz.createdAt)}</p>
-                                                    </CardContent>
-                                                </Card>
-                                            ))}
-                                            {member.events.map((evt: any) => (
-                                                <Card key={evt.id} className="border-l-4 border-l-amber-400">
-                                                    <CardContent className="p-4">
-                                                        <div className="flex items-center gap-2 text-xs text-amber-600 mb-1">
-                                                            <Calendar className="h-3 w-3" /> Event
+                                                        <p className="text-slate-400 font-bold mt-2">{biz.category}</p>
+                                                        <p className="text-[10px] font-black text-slate-200 uppercase tracking-widest mt-6">{formatDate(biz.createdAt)}</p>
+                                                    </div>
+                                                ))}
+                                                {member.events.map((evt: any) => (
+                                                    <div key={evt.id} className="bg-white border border-slate-50 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden border-l-4 border-l-slate-300">
+                                                        <div className="flex items-center gap-3 text-[10px] font-black text-slate-400 mb-4 uppercase tracking-widest">
+                                                            <Calendar className="h-3 w-3 text-secondary" /> Operation Log
                                                         </div>
                                                         <Link href={`/events/${evt.id}`}>
-                                                            <h3 className="font-bold text-maroon hover:underline">{evt.title}</h3>
+                                                            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight group-hover:text-secondary transition-colors cursor-pointer">{evt.title}</h3>
                                                         </Link>
-                                                        <p className="text-sm text-muted-foreground">{evt.location} • {formatDate(evt.date)}</p>
-                                                        <p className="text-xs text-muted-foreground mt-1">{formatDate(evt.createdAt)}</p>
-                                                    </CardContent>
-                                                </Card>
-                                            ))}
-                                        </>
-                                    )}
-                                </div>
-                            )}
+                                                        <p className="text-slate-400 font-bold mt-2">{evt.location} • Scheduled {formatDate(evt.date)}</p>
+                                                        <p className="text-[10px] font-black text-slate-200 uppercase tracking-widest mt-6">{formatDate(evt.createdAt)}</p>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
+                                    </div>
+                                )}
 
-                            {activeTab === "followers" && (
-                                <div className="grid gap-3 sm:grid-cols-2">
-                                    {member.followers.length === 0 ? (
-                                        <p className="text-center text-muted-foreground py-8 col-span-2">No followers yet.</p>
-                                    ) : (
-                                        member.followers.map(f => (
-                                            <Link key={f.id} href={`/members/${f.id}`}>
-                                                <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                                                    <CardContent className="p-4 flex items-center gap-3">
-                                                        <div className="h-10 w-10 rounded-full bg-cream border border-gold flex items-center justify-center text-sm font-bold text-maroon shrink-0 overflow-hidden relative">
+                                {activeTab === "followers" && (
+                                    <div className="grid gap-4 sm:grid-cols-2">
+                                        {member.followers.length === 0 ? (
+                                            <div className="text-center py-20 bg-white rounded-[2rem] border border-slate-100 shadow-inner col-span-full">
+                                                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No linked founders detected</p>
+                                            </div>
+                                        ) : (
+                                            member.followers.map(f => (
+                                                <Link key={f.id} href={`/members/${f.id}`}>
+                                                    <div className="bg-white border border-slate-50 rounded-2xl p-5 flex items-center gap-4 hover:shadow-xl hover:shadow-slate-200/50 transition-all group">
+                                                        <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-lg font-black text-slate-300 shrink-0 overflow-hidden relative group-hover:border-secondary transition-colors">
                                                             {f.profileImage ? (
                                                                 <Image src={f.profileImage} alt={f.name || 'Member'} fill className="object-cover" />
                                                             ) : (
@@ -249,27 +259,27 @@ export default function MemberProfilePage() {
                                                             )}
                                                         </div>
                                                         <div>
-                                                            <p className="font-medium text-maroon">{f.name || "Anonymous"}</p>
-                                                            {f.location && <p className="text-xs text-muted-foreground">{f.location}</p>}
+                                                            <p className="font-black text-slate-900 uppercase tracking-tight text-sm group-hover:text-secondary transition-colors">{f.name || "Anonymous"}</p>
+                                                            {f.location && <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1 flex items-center gap-1"><MapPin className="h-2.5 w-2.5 text-secondary" /> {f.location}</p>}
                                                         </div>
-                                                    </CardContent>
-                                                </Card>
-                                            </Link>
-                                        ))
-                                    )}
-                                </div>
-                            )}
+                                                    </div>
+                                                </Link>
+                                            ))
+                                        )}
+                                    </div>
+                                )}
 
-                            {activeTab === "following" && (
-                                <div className="grid gap-3 sm:grid-cols-2">
-                                    {member.followingList.length === 0 ? (
-                                        <p className="text-center text-muted-foreground py-8 col-span-2">Not following anyone yet.</p>
-                                    ) : (
-                                        member.followingList.map(f => (
-                                            <Link key={f.id} href={`/members/${f.id}`}>
-                                                <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                                                    <CardContent className="p-4 flex items-center gap-3">
-                                                        <div className="h-10 w-10 rounded-full bg-cream border border-gold flex items-center justify-center text-sm font-bold text-maroon shrink-0 overflow-hidden relative">
+                                {activeTab === "following" && (
+                                    <div className="grid gap-4 sm:grid-cols-2">
+                                        {member.followingList.length === 0 ? (
+                                            <div className="text-center py-20 bg-white rounded-[2rem] border border-slate-100 shadow-inner col-span-full">
+                                                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No outgoing link protocols active</p>
+                                            </div>
+                                        ) : (
+                                            member.followingList.map(f => (
+                                                <Link key={f.id} href={`/members/${f.id}`}>
+                                                    <div className="bg-white border border-slate-50 rounded-2xl p-5 flex items-center gap-4 hover:shadow-xl hover:shadow-slate-200/50 transition-all group">
+                                                        <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-lg font-black text-slate-300 shrink-0 overflow-hidden relative group-hover:border-secondary transition-colors">
                                                             {f.profileImage ? (
                                                                 <Image src={f.profileImage} alt={f.name || 'Member'} fill className="object-cover" />
                                                             ) : (
@@ -277,16 +287,16 @@ export default function MemberProfilePage() {
                                                             )}
                                                         </div>
                                                         <div>
-                                                            <p className="font-medium text-maroon">{f.name || "Anonymous"}</p>
-                                                            {f.location && <p className="text-xs text-muted-foreground">{f.location}</p>}
+                                                            <p className="font-black text-slate-900 uppercase tracking-tight text-sm group-hover:text-secondary transition-colors">{f.name || "Anonymous"}</p>
+                                                            {f.location && <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1 flex items-center gap-1"><MapPin className="h-2.5 w-2.5 text-secondary" /> {f.location}</p>}
                                                         </div>
-                                                    </CardContent>
-                                                </Card>
-                                            </Link>
-                                        ))
-                                    )}
-                                </div>
-                            )}
+                                                    </div>
+                                                </Link>
+                                            ))
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </main>

@@ -25,20 +25,20 @@ const modules = [
         description: "Find partners, list your venture, and grow together.",
         icon: Building2,
         href: "/business",
-        color: "text-maroon",
+        color: "text-slate-900",
     },
     {
-        title: "Career Support",
+        title: "Career Hub",
         description: "Job listings, mentorship, and educational guidance.",
         icon: Briefcase,
         href: "/career",
-        color: "text-gold",
+        color: "text-secondary",
     },
     {
         title: "Help & Support",
         description: "Request assistance for medical or financial needs.",
         icon: HandHeart,
-        color: "text-maroon",
+        color: "text-slate-900",
         href: "/help",
     },
     {
@@ -46,28 +46,28 @@ const modules = [
         description: "Celebrate community success stories and milestones.",
         icon: Trophy,
         href: "/achievements",
-        color: "text-gold",
+        color: "text-secondary",
     },
     {
         title: "Events",
         description: "Upcoming cultural gatherings and community meetups.",
         icon: Calendar,
         href: "/events",
-        color: "text-maroon",
+        color: "text-slate-900",
     },
     {
         title: "Donations",
         description: "Contribute to community welfare and verified causes.",
         icon: HeartHandshake,
         href: "/donations",
-        color: "text-gold",
+        color: "text-secondary",
     },
     {
         title: "Hostel Directory",
         description: "Find or list verified, safe community-trusted accommodations.",
         icon: Building2,
         href: "/accommodations",
-        color: "text-maroon",
+        color: "text-slate-900",
     },
 ]
 
@@ -104,50 +104,49 @@ export default function DashboardPage() {
     }, [])
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+        <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
             <Navbar />
 
             <main className="flex-1 container mx-auto px-4 py-8">
 
                 {/* Welcome Section */}
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 mb-8 md:mb-12 bg-gradient-to-br from-cream to-amber-50 p-6 md:p-8 rounded-2xl border border-gold/30 shadow-sm relative overflow-hidden group">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10 mb-12 bg-white p-8 md:p-12 rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/50 relative overflow-hidden group">
                     {/* Decorative Background Elements */}
-                    <div className="absolute -right-8 -top-8 w-32 h-32 bg-gold/5 rounded-full blur-2xl group-hover:bg-gold/10 transition-colors" />
-                    <div className="absolute -left-8 -bottom-8 w-32 h-32 bg-maroon/5 rounded-full blur-2xl group-hover:bg-maroon/10 transition-colors" />
+                    <div className="absolute -right-12 -top-12 w-48 h-48 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 transition-all duration-700" />
+                    <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-slate-900/5 rounded-full blur-3xl group-hover:bg-slate-900/10 transition-all duration-700" />
 
-                    <div className="flex items-center gap-4 md:gap-6 relative z-10 text-center md:text-left">
-                        <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-cream border-4 border-gold/20 flex items-center justify-center shadow-inner overflow-hidden relative group-hover:border-gold/40 transition-colors shrink-0 mx-auto md:mx-0">
-                            <div className="absolute inset-0 bg-maroon/5 group-hover:bg-transparent transition-colors" />
-                            <User className="h-8 w-8 md:h-10 md:w-10 text-maroon relative z-10 group-hover:scale-110 transition-transform" />
+                    <div className="flex items-center gap-6 md:gap-10 relative z-10 text-center md:text-left flex-col md:flex-row">
+                        <div className="h-20 w-20 md:h-24 md:w-24 rounded-[2rem] bg-slate-50 border-2 border-slate-100 flex items-center justify-center shadow-inner overflow-hidden relative group-hover:border-secondary/20 transition-all duration-500 shrink-0">
+                            <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/5 transition-colors" />
+                            <User className="h-10 w-10 md:h-12 md:w-12 text-slate-900 relative z-10 group-hover:scale-110 transition-transform duration-500" />
                         </div>
                         <div>
-                            <h1 className="font-serif text-3xl md:text-5xl font-bold text-maroon">Namaskaram, {user?.name || "Member"}</h1>
-                            <p className="text-lg md:text-xl text-muted-foreground mt-1">Welcome to your community dashboard.</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Internal Protocol</p>
+                            <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-none">
+                                Namaskaram, <span className="text-secondary">{user?.name || "Member"}</span>
+                            </h1>
+                            <p className="text-slate-500 font-bold mt-4 max-w-md">Access your community control panel and managed services.</p>
                         </div>
                     </div>
 
                     {/* Verification Status Badge - Hide for Admins */}
                     {user?.role !== 'admin' && (
-                        <div className="flex flex-col items-end gap-3 relative z-10">
+                        <div className="flex flex-col items-center md:items-end gap-3 relative z-10 mt-6 md:mt-0">
                             {user?.status === 'approved' ? (
-                                <div className="flex items-center gap-2 px-6 py-2.5 bg-green-50 rounded-xl border border-green-200 shadow-sm group-hover:shadow-md transition-shadow">
-                                    <div className="bg-green-100 p-1 rounded-full">
-                                        <BadgeCheck className="h-5 w-5 text-green-700" />
-                                    </div>
-                                    <span className="font-bold text-green-800 text-sm tracking-wide">Verified Member</span>
+                                <div className="flex items-center gap-3 px-6 py-3 bg-green-50 rounded-2xl border border-green-100 shadow-sm group-hover:shadow-green-900/5 transition-all">
+                                    <BadgeCheck className="h-5 w-5 text-green-600" />
+                                    <span className="font-black text-green-700 text-[10px] uppercase tracking-widest">Verified Member</span>
                                 </div>
                             ) : (
-                                <div className="flex items-center gap-2 px-6 py-2.5 bg-amber-50 rounded-xl border border-amber-200 shadow-sm group-hover:shadow-md transition-shadow">
-                                    <div className="bg-amber-100 p-1 rounded-full">
-                                        <BadgeCheck className="h-5 w-5 text-amber-600" />
-                                    </div>
-                                    <span className="font-bold text-amber-800 text-sm tracking-wide">Verification Pending</span>
+                                <div className="flex items-center gap-3 px-6 py-3 bg-amber-50 rounded-2xl border border-amber-100 shadow-sm group-hover:shadow-amber-900/5 transition-all">
+                                    <BadgeCheck className="h-5 w-5 text-amber-600" />
+                                    <span className="font-black text-amber-700 text-[10px] uppercase tracking-widest">Awaiting Verification</span>
                                 </div>
                             )}
                             {user?.status !== 'approved' && (
-                                <p className="text-xs font-semibold text-amber-700/60 flex items-center gap-1">
+                                <p className="text-[10px] font-black text-amber-400 uppercase tracking-widest flex items-center gap-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                                    Access limited until verified
+                                    Limited Protocol Access
                                 </p>
                             )}
                         </div>
@@ -155,24 +154,27 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Modules Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16">
                     {modules.map((module, index) => (
-                        <Link href={module.href} key={index} className="block h-full animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
-                            <Card className="border-gold/20 transition-all duration-500 group h-full cursor-pointer shadow-md hover:shadow-2xl">
-                                <CardContent className="p-6 md:p-8 flex flex-col items-center md:items-start text-center md:text-left">
+                        <Link href={module.href} key={index} className="block h-full animate-slide-up group" style={{ animationDelay: `${index * 100}ms` }}>
+                            <Card className="border-slate-100 bg-white rounded-[2.5rem] transition-all duration-500 h-full cursor-pointer shadow-xl shadow-slate-200/20 hover:shadow-2xl hover:shadow-slate-300/40 hover:-translate-y-2 overflow-hidden border">
+                                <CardContent className="p-10 flex flex-col items-center md:items-start text-center md:text-left relative">
                                     <div className={`
-                    mb-4 md:mb-6 h-14 w-14 md:h-16 md:w-16 rounded-2xl flex items-center justify-center
-                    bg-white border border-gold/20 group-hover:bg-maroon group-hover:border-maroon transition-all duration-500 shadow-sm
-                    ${module.color} group-hover:text-gold
-                    `}>
-                                        <module.icon className="h-7 w-7 md:h-8 md:w-8 transition-transform duration-500 group-hover:scale-110" />
+                                        mb-8 h-16 w-16 rounded-[1.5rem] flex items-center justify-center
+                                        bg-slate-50 border border-slate-100 group-hover:bg-slate-900 group-hover:border-slate-900 transition-all duration-500 shadow-inner
+                                        ${module.color} group-hover:text-secondary
+                                    `}>
+                                        <module.icon className="h-8 w-8 transition-transform duration-500 group-hover:scale-110" />
                                     </div>
-                                    <h3 className="font-serif text-xl md:text-2xl font-bold text-maroon mb-3 md:mb-4">
+                                    <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight uppercase">
                                         {module.title}
                                     </h3>
-                                    <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                                    <p className="text-slate-500 font-bold leading-relaxed">
                                         {module.description}
                                     </p>
+                                    <div className="mt-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-secondary transition-colors flex items-center gap-2">
+                                        Enter Protocol <span className="group-hover:translate-x-1 transition-transform">→</span>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </Link>
@@ -180,11 +182,14 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Members List Section */}
-                <div className="mb-8 md:mb-12">
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-10 gap-3 md:gap-0">
-                        <h2 className="text-2xl md:text-4xl font-serif font-bold text-maroon text-center md:text-left">Community Members</h2>
+                <div className="mb-16">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+                        <div className="text-center md:text-left">
+                            <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight uppercase">Community Registry</h2>
+                            <p className="text-slate-400 font-bold text-sm tracking-widest uppercase mt-2">Connecting with fellow verified members</p>
+                        </div>
                         <Link href="/members">
-                            <Button variant="ghost" className="text-maroon hover:bg-gold/10 text-sm md:text-base font-bold">View All Members →</Button>
+                            <Button variant="outline" className="h-14 px-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 hover:bg-white border-slate-100 rounded-full shadow-lg transition-all active:scale-[0.98]">Explore Directory</Button>
                         </Link>
                     </div>
 
@@ -198,28 +203,26 @@ export default function DashboardPage() {
                         <div className="max-h-[350px] overflow-y-auto custom-scrollbar pr-4 pb-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {members.map((member: any) => (
-                                    <Card key={member.id} className="border-gold/20 hover:shadow-md transition-all">
-                                        <CardContent className="p-4 flex items-center gap-4">
-                                            <div className="h-12 w-12 rounded-full overflow-hidden bg-cream border border-gold/30 flex-shrink-0">
-                                                {member.profileImage ? (
-                                                    <img src={member.profileImage} alt={member.name} className="h-full w-full object-cover" />
-                                                ) : (
-                                                    <div className="h-full w-full flex items-center justify-center text-maroon font-bold bg-gold/10">
-                                                        {member.name?.charAt(0)}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="min-w-0">
-                                                <h3 className="font-bold text-xl text-maroon truncate leading-tight">{member.name}</h3>
-                                                <p className="text-sm text-muted-foreground font-medium mt-0.5">{member.role === 'admin' ? 'Community Admin' : 'Community Member'}</p>
-                                                {member.location && (
-                                                    <p className="text-sm text-gray-500 mt-1 truncate font-medium flex items-center gap-1">
-                                                        <Building2 className="h-3 w-3" /> {member.location}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        </CardContent>
-                                    </Card>
+                                    <div key={member.id} className="bg-white border border-slate-50 rounded-[2rem] p-6 flex items-center gap-6 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group">
+                                        <div className="h-14 w-14 rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 flex-shrink-0 relative">
+                                            {member.profileImage ? (
+                                                <img src={member.profileImage} alt={member.name} className="h-full w-full object-cover transition-transform group-hover:scale-110" />
+                                            ) : (
+                                                <div className="h-full w-full flex items-center justify-center text-slate-400 font-black text-xl uppercase">
+                                                    {member.name?.charAt(0)}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="min-w-0">
+                                            <h3 className="font-black text-slate-900 truncate tracking-tight uppercase text-sm leading-tight group-hover:text-secondary transition-colors">{member.name}</h3>
+                                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">{member.role === 'admin' ? 'Elite Council' : 'Verified Member'}</p>
+                                            {member.location && (
+                                                <p className="text-[10px] text-slate-300 mt-2 truncate font-black uppercase tracking-widest flex items-center gap-2">
+                                                    <Building2 className="h-3 w-3" /> {member.location}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
                         </div>

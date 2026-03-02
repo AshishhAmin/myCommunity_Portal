@@ -46,26 +46,27 @@
   --font-inter: "Inter", sans-serif;
   --font-playfair: "Playfair Display", serif;
   --radius: 0.75rem;
-  --background: #FFFFFF;
-  --foreground: #09090B;
+  --background: #FAF9F6;
+  --foreground: #0F172A;
   --card: #FFFFFF;
   --card-foreground: #0F172A;
   --popover: #FFFFFF;
   --popover-foreground: #0F172A;
-  --primary: #ea580c;
-  /* Deep Orange */
+  --primary: #0F172A;
+  /* Slate-900 */
   --primary-foreground: #FFFFFF;
-  --secondary: #eab308;
-  /* Golden Yellow */
+  --secondary: #D4AF37;
+  /* Metallic Gold */
   --secondary-foreground: #FFFFFF;
-  --muted: #FAFAFA;
-  --muted-foreground: #71717A;
-  --accent: #10B981;
-  --accent-foreground: #FFFFFF;
+  --muted: #F8FAFC;
+  --muted-foreground: #64748B;
+  --accent: #F5E252;
+  /* Soft Gold */
+  --accent-foreground: #0F172A;
   --destructive: #EF4444;
   --border: #E2E8F0;
-  --input: #E2E8F0;
-  --ring: #1E3A8A;
+  --input: #F1F5F9;
+  --ring: #D4AF37;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -86,9 +87,9 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-sans);
   background-image:
-    radial-gradient(at 0% 0%, rgba(234, 88, 12, 0.06) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(234, 179, 8, 0.06) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(234, 88, 12, 0.04) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(15, 23, 42, 0.03) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(15, 23, 42, 0.02) 0px, transparent 50%);
   background-attachment: fixed;
 }
 
@@ -103,18 +104,17 @@ body {
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #1E3A8A;
+    background: #0F172A;
     border-radius: 10px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #D97706;
+    background: #D4AF37;
   }
 
-  /* Firefox */
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #1E3A8A transparent;
+    scrollbar-color: #0F172A transparent;
   }
 
   /* Global Animations */
@@ -174,7 +174,7 @@ body {
 
   .animative-card:hover {
     transform: translateY(-8px) scale(1.01);
-    box-shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.1), 0 10px 10px -5px rgba(30, 58, 138, 0.04);
+    box-shadow: 0 20px 25px -5px rgba(212, 175, 55, 0.1), 0 10px 10px -5px rgba(212, 175, 55, 0.04);
   }
 
   /* Vertical Infinite Scroll */

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/lib/auth-context"
-import Link from "next/link"
 
 type Message = {
     id: string
@@ -19,9 +18,9 @@ type ChatbotState = 'menu' | 'escalating_subject' | 'escalating_body'
 
 const QUICK_REPLIES = [
     { label: "Registration Help", query: "How do I register or login?" },
-    { label: "Finding Blood Donors", query: "How do I find blood donors?" },
-    { label: "Posting a Job", query: "How do I post a job?" },
-    { label: "Speak to Admin", query: "I need to speak to an Admin." },
+    { label: "Blood Donation", query: "How do I find blood donors?" },
+    { label: "Career & Jobs", query: "How do I post a job?" },
+    { label: "Admin Support", query: "I need to speak to an Admin." },
 ]
 
 export function Chatbot() {
@@ -39,7 +38,6 @@ export function Chatbot() {
         setMounted(true)
     }, [])
 
-    // Initial greeting
     useEffect(() => {
         if (!mounted) return;
         if (messages.length === 0) {
@@ -53,7 +51,6 @@ export function Chatbot() {
         }
     }, [user, messages.length, mounted])
 
-    // Auto-scroll
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight
@@ -62,13 +59,10 @@ export function Chatbot() {
 
     const handleSend = async (text: string) => {
         if (!text.trim()) return
-
-        // 1. Add user message
         const userMsgId = crypto.randomUUID()
         setMessages(prev => [...prev, { id: userMsgId, sender: 'user', text }])
         setInputValue("")
 
-        // 2. Process based on state
         if (chatState === 'menu') {
             await processMenuQuery(text)
         } else if (chatState === 'escalating_subject') {
@@ -86,7 +80,6 @@ export function Chatbot() {
 
     const processMenuQuery = async (text: string) => {
         setIsLoading(true)
-        // Simulate thinking delay
         await new Promise(resolve => setTimeout(resolve, 600))
         setIsLoading(false)
 
@@ -95,31 +88,24 @@ export function Chatbot() {
         let isHtml = false
 
         if (lowerText.includes("register") || lowerText.includes("login") || lowerText.includes("sign up")) {
-            botResponse = "To register or log in, please visit our <a href='/login' class='text-maroon underline font-semibold'>Login / Register page</a>. If you are registering, your account will be pending Admin approval."
+            botResponse = "To register or log in, please visit our <a href='/login' class='text-secondary underline font-black uppercase tracking-widest text-[9px]'>Login/Register page</a>. If you are registering, your account will be pending Admin approval."
             isHtml = true
         } else if (lowerText.includes("blood") || lowerText.includes("emergency")) {
-            botResponse = "For medical emergencies or blood requirements, please visit the <a href='/help' class='text-maroon underline font-semibold'>Emergency Help Center</a>. Approved requests trigger an immediate alert to all members."
+            botResponse = "For medical emergencies or blood requirements, please visit the <a href='/help' class='text-secondary underline font-black uppercase tracking-widest text-[9px]'>Emergency Help Center</a>."
             isHtml = true
         } else if (lowerText.includes("job") || lowerText.includes("career")) {
-            botResponse = "Looking to post or find a job? Head over to the <a href='/career?tab=jobs' class='text-maroon underline font-semibold'>Career & Opportunities Hub</a>. Admins review all postings before they are public."
+            botResponse = "Looking to post or find a job? Head over to the <a href='/career?tab=jobs' class='text-secondary underline font-black uppercase tracking-widest text-[9px]'>Career Hub</a>."
             isHtml = true
         } else if (lowerText.includes("admin") || lowerText.includes("human") || lowerText.includes("ticket") || lowerText.includes("speak to")) {
-            if (!isAuthenticated) {
-                botResponse = "It looks like you are not logged in. While you can submit an anonymous ticket, logging in helps us serve you better. Would you like to proceed with creating a ticket? If so, what is the **Subject** of your issue?"
-            } else {
-                botResponse = "I can help you create a support ticket. An admin will review it and get back to you. What is the **Subject** of your issue?"
-            }
+            botResponse = !isAuthenticated
+                ? "It looks like you are not logged in. While you can submit a ticket, logging in helps us serve you better. What is the **Subject** of your issue?"
+                : "I can help you create a support ticket. What is the **Subject** of your issue?"
             setChatState('escalating_subject')
         } else {
             botResponse = "I'm still learning and might not have the answer to that. Would you like me to connect you with an Admin? (Try asking to 'Speak to Admin')"
         }
 
-        setMessages(prev => [...prev, {
-            id: crypto.randomUUID(),
-            sender: 'bot',
-            text: botResponse,
-            isHtml
-        }])
+        setMessages(prev => [...prev, { id: crypto.randomUUID(), sender: 'bot', text: botResponse, isHtml }])
     }
 
     const handleTicketSubmission = async (subject: string, body: string) => {
@@ -130,142 +116,119 @@ export function Chatbot() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ category: 'General Support', subject, body })
             })
-
             if (res.ok) {
-                setMessages(prev => [...prev, {
-                    id: crypto.randomUUID(),
-                    sender: 'bot',
-                    text: "Your support ticket has been successfully submitted! An Admin will review it shortly. Is there anything else I can help you with?"
-                }])
+                setMessages(prev => [...prev, { id: crypto.randomUUID(), sender: 'bot', text: "Your support ticket has been submitted! An Admin will review it shortly." }])
             } else {
-                setMessages(prev => [...prev, {
-                    id: crypto.randomUUID(),
-                    sender: 'bot',
-                    text: "I'm sorry, there was a problem submitting your ticket. Please try again later.",
-                }])
+                setMessages(prev => [...prev, { id: crypto.randomUUID(), sender: 'bot', text: "I'm sorry, there was a problem. Please try again later." }])
             }
         } catch (error) {
             console.error(error)
-            setMessages(prev => [...prev, {
-                id: crypto.randomUUID(),
-                sender: 'bot',
-                text: "An error occurred while reaching the server.",
-            }])
+            setMessages(prev => [...prev, { id: crypto.randomUUID(), sender: 'bot', text: "An error occurred while reaching the server." }])
         } finally {
             setIsLoading(false)
-            setChatState('menu') // reset
+            setChatState('menu')
             setTicketData({ subject: "", body: "" })
         }
-    }
-
-    const handleQuickReply = (query: string) => {
-        handleSend(query)
     }
 
     if (!mounted) return null;
 
     return (
         <div className="fixed bottom-6 right-6 z-50">
-            {/* Widget Button */}
             <Button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "h-14 w-14 rounded-full shadow-2xl bg-maroon hover:bg-maroon/90 text-white transition-all duration-300",
-                    isOpen ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"
+                    "h-16 w-16 rounded-full shadow-2xl bg-slate-900 hover:bg-secondary text-white hover:text-slate-900 transition-all duration-500 overflow-hidden flex items-center justify-center p-0",
+                    isOpen ? "rotate-[360deg] scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"
                 )}
             >
-                <MessageCircle className="h-6 w-6" />
+                <div className="flex items-center justify-center h-full w-full bg-gradient-to-br from-slate-900 to-slate-800">
+                    <MessageCircle className="h-7 w-7" />
+                </div>
             </Button>
 
-            {/* Chat Window */}
             <div
                 className={cn(
-                    "absolute bottom-0 right-0 w-[350px] sm:w-[400px] h-[500px] max-h-[80vh] bg-cream rounded-2xl shadow-2xl border border-gold/20 flex flex-col transition-all duration-300 origin-bottom-right overflow-hidden",
-                    isOpen ? "scale-100 opacity-100 pointer-events-auto" : "scale-0 opacity-0 pointer-events-none"
+                    "absolute bottom-0 right-0 w-[350px] sm:w-[400px] h-[550px] max-h-[85vh] bg-[#FAF9F6] rounded-[2.5rem] shadow-2xl border border-slate-100 flex flex-col transition-all duration-500 origin-bottom-right overflow-hidden",
+                    isOpen ? "scale-100 opacity-100 translate-y-0" : "scale-0 opacity-0 translate-y-10"
                 )}
             >
-                {/* Header */}
-                <div className="bg-maroon p-4 text-white flex items-center justify-between shadow-md z-10">
-                    <div className="flex items-center gap-3">
-                        <div className="bg-white/20 p-2 rounded-full">
-                            <Bot className="h-5 w-5" />
+                <div className="bg-slate-900 p-6 text-white flex items-center justify-between shadow-xl z-10">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-white/10 p-2.5 rounded-2xl border border-white/5">
+                            <Bot className="h-6 w-6 text-secondary" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-sm">CommuNet Assistant</h3>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                                <span className="text-xs text-white/80">Online</span>
+                            <h3 className="font-black text-xs uppercase tracking-widest text-white">CommuNet Assistant</h3>
+                            <div className="flex items-center gap-1.5 mt-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Active Support</span>
                             </div>
                         </div>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="text-white hover:bg-white/20 h-8 w-8 rounded-full">
-                        <X className="h-4 w-4" />
+                    <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white hover:bg-white/10 h-10 w-10 rounded-2xl transition-all">
+                        <X className="h-5 w-5" />
                     </Button>
                 </div>
 
-                {/* Messages Area */}
-                <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto space-y-4 bg-gradient-to-b from-cream to-white custom-scrollbar">
+                <div ref={scrollRef} className="flex-1 p-6 overflow-y-auto space-y-6 bg-gradient-to-b from-slate-50 to-[#FAF9F6]">
                     {messages.map((msg) => (
                         <div key={msg.id} className={cn("flex w-full", msg.sender === 'user' ? "justify-end" : "justify-start")}>
-                            <div className={cn("flex max-w-[85%] gap-2", msg.sender === 'user' ? "flex-row-reverse" : "flex-row")}>
-                                <div className={cn("shrink-0 h-8 w-8 rounded-full flex items-center justify-center shadow-sm", msg.sender === 'user' ? "bg-gold text-maroon" : "bg-maroon/10 text-maroon")}>
+                            <div className={cn("flex max-w-[85%] gap-3", msg.sender === 'user' ? "flex-row-reverse" : "flex-row")}>
+                                <div className={cn("shrink-0 h-9 w-9 rounded-2xl flex items-center justify-center shadow-sm border", msg.sender === 'user' ? "bg-secondary text-slate-900 border-secondary" : "bg-white text-slate-900 border-slate-100")}>
                                     {msg.sender === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                                 </div>
                                 <div className={cn(
-                                    "px-4 py-2.5 rounded-2xl text-sm shadow-sm",
+                                    "px-5 py-3.5 rounded-3xl text-sm shadow-sm leading-relaxed",
                                     msg.sender === 'user'
-                                        ? "bg-maroon text-white rounded-tr-sm"
-                                        : "bg-white border border-gold/20 text-gray-800 rounded-tl-sm"
+                                        ? "bg-slate-900 text-white rounded-tr-lg"
+                                        : "bg-white border border-slate-100 text-slate-900 rounded-tl-lg"
                                 )}>
                                     {msg.isHtml ? (
-                                        <div dangerouslySetInnerHTML={{ __html: msg.text }} className="leading-relaxed" />
+                                        <div dangerouslySetInnerHTML={{ __html: msg.text }} />
                                     ) : (
-                                        <p className="whitespace-pre-wrap leading-relaxed">{msg.text}</p>
+                                        <p className="whitespace-pre-wrap">{msg.text}</p>
                                     )}
                                 </div>
                             </div>
                         </div>
                     ))}
-
                     {isLoading && (
                         <div className="flex justify-start w-full">
-                            <div className="flex max-w-[85%] gap-2 flex-row">
-                                <div className="shrink-0 h-8 w-8 rounded-full bg-maroon/10 text-maroon flex items-center justify-center shadow-sm">
+                            <div className="flex max-w-[85%] gap-3 flex-row">
+                                <div className="shrink-0 h-9 w-9 rounded-2xl bg-white border border-slate-100 text-slate-900 flex items-center justify-center shadow-sm">
                                     <Bot className="h-4 w-4" />
                                 </div>
-                                <div className="px-4 py-3 rounded-2xl bg-white border border-gold/20 rounded-tl-sm shadow-sm flex items-center gap-1">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-maroon/50 animate-bounce" style={{ animationDelay: '0ms' }} />
-                                    <span className="w-1.5 h-1.5 rounded-full bg-maroon/50 animate-bounce" style={{ animationDelay: '150ms' }} />
-                                    <span className="w-1.5 h-1.5 rounded-full bg-maroon/50 animate-bounce" style={{ animationDelay: '300ms' }} />
+                                <div className="px-5 py-4 rounded-3xl bg-white border border-slate-100 rounded-tl-lg shadow-sm flex items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                                 </div>
                             </div>
                         </div>
                     )}
                 </div>
 
-                {/* Quick Replies / Input Area */}
-                <div className="p-3 bg-white border-t border-gold/20 shrink-0">
+                <div className="p-5 bg-white border-t border-slate-100 shrink-0">
                     {chatState === 'menu' && !isLoading && (
-                        <div className="flex flex-wrap gap-2 mb-3">
+                        <div className="flex flex-wrap gap-2 mb-4">
                             {QUICK_REPLIES.map((reply, idx) => (
                                 <button
                                     key={idx}
-                                    onClick={() => handleQuickReply(reply.query)}
-                                    className="text-xs px-3 py-1.5 border border-maroon/30 text-maroon rounded-full hover:bg-maroon hover:text-white transition-colors bg-maroon/5 font-medium whitespace-nowrap"
+                                    onClick={() => handleSend(reply.query)}
+                                    className="text-[10px] px-4 py-2 border border-slate-200 text-slate-900 rounded-xl hover:bg-slate-900 hover:text-white transition-all bg-white font-black uppercase tracking-widest shadow-sm"
                                 >
                                     {reply.label}
                                 </button>
                             ))}
                         </div>
                     )}
-
                     {chatState !== 'menu' && (
-                        <div className="flex items-center gap-2 mb-2 px-1 text-xs text-orange-600 font-medium">
-                            <AlertCircle className="h-3 w-3" />
+                        <div className="flex items-center gap-2 mb-3 px-1 text-[10px] text-secondary font-black uppercase tracking-widest">
+                            <AlertCircle className="h-3.5 w-3.5" />
                             Escalating to Admin Issue Ticket...
                         </div>
                     )}
-
                     <form
                         onSubmit={(e) => { e.preventDefault(); handleSend(inputValue); }}
                         className="flex items-center gap-2"
@@ -273,17 +236,17 @@ export function Chatbot() {
                         <Input
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
-                            placeholder={chatState === 'menu' ? "Type a message..." : chatState === 'escalating_subject' ? "Enter subject..." : "Describe issue..."}
-                            className="flex-1 rounded-full border-gold/30 focus-visible:ring-maroon bg-cream/50"
+                            placeholder={chatState === 'menu' ? "How can we help?" : "Please provide details..."}
+                            className="flex-1 rounded-2xl border-slate-200 focus-visible:ring-secondary bg-slate-50 h-12 px-6 text-sm"
                             disabled={isLoading}
                         />
                         <Button
                             type="submit"
                             size="icon"
                             disabled={!inputValue.trim() || isLoading}
-                            className="h-10 w-10 shrink-0 rounded-full bg-maroon hover:bg-maroon/90 text-white"
+                            className="h-12 w-12 shrink-0 rounded-2xl bg-slate-900 hover:bg-secondary hover:text-slate-900 text-white shadow-lg transition-all"
                         >
-                            <Send className="h-4 w-4 ml-0.5" />
+                            <Send className="h-5 w-5 ml-0.5" />
                         </Button>
                     </form>
                 </div>

@@ -172,10 +172,10 @@ export default function EditAchievementPage({ params }: { params: Promise<{ id: 
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
                 <div className="flex-1 flex items-center justify-center">
-                    <Loader2 className="h-10 w-10 animate-spin text-maroon" />
+                    <Loader2 className="h-10 w-10 animate-spin text-secondary" />
                 </div>
                 <Footer />
             </div>
@@ -183,19 +183,19 @@ export default function EditAchievementPage({ params }: { params: Promise<{ id: 
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+        <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
             <Navbar />
             <main className="flex-1 container mx-auto px-4 py-8 max-w-2xl">
-                <Button variant="ghost" onClick={() => router.back()} className="mb-6 pl-0 hover:bg-transparent hover:text-maroon">
+                <Button variant="ghost" onClick={() => router.back()} className="mb-6 pl-0 hover:bg-transparent hover:text-secondary">
                     <ArrowLeft className="h-4 w-4 mr-2" /> Back
                 </Button>
 
-                <Card className="border-gold/20 shadow-md">
-                    <CardHeader>
-                        <CardTitle className="text-2xl font-serif font-bold text-maroon">Edit Achievement</CardTitle>
-                        <CardDescription>Update your success story.</CardDescription>
+                <Card className="border-slate-100 shadow-2xl shadow-slate-200/50 rounded-[3rem] overflow-hidden bg-white">
+                    <CardHeader className="bg-slate-900 text-white p-10">
+                        <CardTitle className="text-3xl font-black tracking-tight">Edit Achievement</CardTitle>
+                        <CardDescription className="text-slate-400 font-bold">Update your success story.</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-10">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {error && <p className="text-red-500 text-sm bg-red-50 p-3 rounded">{error}</p>}
 
@@ -295,7 +295,7 @@ export default function EditAchievementPage({ params }: { params: Promise<{ id: 
                                                 disabled={saving}
                                             />
                                             <div className="text-center">
-                                                <svg className="mx-auto h-8 w-8 text-gray-400 group-hover:text-maroon transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                <svg className="mx-auto h-8 w-8 text-gray-400 group-hover:text-secondary transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                                 </svg>
                                                 <p className="mt-1 text-xs text-gray-500 font-medium">Click to upload</p>
@@ -305,7 +305,7 @@ export default function EditAchievementPage({ params }: { params: Promise<{ id: 
                                 </div>
                             </div>
 
-                            <Button type="submit" className="w-full bg-maroon text-gold hover:bg-maroon/90" disabled={saving} suppressHydrationWarning>
+                            <Button type="submit" className="w-full h-16 bg-slate-900 hover:bg-secondary text-white rounded-2xl font-black uppercase tracking-widest text-lg shadow-xl shadow-slate-200 transition-all" disabled={saving} suppressHydrationWarning>
                                 {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                                 Save Changes
                             </Button>

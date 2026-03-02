@@ -25,7 +25,7 @@ const categories: CategoryOption[] = [
     { id: "achievement", label: "Achievement", icon: Trophy, description: "Share a personal or professional milestone", color: "text-gold", href: "/achievements/add" },
     { id: "job", label: "Job Listing", icon: Briefcase, description: "Post a new job opening or opportunity", color: "text-blue-500", href: "/career/jobs/add" },
     { id: "business", label: "Business", icon: Building2, description: "Add your business to our community directory", color: "text-green-500", href: "/business/add" },
-    { id: "event", label: "Event", icon: Calendar, description: "Organize and promote a community gathering", color: "text-orange-500", href: "/events/add" },
+    { id: "event", label: "Event", icon: Calendar, description: "Organize and promote a community gathering", color: "text-secondary", href: "/events/add" },
     { id: "scholarship", label: "Scholarship", icon: GraduationCap, description: "Offer educational support to students", color: "text-purple-500", href: "/career/scholarships/add" },
     { id: "mentorship", label: "Mentorship", icon: Users, description: "Register as a mentor or search for one", color: "text-maroon", href: "/career/mentorship/add" },
 ]

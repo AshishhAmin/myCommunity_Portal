@@ -134,7 +134,7 @@ export function NotificationBell() {
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative text-maroon hover:bg-gold/10 rounded-full h-9 w-9">
+                <Button variant="ghost" size="icon" className="relative text-slate-900 hover:bg-secondary/10 rounded-full h-9 w-9">
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
                         <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 ring-2 ring-cream" />
@@ -146,7 +146,7 @@ export function NotificationBell() {
                     <div className="flex items-center gap-2">
                         <h3 className="font-bold text-maroon">Notifications</h3>
                         {unreadCount > 0 && (
-                            <span className="bg-maroon text-gold text-xs px-2 py-0.5 rounded-full font-medium">
+                            <span className="bg-slate-900 text-secondary text-xs px-2 py-0.5 rounded-full font-black">
                                 {unreadCount} new
                             </span>
                         )}

@@ -237,31 +237,31 @@ export default function AdminReportsPage() {
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* Header */}
-            <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-lg bg-red-50">
-                    <Shield className="h-6 w-6 text-red-600" />
+            <div className="flex items-center gap-4">
+                <div className="p-4 rounded-2xl bg-slate-900 shadow-xl shadow-slate-900/10">
+                    <Shield className="h-8 w-8 text-secondary" />
                 </div>
                 <div>
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-maroon font-serif mb-1">Reports & Flags</h1>
-                    <p className="text-base md:text-xl lg:text-2xl text-muted-foreground">Review flagged content and take moderation actions</p>
+                    <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-1 tracking-tight uppercase">Resolution Center</h1>
+                    <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Review flagged content and maintain community standards</p>
                 </div>
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex flex-col lg:flex-row gap-4 md:gap-8 justify-between items-start lg:items-end border-b border-gold/20 pb-2">
-                <div className="flex gap-4 md:gap-10 overflow-x-auto custom-scrollbar w-full lg:w-auto pb-2 whitespace-nowrap">
+            <div className="flex flex-col lg:flex-row gap-8 justify-between items-start lg:items-end border-b border-slate-100 pb-4">
+                <div className="flex gap-10 overflow-x-auto custom-scrollbar w-full lg:w-auto pb-2 whitespace-nowrap">
                     {([
-                        { value: 'all', label: 'All Reports', icon: Flag },
-                        { value: 'open', label: 'Open Cases', icon: AlertTriangle },
-                        { value: 'reviewed', label: 'Reviewed', icon: CheckCircle },
-                        { value: 'dismissed', label: 'Dismissed', icon: XCircle },
+                        { value: 'all', label: 'All Protocols', icon: Flag },
+                        { value: 'open', label: 'Priority Case', icon: AlertTriangle },
+                        { value: 'reviewed', label: 'Resolved', icon: CheckCircle },
+                        { value: 'dismissed', label: 'Archived', icon: XCircle },
                     ] as const).map(tab => (
                         <button
                             key={tab.value}
                             onClick={() => { setFilterStatus(tab.value); setCurrentPage(1); }}
-                            className={`pb-2 md:pb-4 text-sm md:text-lg font-bold transition-all border-b-2 flex items-center gap-1 md:gap-2 shrink-0 ${filterStatus === tab.value
-                                ? "text-maroon border-maroon"
-                                : "text-gray-500 border-transparent hover:text-maroon/70"}`}
+                            className={`pb-4 text-xs font-black uppercase tracking-[0.2em] transition-all border-b-2 flex items-center gap-2 shrink-0 ${filterStatus === tab.value
+                                ? "text-slate-900 border-secondary"
+                                : "text-slate-400 border-transparent hover:text-slate-600"}`}
                         >
                             <tab.icon className="h-4 w-4" />
                             {tab.label}
@@ -274,9 +274,9 @@ export default function AdminReportsPage() {
                     <select
                         value={filterType}
                         onChange={(e) => { setFilterType(e.target.value); setCurrentPage(1); }}
-                        className="px-4 py-2 md:px-6 md:py-3 border border-gold/30 rounded-lg text-sm md:text-lg font-bold bg-white text-maroon focus:outline-none focus:ring-2 focus:ring-maroon/20 cursor-pointer w-full md:w-auto"
+                        className="px-6 py-3 border border-slate-100 rounded-xl text-[10px] font-black uppercase tracking-widest bg-white text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/20 cursor-pointer w-full md:w-auto"
                     >
-                        <option value="all">All Content Types</option>
+                        <option value="all">Global Content</option>
                         {Object.entries(TYPE_LABELS).map(([value, { label }]) => (
                             <option key={value} value={value}>{label}</option>
                         ))}
@@ -300,18 +300,18 @@ export default function AdminReportsPage() {
                     </p>
                 </div>
             ) : (
-                <div className="bg-white rounded-lg border border-gold/20 shadow-sm overflow-hidden">
+                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-2xl shadow-slate-200/50 overflow-hidden">
                     <div className="max-h-[600px] overflow-auto custom-scrollbar">
                         <table className="w-full text-sm text-left border-collapse">
-                            <thead className="bg-[#FAF3E0] text-maroon border-b border-gold/10 sticky top-0 z-10 shadow-sm">
+                            <thead className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-10">
                                 <tr>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Content Type</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Title</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Reason</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Reporter</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Date</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Status</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold text-right whitespace-nowrap text-sm md:text-lg">Actions</th>
+                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Registry Type</th>
+                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Content Subject</th>
+                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Violation Class</th>
+                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Reporting Source</th>
+                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Timestamp</th>
+                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Resolution</th>
+                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gold/10">
@@ -321,62 +321,62 @@ export default function AdminReportsPage() {
                                     const isLoading = actionLoading === report.id
 
                                     return (
-                                        <tr key={report.id} className="hover:bg-[#FAF3E0]/20 transition-colors">
-                                            <td className="px-3 md:px-6 py-4 md:py-5 whitespace-nowrap">
-                                                <span className={`text-[9px] md:text-[11px] font-bold uppercase px-2 md:px-3 py-0.5 md:py-1 rounded-full border border-current/20 ${typeInfo.color}`}>
+                                        <tr key={report.id} className="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                                            <td className="px-6 py-6">
+                                                <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border ${typeInfo.color.replace('bg-', 'bg-opacity-10 bg-').replace('text-', 'text-opacity-90 text-')}`}>
                                                     {typeInfo.label}
                                                 </span>
                                             </td>
-                                            <td className="px-3 md:px-6 py-4 md:py-5 font-bold text-gray-900 text-sm md:text-base">
-                                                <div className="flex flex-col max-w-[200px] md:max-w-[250px]">
-                                                    <span className="truncate" title={report.contentTitle}>{report.contentTitle}</span>
-                                                    {report.details && <span className="text-[10px] md:text-xs text-muted-foreground truncate italic font-medium mt-0.5">{report.details}</span>}
+                                            <td className="px-6 py-6 font-bold text-slate-900">
+                                                <div className="flex flex-col max-w-[250px]">
+                                                    <span className="truncate font-black text-xs uppercase tracking-tight" title={report.contentTitle}>{report.contentTitle}</span>
+                                                    {report.details && <span className="text-[10px] text-slate-400 truncate italic font-medium mt-1 uppercase tracking-widest">{report.details}</span>}
                                                 </div>
                                             </td>
-                                            <td className="px-3 md:px-6 py-4 md:py-5 whitespace-nowrap">
-                                                <span className={`text-[9px] md:text-[11px] font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full ${reasonInfo.color} border border-current/20`}>
+                                            <td className="px-6 py-6">
+                                                <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full ${reasonInfo.color.replace('bg-', 'bg-opacity-10 bg-').replace('text-', 'text-opacity-90 text-')} border`}>
                                                     {reasonInfo.label}
                                                 </span>
                                             </td>
-                                            <td className="px-3 md:px-6 py-4 md:py-5 whitespace-nowrap text-sm md:text-base">
+                                            <td className="px-6 py-6">
                                                 <div className="flex flex-col">
-                                                    <span className="font-bold text-maroon">{report.reporter.name || "Member"}</span>
-                                                    <span className="text-[10px] md:text-xs text-muted-foreground font-medium">{report.reporter.email}</span>
+                                                    <span className="font-black text-slate-900 text-xs uppercase tracking-tight">{report.reporter.name || "Member"}</span>
+                                                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{report.reporter.email}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 whitespace-nowrap text-sm md:text-base font-medium">
+                                            <td className="px-6 py-6 text-slate-600 text-xs font-black uppercase tracking-widest">
                                                 {formatDate(report.createdAt)}
                                             </td>
-                                            <td className="px-3 md:px-6 py-4 md:py-5 whitespace-nowrap">
-                                                <span className={`text-[9px] md:text-[11px] font-black px-2 md:px-3 py-0.5 md:py-1 rounded-full border ${report.status === 'open' ? 'bg-red-50 text-red-700 border-red-200'
-                                                    : report.status === 'reviewed' ? 'bg-green-50 text-green-700 border-green-200'
-                                                        : 'bg-gray-50 text-gray-600 border-gray-200'
+                                            <td className="px-6 py-6">
+                                                <span className={`text-[10px] font-black px-4 py-1.5 rounded-full border uppercase tracking-widest ${report.status === 'open' ? 'bg-red-50 text-red-600 border-red-100'
+                                                    : report.status === 'reviewed' ? 'bg-green-50 text-green-600 border-green-100'
+                                                        : 'bg-slate-50 text-slate-600 border-slate-100'
                                                     }`}>
-                                                    {report.status.toUpperCase()}
+                                                    {report.status}
                                                 </span>
                                             </td>
-                                            <td className="px-3 md:px-6 py-4 md:py-5 text-right">
-                                                <div className="flex justify-end gap-1 md:gap-2">
+                                            <td className="px-6 py-6 text-right">
+                                                <div className="flex justify-end gap-2">
                                                     {report.status === 'open' && (
                                                         <>
                                                             <Button
                                                                 size="sm"
                                                                 variant="outline"
-                                                                className="h-8 text-[10px] text-green-600 border-green-200 hover:bg-green-50"
+                                                                className="h-10 text-[10px] font-black uppercase tracking-widest text-green-600 border-green-100 hover:bg-green-50 rounded-xl"
                                                                 onClick={() => handleUpdateStatus(report.id, 'reviewed')}
                                                                 disabled={isLoading}
                                                             >
-                                                                {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCircle className="h-3 w-3 mr-1" />}
-                                                                Reviewed
+                                                                {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCircle className="h-4 w-4 mr-2" />}
+                                                                Resolve
                                                             </Button>
                                                             <Button
                                                                 size="sm"
                                                                 variant="outline"
-                                                                className="h-8 text-[10px] text-red-600 border-red-200 hover:bg-red-50"
+                                                                className="h-10 text-[10px] font-black uppercase tracking-widest text-red-600 border-red-100 hover:bg-red-50 rounded-xl"
                                                                 onClick={() => handleDeleteContent(report)}
                                                                 disabled={isLoading}
                                                             >
-                                                                <Trash2 className="h-3 w-3 mr-1" /> Delete
+                                                                <Trash2 className="h-4 w-4 mr-2" /> Expunge
                                                             </Button>
                                                         </>
                                                     )}
@@ -384,11 +384,11 @@ export default function AdminReportsPage() {
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
-                                                            className="h-8 text-[10px] border-maroon/20 text-maroon/70 hover:bg-maroon/5"
+                                                            className="h-10 text-[10px] font-black uppercase tracking-widest border-slate-100 text-slate-400 hover:text-slate-900 transition-all rounded-xl"
                                                             onClick={() => handleUpdateStatus(report.id, 'open')}
                                                             disabled={isLoading}
                                                         >
-                                                            Reopen
+                                                            Reopen Registry
                                                         </Button>
                                                     )}
                                                 </div>

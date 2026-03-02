@@ -129,9 +129,9 @@ export function SocialPostCard({ post }: SocialPostProps) {
     // Badge styling based on post type
     const getTypeBadge = () => {
         switch (post.type) {
-            case 'event': return <span className="text-[10px] uppercase tracking-wider font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Event</span>
-            case 'business': return <span className="text-[10px] uppercase tracking-wider font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Business</span>
-            case 'achievement': return <span className="text-[10px] uppercase tracking-wider font-bold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Achievement</span>
+            case 'event': return <span className="text-[10px] uppercase tracking-[0.2em] font-black bg-secondary/10 text-secondary px-3 py-1 rounded-full border border-secondary/20">Event</span>
+            case 'business': return <span className="text-[10px] uppercase tracking-[0.2em] font-black bg-slate-900 text-white px-3 py-1 rounded-full">Business</span>
+            case 'achievement': return <span className="text-[10px] uppercase tracking-[0.2em] font-black bg-slate-50 text-slate-500 px-3 py-1 rounded-full border border-slate-100">Achievement</span>
         }
     }
 
@@ -139,22 +139,22 @@ export function SocialPostCard({ post }: SocialPostProps) {
         if (!post.metadata) return null;
 
         return (
-            <div className="flex flex-wrap gap-3 mt-3">
+            <div className="flex flex-wrap gap-4 mt-6">
                 {post.metadata.date && (
-                    <div className="flex items-center text-xs text-muted-foreground bg-gray-50 px-2 py-1 rounded-md">
-                        <Calendar className="h-3.5 w-3.5 mr-1 text-maroon/70" />
+                    <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                        <Calendar className="h-3.5 w-3.5 mr-2 text-secondary" />
                         {new Date(post.metadata.date).toLocaleDateString()}
                     </div>
                 )}
                 {post.metadata.location && (
-                    <div className="flex items-center text-xs text-muted-foreground bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
-                        <MapPin className="h-3.5 w-3.5 mr-1 text-maroon/70" />
+                    <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                        <MapPin className="h-3.5 w-3.5 mr-2 text-secondary" />
                         {post.metadata.location}
                     </div>
                 )}
                 {post.metadata.category && (
-                    <div className="flex items-center text-xs text-muted-foreground bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
-                        <Briefcase className="h-3.5 w-3.5 mr-1 text-maroon/70" />
+                    <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                        <Briefcase className="h-3.5 w-3.5 mr-2 text-slate-900" />
                         {post.metadata.category}
                     </div>
                 )}
@@ -171,60 +171,60 @@ export function SocialPostCard({ post }: SocialPostProps) {
 
     if (isDeletedByAdmin) {
         return (
-            <Card className="overflow-hidden border-red-200 shadow-sm bg-red-50/30 group">
-                <CardHeader className="p-4 flex flex-row items-center space-y-0 space-x-3 pb-2 opacity-60">
-                    <div className="h-10 w-10 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center">
-                        <User className="h-5 w-5 text-gray-400" />
+            <Card className="overflow-hidden border-red-50 shadow-2xl shadow-red-500/5 bg-red-50/20 rounded-[3rem] group">
+                <CardHeader className="p-8 flex flex-row items-center space-y-0 space-x-4 pb-4 opacity-40">
+                    <div className="h-12 w-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center">
+                        <Shield className="h-6 w-6 text-slate-400" />
                     </div>
                     <div className="flex-1 min-w-0 flex flex-col">
                         <div className="flex items-center justify-between">
-                            <span className="font-bold text-gray-500 text-sm italic">User anonymized</span>
+                            <span className="font-black text-[10px] uppercase tracking-widest text-slate-400">Content Restricted</span>
                             {getTypeBadge()}
                         </div>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-[10px] font-bold text-slate-300 mt-1 uppercase tracking-tighter">
                             {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
                         </p>
                     </div>
                 </CardHeader>
-                <CardContent className="px-6 py-8 flex flex-col items-center text-center">
-                    <Shield className="h-10 w-10 text-red-600/40 mb-3" />
-                    <h3 className="font-serif font-bold text-lg text-red-900/80">Post Unavailable</h3>
-                    <p className="text-sm text-red-700/60 mt-2 max-w-sm">
-                        This post has been deleted by an administrator for violating community guidelines.
+                <CardContent className="px-10 py-12 flex flex-col items-center text-center">
+                    <div className="h-20 w-20 rounded-[2rem] bg-red-100 flex items-center justify-center mb-6">
+                        <Shield className="h-10 w-10 text-red-600" />
+                    </div>
+                    <h3 className="text-2xl font-black text-red-900 tracking-tight">Post Unavailable</h3>
+                    <p className="text-red-700/60 font-medium mt-3 max-w-sm leading-relaxed">
+                        This post has been removed by community administrators for policy violations.
                     </p>
                 </CardContent>
-                <CardFooter className="p-2 bg-red-50/50 border-t border-red-100 flex justify-center">
-                    <span className="text-[10px] items-center gap-1 uppercase tracking-widest font-black text-red-700/40 flex py-1">
-                        Deleted by Admin
-                    </span>
+                <CardFooter className="p-4 bg-red-100/30 border-t border-red-100 flex justify-center">
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-red-700/40">Moderated Feed</span>
                 </CardFooter>
             </Card>
         )
     }
 
     return (
-        <Card className="overflow-hidden border-gold/20 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white group">
-            <CardHeader className="p-4 flex flex-row items-center space-y-0 space-x-3 pb-2">
+        <Card className="overflow-hidden border-slate-100 shadow-2xl shadow-slate-200/50 hover:shadow-secondary/5 transition-all duration-500 bg-white group rounded-[3rem]">
+            <CardHeader className="p-8 flex flex-row items-center space-y-0 space-x-5 pb-6">
                 {/* Author Avatar */}
-                <Link href="#" className="flex-shrink-0">
-                    <div className="h-10 w-10 rounded-full border border-gold/30 overflow-hidden relative bg-maroon/5 flex items-center justify-center">
+                <Link href="#" className="flex-shrink-0 group/avatar">
+                    <div className="h-14 w-14 rounded-2xl border border-slate-100 overflow-hidden relative bg-slate-50 flex items-center justify-center shadow-sm group-hover/avatar:shadow-xl transition-all">
                         {post.author.profileImage ? (
                             <Image src={post.author.profileImage} alt={post.author.name || 'User'} fill className="object-cover" />
                         ) : (
-                            <span className="text-maroon font-serif font-bold text-lg">{post.author.name?.[0]?.toUpperCase() || 'M'}</span>
+                            <span className="text-slate-900 font-black text-xl">{post.author.name?.[0]?.toUpperCase() || 'M'}</span>
                         )}
                     </div>
                 </Link>
 
                 {/* Author Info & Date */}
                 <div className="flex-1 min-w-0 flex flex-col">
-                    <div className="flex items-center justify-between">
-                        <Link href="#" className="font-bold text-gray-900 truncate hover:text-maroon transition-colors text-sm">
+                    <div className="flex items-center justify-between mb-1">
+                        <Link href="#" className="font-black text-slate-900 tracking-tight hover:text-secondary transition-colors text-lg">
                             {post.author.name || 'Community Member'}
                         </Link>
                         {getTypeBadge()}
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                         {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
                     </p>
                 </div>
@@ -232,13 +232,13 @@ export function SocialPostCard({ post }: SocialPostProps) {
 
             {/* Post Content */}
             <CardContent className="p-0">
-                <div className="px-4 pb-3">
-                    <Link href={postLink} className="block mt-1">
-                        <h3 className="font-serif font-bold text-lg text-gray-900 group-hover:text-maroon transition-colors line-clamp-2">
+                <div className="px-8 pb-8">
+                    <Link href={postLink} className="block group/link">
+                        <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter leading-tight group-hover/link:text-secondary transition-colors line-clamp-2">
                             {post.title}
                         </h3>
                     </Link>
-                    <p className="text-sm text-gray-600 mt-2 line-clamp-3">
+                    <p className="text-slate-600 font-medium text-lg mt-4 line-clamp-3 leading-relaxed">
                         {post.description}
                     </p>
 
@@ -247,13 +247,13 @@ export function SocialPostCard({ post }: SocialPostProps) {
 
                 {/* Media */}
                 {post.images && post.images.length > 0 && (
-                    <div className="relative w-full aspect-video bg-gray-100 overflow-hidden border-y border-gold/10 group/slider">
+                    <div className="relative w-full aspect-video bg-slate-50 overflow-hidden border-y border-slate-50 group/slider mx-auto mb-2">
                         <Link href={postLink} className="block h-full w-full">
                             <Image
                                 src={post.images[currentImageIndex]}
                                 alt={post.title}
                                 fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                className="object-cover transition-transform duration-700 group-hover:scale-110"
                                 priority={currentImageIndex === 0}
                             />
                         </Link>
@@ -264,28 +264,28 @@ export function SocialPostCard({ post }: SocialPostProps) {
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white rounded-full h-8 w-8 opacity-0 group-hover/slider:opacity-100 transition-opacity"
+                                    className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-md hover:bg-slate-900 hover:text-white text-slate-900 rounded-2xl h-12 w-12 opacity-0 group-hover/slider:opacity-100 transition-all border border-slate-200 shadow-xl"
                                     onClick={prevImage}
                                 >
-                                    <ChevronLeft className="h-5 w-5" />
+                                    <ChevronLeft className="h-6 w-6" />
                                 </Button>
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white rounded-full h-8 w-8 opacity-0 group-hover/slider:opacity-100 transition-opacity"
+                                    className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-md hover:bg-slate-900 hover:text-white text-slate-900 rounded-2xl h-12 w-12 opacity-0 group-hover/slider:opacity-100 transition-all border border-slate-200 shadow-xl"
                                     onClick={nextImage}
                                 >
-                                    <ChevronRight className="h-5 w-5" />
+                                    <ChevronRight className="h-6 w-6" />
                                 </Button>
 
                                 {/* Dots indicator */}
-                                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
                                     {post.images.map((_, idx) => (
                                         <div
                                             key={idx}
                                             className={cn(
-                                                "h-1.5 w-1.5 rounded-full transition-all",
-                                                idx === currentImageIndex ? "bg-white w-3" : "bg-white/50"
+                                                "h-1.5 rounded-full transition-all duration-500",
+                                                idx === currentImageIndex ? "bg-white w-8 shadow-sm" : "bg-white/40 w-1.5"
                                             )}
                                         />
                                     ))}
@@ -297,18 +297,18 @@ export function SocialPostCard({ post }: SocialPostProps) {
             </CardContent>
 
             {/* Interaction Footer */}
-            <CardFooter className="p-2 bg-gray-50/50 border-t border-gold/10 flex justify-between">
+            <CardFooter className="p-4 bg-slate-50/30 border-t border-slate-50 flex justify-between gap-4">
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleLike}
                     className={cn(
-                        "flex-1 justify-center gap-1.5 text-gray-500 transition-all hover:bg-maroon/5 hover:text-maroon h-9",
-                        isLiked && "text-red-500 hover:text-red-600 hover:bg-red-50"
+                        "flex-1 h-14 rounded-2xl gap-3 text-slate-400 font-black uppercase tracking-widest text-[10px] transition-all hover:bg-white hover:text-slate-900 hover:shadow-xl hover:shadow-slate-200/50",
+                        isLiked && "text-secondary bg-white shadow-xl shadow-secondary/10 hover:text-secondary"
                     )}
                 >
                     <Heart className={cn("h-5 w-5", isLiked && "fill-current")} />
-                    <span className="font-medium text-xs sm:text-sm tracking-tight">{likeCount > 0 ? likeCount : ''} Like{likeCount !== 1 && 's'}</span>
+                    <span>{likeCount > 0 ? likeCount : ''} Likes</span>
                 </Button>
 
                 <Button
@@ -316,32 +316,34 @@ export function SocialPostCard({ post }: SocialPostProps) {
                     size="sm"
                     onClick={() => setShowComments(!showComments)}
                     className={cn(
-                        "flex-1 justify-center gap-1.5 text-gray-500 hover:text-maroon hover:bg-maroon/5 transition-all h-9",
-                        showComments && "bg-maroon/5 text-maroon"
+                        "flex-1 h-14 rounded-2xl gap-3 text-slate-400 font-black uppercase tracking-widest text-[10px] transition-all hover:bg-white hover:text-slate-900 hover:shadow-xl hover:shadow-slate-200/50",
+                        showComments && "bg-white text-slate-900 shadow-xl shadow-slate-200/50"
                     )}
                 >
                     <MessageCircle className="h-5 w-5" />
-                    <span className="font-medium text-xs sm:text-sm tracking-tight">{commentCount > 0 ? commentCount : ''} Comment{commentCount !== 1 && 's'}</span>
+                    <span>{commentCount > 0 ? commentCount : ''} Comments</span>
                 </Button>
 
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleShare}
-                    className="flex-1 justify-center gap-1.5 text-gray-500 hover:text-maroon hover:bg-maroon/5 transition-all h-9"
+                    className="flex-1 h-14 rounded-2xl gap-3 text-slate-400 font-black uppercase tracking-widest text-[10px] transition-all hover:bg-white hover:text-slate-900 hover:shadow-xl hover:shadow-slate-200/50"
                 >
                     <Share2 className="h-5 w-5" />
-                    <span className="font-medium text-xs sm:text-sm tracking-tight">{shareCount > 0 ? shareCount : ''} Share{shareCount !== 1 && 's'}</span>
+                    <span>{shareCount > 0 ? shareCount : ''} Shares</span>
                 </Button>
             </CardFooter>
 
             {/* Expandable Comment Section */}
             {showComments && (
-                <CommentSection
-                    postId={post.id}
-                    postType={post.type}
-                    onCommentAdded={() => setCommentCount(prev => prev + 1)}
-                />
+                <div className="border-t border-slate-50 bg-slate-50/20">
+                    <CommentSection
+                        postId={post.id}
+                        postType={post.type}
+                        onCommentAdded={() => setCommentCount(prev => prev + 1)}
+                    />
+                </div>
             )}
         </Card>
     )

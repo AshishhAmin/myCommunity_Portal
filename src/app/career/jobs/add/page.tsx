@@ -84,179 +84,197 @@ export default function PostJobPage() {
 
     return (
         <AuthGuard allowedRoles={["member", "admin"]} requireVerified={true}>
-            <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
-                <Navbar />
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6] relative overflow-hidden">
+                {/* Background decorative elements */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-3xl -mt-32 -mr-32 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-400/5 rounded-full blur-3xl -mb-32 -ml-32 pointer-events-none" />
 
-                <main className="flex-1 pb-24">
-                    <div className="container mx-auto px-4 py-8 max-w-4xl">
-                        <Link href="/career" className="inline-flex items-center text-maroon/60 hover:text-maroon mb-6 transition-all text-sm font-bold uppercase tracking-widest group">
-                            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Career Hub
-                        </Link>
-                        <div className="mb-10">
-                            <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-2">Post a New Opening</h1>
-                            <p className="text-gray-500 font-medium italic">
-                                Create career opportunities for our community members.
-                            </p>
+                <div className="relative z-10 flex flex-col min-h-screen">
+                    <Navbar />
+
+                    <main className="flex-1 pb-24">
+                        <div className="container mx-auto px-4 pt-16 pb-8 max-w-4xl">
+                            <Link
+                                href="/career"
+                                className="inline-flex items-center text-slate-400 hover:text-slate-900 mb-10 transition-all text-[11px] font-black uppercase tracking-[0.2em] group"
+                            >
+                                <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Career Hub
+                            </Link>
+                            <div className="mb-12">
+                                <h1 className="text-5xl md:text-6xl font-sans font-black text-slate-900 mb-4 leading-none tracking-tight">Post a New Opening</h1>
+                                <p className="text-xl text-slate-500 font-medium italic">
+                                    Create career opportunities for our community members.
+                                </p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="container mx-auto px-4 max-w-3xl relative z-10">
-                        <Card className="border border-gold/10 shadow-xl shadow-gold/5 bg-white rounded-2xl overflow-hidden">
-                            <CardContent className="p-8 md:p-10">
-                                <form onSubmit={handleSubmit} className="space-y-8">
-                                    {error && (
-                                        <div className="bg-red-50 border border-red-100 text-red-600 p-6 rounded-[2rem] flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
-                                            <div className="h-10 w-10 rounded-2xl bg-white flex items-center justify-center shrink-0 shadow-sm">
-                                                <Info className="h-5 w-5" />
+                        <div className="container mx-auto px-4 max-w-3xl relative z-10">
+                            <Card className="border-transparent shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] bg-white rounded-[3rem] overflow-hidden border border-slate-50">
+                                <CardContent className="p-10 md:p-16">
+                                    <form onSubmit={handleSubmit} className="space-y-12">
+                                        {error && (
+                                            <div className="bg-rose-50 border border-rose-100 text-rose-600 p-8 rounded-[2.5rem] flex items-center gap-6 animate-in fade-in slide-in-from-top-4 shadow-sm">
+                                                <div className="h-12 w-12 rounded-2xl bg-white flex items-center justify-center shrink-0 shadow-lg shadow-rose-500/10">
+                                                    <Info className="h-6 w-6" />
+                                                </div>
+                                                <p className="font-black text-lg">{error}</p>
                                             </div>
-                                            <p className="font-bold">{error}</p>
-                                        </div>
-                                    )}
+                                        )}
 
-                                    <div className="space-y-6">
-                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gold mb-8 border-b border-gold/10 pb-4">Professional Details</h3>
+                                        <div className="space-y-10">
+                                            <div className="flex items-center gap-6 mb-10">
+                                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">Professional Details</h3>
+                                                <div className="h-px flex-1 bg-slate-100" />
+                                            </div>
 
-                                        <div className="grid gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Job Title *</label>
-                                                <Input
-                                                    name="title"
-                                                    value={formData.title}
+                                            <div className="grid gap-8">
+                                                <div className="space-y-3">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Job Title *</label>
+                                                    <Input
+                                                        name="title"
+                                                        value={formData.title}
+                                                        onChange={handleChange}
+                                                        placeholder="e.g. Senior React Developer"
+                                                        className={`h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700 placeholder:text-slate-300 ${errors.title ? 'border-rose-300 ring-rose-300' : ''}`}
+                                                    />
+                                                    {errors.title && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest pl-4">{errors.title}</p>}
+                                                </div>
+
+                                                <div className="space-y-3">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Company *</label>
+                                                    <Input
+                                                        name="company"
+                                                        value={formData.company}
+                                                        onChange={handleChange}
+                                                        placeholder="e.g. Acme Tech Solutions"
+                                                        className={`h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700 placeholder:text-slate-300 ${errors.company ? 'border-rose-300 ring-rose-300' : ''}`}
+                                                    />
+                                                    {errors.company && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest pl-4">{errors.company}</p>}
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                <div className="space-y-3">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Location *</label>
+                                                    <Input
+                                                        name="location"
+                                                        value={formData.location}
+                                                        onChange={handleChange}
+                                                        placeholder="e.g. Bangalore"
+                                                        className={`h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700 placeholder:text-slate-300 ${errors.location ? 'border-rose-300 ring-rose-300' : ''}`}
+                                                    />
+                                                    {errors.location && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest pl-4">{errors.location}</p>}
+                                                </div>
+                                                <div className="space-y-3 relative">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Employment Type *</label>
+                                                    <select
+                                                        name="type"
+                                                        value={formData.type}
+                                                        onChange={handleChange}
+                                                        className="w-full h-16 rounded-2xl border border-slate-100 bg-slate-50/50 px-8 font-bold text-slate-700 text-sm focus:bg-white focus:ring-2 focus:ring-secondary/20 focus:border-secondary focus:outline-none transition-all appearance-none cursor-pointer"
+                                                    >
+                                                        <option>Full-time</option>
+                                                        <option>Part-time</option>
+                                                        <option>Internship</option>
+                                                        <option>Contract</option>
+                                                    </select>
+                                                    <div className="absolute right-6 bottom-5 pointer-events-none opacity-20">
+                                                        ▼
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                <div className="space-y-3">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Salary Range</label>
+                                                    <Input
+                                                        name="salary"
+                                                        value={formData.salary}
+                                                        onChange={handleChange}
+                                                        placeholder="e.g. ₹5L-8L per annum"
+                                                        className="h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700 placeholder:text-slate-300"
+                                                    />
+                                                </div>
+                                                <div className="space-y-3">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Application Deadline</label>
+                                                    <Input
+                                                        name="deadline"
+                                                        type="date"
+                                                        value={formData.deadline}
+                                                        onChange={handleChange}
+                                                        className="h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Job Description *</label>
+                                                <textarea
+                                                    name="description"
+                                                    value={formData.description}
                                                     onChange={handleChange}
-                                                    placeholder="e.g. Senior React Developer"
-                                                    className={`h-12 rounded-xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.title ? 'border-red-500' : ''}`}
+                                                    rows={8}
+                                                    className={`w-full rounded-[2rem] border ${errors.description ? 'border-rose-300 ring-rose-300' : 'border-slate-100'} bg-slate-50/50 px-8 py-6 text-sm focus:bg-white focus:ring-2 focus:ring-secondary/20 focus:border-secondary focus:outline-none transition-all font-bold text-slate-600 leading-relaxed placeholder:text-slate-300`}
+                                                    placeholder="Outline the responsibilities, requirements, and culture..."
                                                 />
-                                                {errors.title && <p className="text-red-500 text-xs font-bold pl-2">{errors.title}</p>}
-                                            </div>
-
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Company *</label>
-                                                <Input
-                                                    name="company"
-                                                    value={formData.company}
-                                                    onChange={handleChange}
-                                                    placeholder="e.g. Acme Tech Solutions"
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.company ? 'border-red-500' : ''}`}
-                                                />
-                                                {errors.company && <p className="text-red-500 text-xs font-bold pl-2">{errors.company}</p>}
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Location *</label>
-                                                <Input
-                                                    name="location"
-                                                    value={formData.location}
-                                                    onChange={handleChange}
-                                                    placeholder="e.g. Bangalore"
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.location ? 'border-red-500' : ''}`}
-                                                />
-                                                {errors.location && <p className="text-red-500 text-xs font-bold pl-2">{errors.location}</p>}
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Employment Type *</label>
-                                                <select
-                                                    name="type"
-                                                    value={formData.type}
-                                                    onChange={handleChange}
-                                                    className="w-full h-14 rounded-2xl border border-gray-100 bg-gray-50 px-6 font-medium text-sm focus:bg-white focus:ring-2 focus:ring-maroon/20 focus:outline-none transition-all appearance-none cursor-pointer"
-                                                >
-                                                    <option>Full-time</option>
-                                                    <option>Part-time</option>
-                                                    <option>Internship</option>
-                                                    <option>Contract</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Salary Range</label>
-                                                <Input
-                                                    name="salary"
-                                                    value={formData.salary}
-                                                    onChange={handleChange}
-                                                    placeholder="e.g. ₹5L-8L per annum"
-                                                    className="h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Deadline</label>
-                                                <Input
-                                                    name="deadline"
-                                                    type="date"
-                                                    value={formData.deadline}
-                                                    onChange={handleChange}
-                                                    className="h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Job Description *</label>
-                                            <textarea
-                                                name="description"
-                                                value={formData.description}
-                                                onChange={handleChange}
-                                                rows={6}
-                                                className={`w-full rounded-xl border ${errors.description ? 'border-red-500' : 'border-gray-100'} bg-gray-50 px-6 py-4 text-sm focus:bg-white focus:ring-2 focus:ring-maroon/20 focus:outline-none transition-all font-medium leading-relaxed`}
-                                                placeholder="Outline the responsibilities, requirements, and culture..."
-                                            />
-                                            {errors.description && <p className="text-red-500 text-xs font-bold pl-2">{errors.description}</p>}
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-6 pt-6">
-                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gold mb-8 border-b border-gold/10 pb-4">Communication</h3>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Contact Email</label>
-                                                <Input
-                                                    name="contactEmail"
-                                                    type="email"
-                                                    value={formData.contactEmail}
-                                                    onChange={handleChange}
-                                                    placeholder="hr@company.com"
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.contactEmail ? 'border-red-500' : ''}`}
-                                                />
-                                                {errors.contactEmail && <p className="text-red-500 text-xs font-bold pl-2">{errors.contactEmail}</p>}
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Contact Phone</label>
-                                                <Input
-                                                    name="contactPhone"
-                                                    value={formData.contactPhone}
-                                                    onChange={handleChange}
-                                                    placeholder="+91 98765 43210"
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.contactPhone ? 'border-red-500' : ''}`}
-                                                />
-                                                {errors.contactPhone && <p className="text-red-500 text-xs font-bold pl-2">{errors.contactPhone}</p>}
+                                                {errors.description && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest pl-4">{errors.description}</p>}
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="pt-8">
-                                        <Button
-                                            type="submit"
-                                            disabled={loading}
-                                            className="w-full bg-maroon text-gold hover:bg-maroon/90 h-14 rounded-xl font-bold text-lg shadow-lg shadow-maroon/10 transition-all active:scale-95"
-                                        >
-                                            {loading ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : null}
-                                            {loading ? "Registering Post..." : "Publish Opportunity"}
-                                        </Button>
-                                    </div>
-                                </form>
-                            </CardContent>
-                        </Card>
+                                        <div className="space-y-10 pt-10">
+                                            <div className="flex items-center gap-6 mb-10">
+                                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">Communication Channels</h3>
+                                                <div className="h-px flex-1 bg-slate-100" />
+                                            </div>
 
-                        <div className="mt-12 text-center italic text-gray-400 text-xs font-medium px-10">
-                            By publishing this opportunity, you agree to community standards and verify that the information provided is accurate and non-discriminatory.
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                <div className="space-y-3">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Response Email</label>
+                                                    <Input
+                                                        name="contactEmail"
+                                                        type="email"
+                                                        value={formData.contactEmail}
+                                                        onChange={handleChange}
+                                                        placeholder="hr@company.com"
+                                                        className={`h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700 placeholder:text-slate-300 ${errors.contactEmail ? 'border-rose-300 ring-rose-300' : ''}`}
+                                                    />
+                                                    {errors.contactEmail && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest pl-4">{errors.contactEmail}</p>}
+                                                </div>
+                                                <div className="space-y-3">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Direct Inquiry Phone</label>
+                                                    <Input
+                                                        name="contactPhone"
+                                                        value={formData.contactPhone}
+                                                        onChange={handleChange}
+                                                        placeholder="+91 98765 43210"
+                                                        className={`h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700 placeholder:text-slate-300 ${errors.contactPhone ? 'border-rose-300 ring-rose-300' : ''}`}
+                                                    />
+                                                    {errors.contactPhone && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest pl-4">{errors.contactPhone}</p>}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-12">
+                                            <Button
+                                                type="submit"
+                                                disabled={loading}
+                                                className="w-full bg-slate-900 text-white hover:bg-black h-20 rounded-[2rem] font-black text-xl shadow-2xl shadow-slate-900/10 transition-all active:scale-[0.98] group"
+                                            >
+                                                {loading ? <Loader2 className="h-6 w-6 animate-spin mr-4" /> : null}
+                                                {loading ? "Establishing Protocol..." : "Publish Opportunity"}
+                                            </Button>
+                                        </div>
+                                    </form>
+                                </CardContent>
+                            </Card>
+
+                            <div className="mt-16 text-center italic text-slate-400 text-xs font-black uppercase tracking-[0.2em] px-12 leading-relaxed opacity-60">
+                                By publishing this opportunity, you agree to community standards and verify that the information provided is accurate and non-discriminatory.
+                            </div>
                         </div>
-                    </div>
-                </main>
-                <Footer />
+                    </main>
+                    <Footer />
+                </div>
             </div>
         </AuthGuard>
     )

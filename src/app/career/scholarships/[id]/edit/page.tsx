@@ -120,12 +120,12 @@ export default function EditScholarshipPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
                 <div className="flex-1 flex items-center justify-center">
                     <div className="text-center space-y-4">
-                        <Loader2 className="h-12 w-12 animate-spin text-maroon mx-auto" />
-                        <p className="text-maroon font-serif italic text-lg opacity-60">Fetching scholarship details...</p>
+                        <Loader2 className="h-12 w-12 animate-spin text-secondary mx-auto" />
+                        <p className="text-secondary font-sans italic text-lg opacity-60">Fetching scholarship details...</p>
                     </div>
                 </div>
                 <Footer />
@@ -140,7 +140,7 @@ export default function EditScholarshipPage() {
 
                 <main className="flex-1 pb-24">
                     <div className="container mx-auto px-4 py-8 max-w-4xl">
-                        <Link href={`/career/scholarships/${id}`} className="inline-flex items-center text-maroon/60 hover:text-maroon mb-6 transition-all text-sm font-bold uppercase tracking-widest group">
+                        <Link href={`/career/scholarships/${id}`} className="inline-flex items-center text-slate-400 hover:text-slate-900 mb-6 transition-all text-sm font-bold uppercase tracking-widest group">
                             <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Scholarship Details
                         </Link>
                         <div className="mb-10">
@@ -152,7 +152,7 @@ export default function EditScholarshipPage() {
                     </div>
 
                     <div className="container mx-auto px-4 max-w-3xl relative z-10">
-                        <Card className="border border-gold/10 shadow-xl shadow-gold/5 bg-white rounded-2xl overflow-hidden">
+                        <Card className="border-transparent shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] bg-white rounded-[3rem] overflow-hidden border border-slate-50">
                             <CardContent className="p-8 md:p-10">
                                 <form onSubmit={handleSubmit} className="space-y-8">
                                     {error && (
@@ -165,7 +165,7 @@ export default function EditScholarshipPage() {
                                     )}
 
                                     <div className="space-y-6">
-                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gold mb-8 border-b border-gold/10 pb-4">Grant Modification</h3>
+                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary mb-8 border-b border-slate-50 pb-4">Grant Modification</h3>
 
                                         <div className="space-y-2">
                                             <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Scholarship Title *</label>
@@ -174,7 +174,7 @@ export default function EditScholarshipPage() {
                                                 value={formData.title}
                                                 onChange={handleChange}
                                                 placeholder="e.g. Merit Scholarship 2026"
-                                                className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.title ? 'border-red-500' : ''}`}
+                                                className={`h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium ${errors.title ? 'border-red-500' : ''}`}
                                             />
                                             {errors.title && <p className="text-red-500 text-xs font-bold pl-2">{errors.title}</p>}
                                         </div>
@@ -187,7 +187,7 @@ export default function EditScholarshipPage() {
                                                     value={formData.amount}
                                                     onChange={handleChange}
                                                     placeholder="e.g. ₹50,000"
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.amount ? 'border-red-500' : ''}`}
+                                                    className={`h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium ${errors.amount ? 'border-red-500' : ''}`}
                                                 />
                                                 {errors.amount && <p className="text-red-500 text-xs font-bold pl-2">{errors.amount}</p>}
                                             </div>
@@ -198,7 +198,7 @@ export default function EditScholarshipPage() {
                                                     type="date"
                                                     value={formData.deadline}
                                                     onChange={handleChange}
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.deadline ? 'border-red-500' : ''}`}
+                                                    className={`h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium ${errors.deadline ? 'border-red-500' : ''}`}
                                                 />
                                                 {errors.deadline && <p className="text-red-500 text-xs font-bold pl-2">{errors.deadline}</p>}
                                             </div>
@@ -211,7 +211,7 @@ export default function EditScholarshipPage() {
                                                     name="type"
                                                     value={formData.type}
                                                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                                    className="w-full h-14 rounded-2xl border border-gray-100 bg-gray-50 px-6 font-medium text-sm focus:bg-white focus:ring-2 focus:ring-maroon/20 focus:outline-none transition-all appearance-none cursor-pointer"
+                                                    className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50 px-6 font-medium text-sm focus:bg-white focus:ring-2 focus:ring-secondary/20 focus:outline-none transition-all appearance-none cursor-pointer"
                                                 >
                                                     {["General", "Merit-based", "Need-based", "Sports", "Arts", "Others"].map(t => (
                                                         <option key={t} value={t}>{t}</option>
@@ -225,7 +225,7 @@ export default function EditScholarshipPage() {
                                                     value={formData.eligibility}
                                                     onChange={handleChange}
                                                     placeholder="e.g. Students scoring 90%+"
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.eligibility ? 'border-red-500' : ''}`}
+                                                    className={`h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium ${errors.eligibility ? 'border-red-500' : ''}`}
                                                 />
                                                 {errors.eligibility && <p className="text-red-500 text-xs font-bold pl-2">{errors.eligibility}</p>}
                                             </div>
@@ -238,7 +238,7 @@ export default function EditScholarshipPage() {
                                                 value={formData.description}
                                                 onChange={handleChange}
                                                 rows={6}
-                                                className={`w-full rounded-[2rem] border ${errors.description ? 'border-red-500' : 'border-gray-100'} bg-gray-50 px-8 py-6 text-sm focus:bg-white focus:ring-2 focus:ring-maroon/20 focus:outline-none transition-all font-medium leading-relaxed`}
+                                                className={`w-full rounded-[2rem] border ${errors.description ? 'border-red-500' : 'border-slate-100'} bg-slate-50 px-8 py-6 text-sm focus:bg-white focus:ring-2 focus:ring-secondary/20 focus:outline-none transition-all font-medium leading-relaxed`}
                                                 placeholder="Provide detailed information about the scholarship..."
                                             />
                                             {errors.description && <p className="text-red-500 text-xs font-bold pl-2">{errors.description}</p>}
@@ -251,7 +251,7 @@ export default function EditScholarshipPage() {
                                                 value={formData.link}
                                                 onChange={handleChange}
                                                 placeholder="https://example.com/apply"
-                                                className="h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium"
+                                                className="h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium"
                                             />
                                         </div>
                                     </div>
@@ -260,9 +260,9 @@ export default function EditScholarshipPage() {
                                         <Button
                                             type="submit"
                                             disabled={saving}
-                                            className="w-full bg-maroon text-gold hover:bg-maroon/90 h-14 rounded-xl font-bold text-lg shadow-lg shadow-maroon/10 transition-all active:scale-95"
+                                            className="w-full bg-slate-900 text-white hover:bg-secondary hover:text-slate-900 h-20 rounded-[2rem] font-black text-xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] transition-all active:scale-[0.98]"
                                         >
-                                            {saving ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : null}
+                                            {saving ? <Loader2 className="h-6 w-6 animate-spin mr-4" /> : null}
                                             {saving ? "Saving Changes..." : "Update Scholarship"}
                                         </Button>
                                     </div>

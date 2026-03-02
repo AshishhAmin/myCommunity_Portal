@@ -47,137 +47,161 @@ export function HeroCarousel({ achievements }: HeroCarouselProps) {
     const current = achievements[currentIndex]
 
     return (
-        <div className="relative w-full h-[400px] md:h-[600px] overflow-hidden rounded-2xl shadow-2xl mb-8 md:mb-12 group border border-gold/20">
-            {/* Cinematic Curtain (Framer Motion) */}
-            <div className="absolute inset-0 z-50 pointer-events-none flex">
+        <div className="relative w-full h-[450px] md:h-[650px] overflow-hidden rounded-[3rem] shadow-2xl shadow-slate-200/50 mb-12 md:mb-16 group border border-slate-100">
+            {/* Premium Entrance Animation (Framer Motion) */}
+            <div className="absolute inset-0 z-50 pointer-events-none">
+                <AnimatePresence>
+                    <motion.div
+                        initial={{ scaleY: 1 }}
+                        animate={{ scaleY: 0 }}
+                        transition={{ duration: 1.2, ease: [0.85, 0, 0.15, 1], delay: 0.5 }}
+                        className="absolute inset-0 bg-slate-900 origin-top z-[60]"
+                    />
+                </AnimatePresence>
+
+                {/* Floating Decor Items */}
                 <motion.div
-                    initial={{ x: 0 }}
-                    animate={{ x: "-100%" }}
-                    transition={{ duration: 2.5, ease: [0.22, 1, 0.36, 1], delay: 0.8 }}
-                    className="w-1/2 h-full bg-maroon relative border-r-4 border-gold flex items-center justify-end overflow-hidden"
-                    style={{
-                        background: 'repeating-linear-gradient(90deg, #600000 0%, #800000 5%, #500000 10%, #800000 15%)',
-                        boxShadow: 'inset -20px 0 50px rgba(0,0,0,0.8), 10px 0 20px rgba(0,0,0,0.5)'
-                    }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 1.5 }}
+                    className="absolute top-12 left-12 h-20 w-20 rounded-[2rem] border border-white/10 flex items-center justify-center backdrop-blur-md z-10"
                 >
-                    {/* Velvet Texture */}
-                    <div className="absolute inset-0 opacity-40 mix-blend-multiply" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")` }} />
-
-                    {/* Left Half Trophy */}
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-24 overflow-hidden z-20">
-                        <div className="w-24 h-24 text-gold drop-shadow-[0_0_15px_rgba(255,215,0,0.6)] relative">
-                            <Trophy className="w-full h-full absolute top-0 left-0" />
-                        </div>
-                    </div>
-                </motion.div>
-
-                <motion.div
-                    initial={{ x: 0 }}
-                    animate={{ x: "100%" }}
-                    transition={{ duration: 2.5, ease: [0.22, 1, 0.36, 1], delay: 0.8 }}
-                    className="w-1/2 h-full bg-maroon relative border-l-4 border-gold flex items-center justify-start overflow-hidden"
-                    style={{
-                        background: 'repeating-linear-gradient(90deg, #800000 0%, #500000 5%, #800000 10%, #600000 15%)',
-                        boxShadow: 'inset 20px 0 50px rgba(0,0,0,0.8), -10px 0 20px rgba(0,0,0,0.5)'
-                    }}
-                >
-                    {/* Velvet Texture */}
-                    <div className="absolute inset-0 opacity-40 mix-blend-multiply" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")` }} />
-
-                    {/* Right Half Trophy */}
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-24 overflow-hidden z-20">
-                        <div className="w-24 h-24 text-gold drop-shadow-[0_0_15px_rgba(255,215,0,0.6)] relative -translate-x-12">
-                            <Trophy className="w-full h-full absolute top-0 left-0" />
-                        </div>
-                    </div>
+                    <Trophy className="h-8 w-8 text-secondary" />
                 </motion.div>
             </div>
 
-            {/* Background Image with Blur */}
-            <div className="absolute inset-0 bg-maroon/90">
+            {/* Background Image / Placeholder */}
+            <div className="absolute inset-0 bg-slate-900">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={current.id}
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.7 }}
+                        initial={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
+                        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
                         className="absolute inset-0"
                     >
                         {current.image ? (
-                            <Image
-                                src={current.image}
-                                alt={current.title}
-                                fill
-                                className="object-cover opacity-40 mix-blend-overlay blur-sm"
-                            />
+                            <div className="relative h-full w-full">
+                                <Image
+                                    src={current.image}
+                                    alt={current.title}
+                                    fill
+                                    className="object-cover transition-transform duration-[10000ms] group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-slate-900/40 mix-blend-multiply" />
+                            </div>
                         ) : (
-                            <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                                <Trophy className="h-96 w-96 text-gold" />
+                            <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+                                <Trophy className="h-[120%] w-auto text-white/5" />
                             </div>
                         )}
                     </motion.div>
                 </AnimatePresence>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-transparent hidden md:block" />
             </div>
 
             {/* Content Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-16">
-                <div className="max-w-4xl mx-auto w-full animate-slide-up">
-                    <span className="inline-block bg-gold/90 text-maroon text-[10px] md:text-sm font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full mb-3 md:mb-4 uppercase tracking-wider shadow-lg">
-                        {current.category}
-                    </span>
-                    <h2 className="font-serif text-2xl md:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4 leading-tight">
-                        {current.title}
-                    </h2>
-                    <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
-                        <div className="h-8 w-8 md:h-12 md:w-12 rounded-full border-2 border-gold overflow-hidden relative bg-cream shrink-0">
-                            {current.user.profileImage ? (
-                                <Image src={current.user.profileImage} alt={current.user.name || "User"} fill className="object-cover" />
-                            ) : (
-                                <div className="flex items-center justify-center h-full text-maroon font-bold text-base md:text-lg">
-                                    {current.user.name?.charAt(0) || "U"}
-                                </div>
-                            )}
-                        </div>
-                        <div className="text-white">
-                            <p className="font-bold text-sm md:text-xl line-clamp-1">{current.user.name || "Anonymous"}</p>
-                            <p className="text-white/60 text-xs md:text-sm">{new Date(current.date).toLocaleDateString('en-IN', { dateStyle: 'long' })}</p>
-                        </div>
-                    </div>
-                    <p className="text-white/80 text-sm md:text-xl line-clamp-2 max-w-2xl mb-5 md:mb-8 leading-relaxed">
-                        {current.description}
-                    </p>
-
-                    <Button
-                        onClick={() => document.getElementById('full-list')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="bg-gold text-maroon hover:bg-white hover:text-maroon font-bold text-base md:text-lg px-6 py-4 md:px-8 md:py-6 rounded-xl shadow-lg transition-transform hover:scale-105 w-full sm:w-auto"
+            <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-20">
+                <div className="max-w-4xl w-full">
+                    <motion.div
+                        key={`meta-${currentIndex}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="flex items-center gap-4 mb-6"
                     >
-                        View Full List
-                    </Button>
+                        <span className="px-5 py-2 rounded-full bg-secondary text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-secondary/20">
+                            {current.category}
+                        </span>
+                        <div className="h-px w-12 bg-white/20" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/60">
+                            Featured Milestone
+                        </span>
+                    </motion.div>
+
+                    <motion.h2
+                        key={`title-${currentIndex}`}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.3 }}
+                        className="text-4xl md:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tighter leading-[0.9]"
+                    >
+                        {current.title}
+                    </motion.h2>
+
+                    <motion.div
+                        key={`author-${currentIndex}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        className="flex items-center gap-5 mb-10"
+                    >
+                        <div className="h-16 w-16 rounded-[1.5rem] border border-white/10 p-1 backdrop-blur-md">
+                            <div className="h-full w-full rounded-2xl bg-white/5 flex items-center justify-center overflow-hidden relative">
+                                {current.user.profileImage ? (
+                                    <Image src={current.user.profileImage} alt={current.user.name || "User"} fill className="object-cover" />
+                                ) : (
+                                    <span className="text-white font-black text-xl">
+                                        {current.user.name?.charAt(0) || "U"}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                        <div>
+                            <p className="text-xl font-black text-white tracking-tight">{current.user.name || "Anonymous"}</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mt-1">
+                                {new Date(current.date).toLocaleDateString('en-IN', { dateStyle: 'long' })}
+                            </p>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        key={`cta-${currentIndex}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.5 }}
+                        className="flex flex-col sm:flex-row gap-4"
+                    >
+                        <Button
+                            onClick={() => document.getElementById('full-list')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="h-16 px-10 rounded-2xl bg-white text-slate-900 hover:bg-secondary hover:text-white font-black uppercase tracking-widest text-[10px] shadow-2xl transition-all active:scale-95 group/btn"
+                        >
+                            Explore Discovery
+                            <ChevronRight className="h-4 w-4 ml-3 group-hover/btn:translate-x-1 transition-transform" />
+                        </Button>
+                    </motion.div>
                 </div>
             </div>
 
             {/* Navigation Buttons */}
-            <button
-                onClick={prevSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-gold text-white hover:text-maroon p-3 rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 border border-white/20 hover:border-gold"
-            >
-                <ChevronLeft className="h-6 w-6" />
-            </button>
-            <button
-                onClick={nextSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-gold text-white hover:text-maroon p-3 rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 border border-white/20 hover:border-gold"
-            >
-                <ChevronRight className="h-6 w-6" />
-            </button>
+            <div className="absolute top-1/2 -translate-y-1/2 w-full px-6 flex justify-between pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                    onClick={prevSlide}
+                    variant="ghost"
+                    size="icon"
+                    className="h-16 w-16 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/10 text-white hover:bg-white hover:text-slate-900 pointer-events-auto transition-all shadow-2xl"
+                >
+                    <ChevronLeft className="h-8 w-8" />
+                </Button>
+                <Button
+                    onClick={nextSlide}
+                    variant="ghost"
+                    size="icon"
+                    className="h-16 w-16 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/10 text-white hover:bg-white hover:text-slate-900 pointer-events-auto transition-all shadow-2xl"
+                >
+                    <ChevronRight className="h-8 w-8" />
+                </Button>
+            </div>
 
-            {/* Pagination Dots */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+            {/* Progress Indicators */}
+            <div className="absolute bottom-10 left-10 md:left-auto md:right-20 flex gap-3">
                 {achievements.map((_, idx) => (
                     <button
                         key={idx}
                         onClick={() => setCurrentIndex(idx)}
-                        className={`transition-all duration-300 rounded-full h-2 ${idx === currentIndex ? "w-8 bg-gold" : "w-2 bg-white/50 hover:bg-white"
+                        className={`transition-all duration-700 h-1.5 rounded-full ${idx === currentIndex ? "w-12 bg-secondary" : "w-4 bg-white/20 hover:bg-white/40"
                             }`}
                     />
                 ))}

@@ -106,9 +106,9 @@ export default function ScholarshipDetailsPage() {
                     <div className="h-20 w-20 bg-gold/5 rounded-full flex items-center justify-center mb-6 border border-gold/10">
                         <GraduationCap className="h-10 w-10 text-gold/30" />
                     </div>
-                    <h2 className="text-2xl font-bold text-maroon font-serif">Scholarship Not Found</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 font-sans">Scholarship Not Found</h2>
                     <p className="text-muted-foreground mt-2 mb-8 max-w-md">The scholarship opportunity you are looking for might have expired or been removed.</p>
-                    <Button onClick={() => router.push("/career?tab=scholarships")} variant="outline" className="border-maroon text-maroon hover:bg-maroon/5">
+                    <Button onClick={() => router.push("/career?tab=scholarships")} variant="outline" className="border-secondary text-secondary hover:bg-secondary/5">
                         <ArrowLeft className="h-4 w-4 mr-2" /> Back to Scholarships
                     </Button>
                 </div>
@@ -134,7 +134,7 @@ export default function ScholarshipDetailsPage() {
                         This scholarship opportunity has been deleted by an administrator for violating community guidelines.
                     </p>
                     <Link href="/career?tab=scholarships">
-                        <Button className="bg-maroon text-gold hover:bg-maroon/90 px-8 h-12 text-lg">
+                        <Button className="bg-slate-900 text-white hover:bg-secondary hover:text-slate-900 px-8 h-12 text-lg">
                             Back to Hub
                         </Button>
                     </Link>
@@ -145,135 +145,144 @@ export default function ScholarshipDetailsPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
-            <Navbar />
+        <div className="min-h-screen flex flex-col bg-[#FAF9F6] relative overflow-hidden">
+            {/* Background decorative elements */}
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-3xl -mt-32 -mr-32 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-400/5 rounded-full blur-3xl -mb-32 -ml-32 pointer-events-none" />
 
-            <main className="flex-1 pb-24">
-                {/* Hero Header Section */}
-                <div className="bg-maroon text-gold pt-20 pb-32 relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-10 bg-[url('/bg-pattern.png')] bg-repeat" />
-                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gold/5 -skew-x-12 transform translate-x-1/4" />
+            <div className="relative z-10 flex flex-col min-h-screen">
+                <Navbar />
 
-                    <div className="container mx-auto px-4 relative max-w-6xl">
-                        <Link
-                            href="/career?tab=scholarships"
-                            className="inline-flex items-center text-gold/60 hover:text-gold mb-10 transition-all text-sm font-bold uppercase tracking-widest group"
-                        >
-                            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> All Scholarships
-                        </Link>
+                <main className="flex-1 pb-24">
+                    {/* Hero Header Section */}
+                    <div className="pt-16 pb-32 relative">
+                        <div className="container mx-auto px-4 relative max-w-7xl">
+                            <Link
+                                href="/career?tab=scholarships"
+                                className="inline-flex items-center text-slate-400 hover:text-slate-900 mb-10 transition-all text-[11px] font-black uppercase tracking-[0.2em] group"
+                            >
+                                <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Scholarships
+                            </Link>
 
-                        <div className="max-w-4xl">
-                            {isDeletedByAdmin && isAdmin && (
-                                <div className="mb-8 bg-red-600/90 text-white p-6 rounded-3xl flex items-center gap-4 border border-red-500 shadow-2xl backdrop-blur-sm">
-                                    <div className="h-12 w-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
-                                        <Shield className="h-6 w-6" />
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-lg">Post Deleted by Administrator</p>
-                                        <p className="text-sm opacity-90 text-white/80">This listing is currently hidden from the public feed due to policy violations.</p>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <Badge className="bg-gold/20 text-gold border-gold/30 px-4 py-1 rounded-full font-bold uppercase tracking-widest text-[10px]">
-                                            Scholarship Opportunity
-                                        </Badge>
-                                        <Badge className="bg-white/10 text-gold border-none px-4 py-1 rounded-full font-bold uppercase tracking-widest text-[10px]">
-                                            {scholarship.amount}
-                                        </Badge>
-                                    </div>
-                                    <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight tracking-tight">
-                                        {scholarship.title}
-                                    </h1>
-                                    <div className="flex flex-wrap items-center gap-8 text-gold/80 font-medium">
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center"><Calendar className="h-5 w-5" /></div>
-                                            <span className="text-lg">Deadline: {formatDate(scholarship.deadline)}</span>
+                            <div className="max-w-4xl">
+                                {isDeletedByAdmin && isAdmin && (
+                                    <div className="mb-12 bg-rose-50 border border-rose-100 p-6 rounded-[2rem] flex items-center gap-6 shadow-sm">
+                                        <div className="h-14 w-14 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-lg shadow-rose-500/20 shrink-0">
+                                            <Shield className="h-6 w-6" />
+                                        </div>
+                                        <div>
+                                            <p className="font-sans font-black text-rose-900 text-lg leading-none mb-1">Administrative Archives</p>
+                                            <p className="text-sm font-medium text-rose-600/80">This listing is currently hidden from public visibility due to compliance review.</p>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <ShareButton
-                                        url={`/career/scholarships/${scholarship.id}`}
-                                        title={scholarship.title}
-                                        variant="button"
-                                        className="bg-white/10 hover:bg-white/20 text-gold border-gold/20 rounded-2xl h-14 px-6 font-bold"
-                                        details={`🎓 *Scholarship: ${scholarship.title}*\nAmount: ${scholarship.amount}\nEligibility: ${scholarship.eligibility}\nDeadline: ${formatDate(scholarship.deadline)}\n\n${scholarship.description}`}
-                                    />
+                                )}
+
+                                <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
+                                    <div className="flex-1">
+                                        <div className="flex flex-wrap items-center gap-3 mb-8">
+                                            <Badge className="bg-secondary/10 text-secondary border-none px-4 py-1.5 rounded-full font-black uppercase tracking-widest text-[10px] shadow-sm shadow-secondary/5">
+                                                Educational Grant
+                                            </Badge>
+                                            <Badge className="bg-slate-100 text-slate-600 border-none px-4 py-1.5 rounded-full font-black uppercase tracking-widest text-[10px] shadow-sm">
+                                                {scholarship.amount}
+                                            </Badge>
+                                        </div>
+                                        <h1 className="text-5xl md:text-7xl font-sans font-black text-slate-900 mb-8 leading-[1.1] tracking-tight">
+                                            {scholarship.title}
+                                        </h1>
+                                        <div className="flex flex-wrap items-center gap-10">
+                                            <div className="flex items-center gap-4">
+                                                <div className="h-14 w-14 rounded-2xl bg-white shadow-xl shadow-slate-200/50 flex items-center justify-center border border-slate-50"><Calendar className="h-6 w-6 text-secondary" /></div>
+                                                <span className="text-lg font-bold text-slate-500">Deadline: {formatDate(scholarship.deadline)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <ShareButton
+                                            url={`/career/scholarships/${scholarship.id}`}
+                                            title={scholarship.title}
+                                            variant="button"
+                                            className="border-slate-200 text-slate-900 h-16 rounded-2xl w-full"
+                                            description={`🎓 *Scholarship: ${scholarship.title}*\nAmount: ${scholarship.amount}\nEligibility: ${scholarship.eligibility}\nDeadline: ${formatDate(scholarship.deadline)}\n\n${scholarship.description}`}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="container mx-auto px-4 -mt-20 relative z-10 max-w-6xl">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                        {/* Main Content */}
-                        <div className="lg:col-span-2 space-y-10">
-                            <Card className="border-none shadow-2xl shadow-gold/10 bg-white rounded-[3rem] overflow-hidden">
-                                <CardContent className="p-10 md:p-14">
-                                    <div className="flex items-center gap-4 mb-10">
-                                        <h2 className="text-3xl font-serif font-bold text-gray-900">Eligibility & Requirements</h2>
-                                        <div className="h-px flex-1 bg-gold/10" />
-                                    </div>
-
-                                    <div className="bg-gray-50 border border-gold/5 rounded-[2rem] p-8 text-gray-700 leading-relaxed font-bold italic text-xl shadow-inner mb-12">
-                                        {scholarship.eligibility}
-                                    </div>
-
-                                    <div className="flex items-center gap-4 mb-10 mt-16">
-                                        <h2 className="text-3xl font-serif font-bold text-gray-900">Detailed Information</h2>
-                                        <div className="h-px flex-1 bg-gold/10" />
-                                    </div>
-
-                                    <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed whitespace-pre-line text-lg font-medium italic">
-                                        {scholarship.description}
-                                    </div>
-
-                                    {isOwner && (
-                                        <div className="mt-16 pt-10 border-t border-gold/10 flex flex-wrap gap-4">
-                                            <Button
-                                                onClick={() => router.push(`/career/scholarships/${scholarship.id}/edit`)}
-                                                className="bg-maroon text-gold hover:bg-maroon/90 rounded-2xl h-14 px-8 font-bold shadow-lg shadow-maroon/20"
-                                            >
-                                                <Edit className="h-5 w-5 mr-2" /> Edit Scholarship
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                className="border-red-100 text-red-600 hover:bg-red-50 rounded-2xl h-14 px-8 font-bold"
-                                                onClick={handleDelete}
-                                                disabled={isDeleting}
-                                            >
-                                                {isDeleting ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Trash2 className="h-5 w-5 mr-2" />}
-                                                Remove Post
-                                            </Button>
+                    <div className="container mx-auto px-4 -mt-16 relative z-10 max-w-7xl">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                            {/* Main Content */}
+                            <div className="lg:col-span-2 space-y-12">
+                                <Card className="border-transparent shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] bg-white rounded-[2.5rem] overflow-hidden border border-slate-50">
+                                    <CardContent className="p-10 md:p-16">
+                                        <div className="flex items-center gap-6 mb-12">
+                                            <h2 className="text-2xl font-sans font-black text-slate-900 uppercase tracking-widest">Candidate Profile</h2>
+                                            <div className="h-1 flex-1 bg-slate-50 rounded-full" />
                                         </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </div>
 
-                        {/* Sidebar */}
-                        <div className="space-y-8">
-                            <Card className="border-none shadow-2xl shadow-gold/10 bg-white rounded-[3rem] sticky top-24">
-                                <CardContent className="p-10">
-                                    <h3 className="text-xl font-bold text-maroon mb-10 text-center uppercase tracking-widest">Action Center</h3>
-
-                                    <div className="space-y-8">
-                                        <div className="text-center p-8 bg-maroon text-gold rounded-[2.5rem] relative overflow-hidden shadow-2xl shadow-maroon/20">
-                                            <div className="absolute inset-0 opacity-10 bg-[url('/bg-pattern.png')] bg-repeat" />
+                                        <div className="bg-slate-50 border border-slate-100/50 rounded-[2.5rem] p-10 text-slate-700 leading-relaxed font-black italic text-2xl shadow-sm mb-16 relative overflow-hidden group">
+                                            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+                                                <Info className="h-20 w-20" />
+                                            </div>
                                             <div className="relative z-10">
-                                                <p className="text-sm mb-8 leading-relaxed italic font-medium">
+                                                {scholarship.eligibility}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-6 mb-12 mt-16">
+                                            <h2 className="text-2xl font-sans font-black text-slate-900 uppercase tracking-widest">Program Details</h2>
+                                            <div className="h-1 flex-1 bg-slate-50 rounded-full" />
+                                        </div>
+
+                                        <div className="prose prose-lg max-w-none text-slate-600 leading-relaxed whitespace-pre-line text-lg font-medium italic mb-16">
+                                            {scholarship.description}
+                                        </div>
+
+                                        {isOwner && (
+                                            <div className="pt-12 border-t border-slate-50 flex flex-wrap gap-4">
+                                                <Button
+                                                    onClick={() => router.push(`/career/scholarships/${scholarship.id}/edit`)}
+                                                    className="bg-slate-900 text-white hover:bg-slate-800 rounded-2xl h-14 px-10 font-black shadow-xl shadow-slate-900/10 transition-all"
+                                                >
+                                                    <Edit className="h-5 w-5 mr-3" /> Update Program
+                                                </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    className="border-rose-100 text-rose-500 hover:bg-rose-50 rounded-2xl h-14 px-10 font-black transition-all"
+                                                    onClick={handleDelete}
+                                                    disabled={isDeleting}
+                                                >
+                                                    {isDeleting ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : <Trash2 className="h-5 w-5 mr-3" />}
+                                                    Archive Grant
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            {/* Sidebar */}
+                            <div className="space-y-10">
+                                <Card className="border-transparent shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] bg-white rounded-[2.5rem] sticky top-24 border border-slate-50">
+                                    <CardContent className="p-10">
+                                        <div className="text-center mb-12">
+                                            <Badge className="bg-slate-900 text-white border-none px-6 py-2 rounded-full font-black uppercase tracking-[0.3em] text-[10px] shadow-xl shadow-slate-900/20 mb-4">
+                                                Grant Access
+                                            </Badge>
+                                        </div>
+
+                                        <div className="space-y-10">
+                                            <div className="text-center p-10 bg-slate-50 rounded-[2.5rem] border border-white">
+                                                <p className="text-slate-500 mb-10 leading-relaxed italic font-bold text-sm px-4">
                                                     "Empowering the youth through education is the greatest service to the community."
                                                 </p>
 
                                                 {scholarship.link ? (
-                                                    <div className="space-y-4">
+                                                    <div className="space-y-6">
                                                         <Button
-                                                            className="w-full bg-gold text-maroon hover:bg-gold/90 font-bold h-14 rounded-2xl shadow-lg"
+                                                            className="w-full bg-slate-900 text-white hover:bg-secondary hover:text-slate-900 font-black h-16 rounded-2xl transition-all shadow-xl shadow-slate-900/10"
                                                             onClick={() => {
                                                                 if (user?.role !== 'admin' && user?.status !== 'approved') {
                                                                     toast.error("Action Restricted", {
@@ -284,16 +293,16 @@ export default function ScholarshipDetailsPage() {
                                                                 window.open(scholarship.link!, '_blank')
                                                             }}
                                                         >
-                                                            Portal Application <ExternalLink className="h-4 w-4 ml-2" />
+                                                            Access Application <ExternalLink className="h-4 w-4 ml-3" />
                                                         </Button>
-                                                        <p className="text-[10px] text-gold/50 font-bold uppercase tracking-widest">
-                                                            External Link Verification
+                                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">
+                                                            External Gateway Secured
                                                         </p>
                                                     </div>
                                                 ) : (
-                                                    <div className="space-y-4">
+                                                    <div className="space-y-6">
                                                         <Button
-                                                            className="w-full bg-gold text-maroon hover:bg-gold/90 font-bold h-14 rounded-2xl shadow-lg"
+                                                            className="w-full bg-slate-900 text-white hover:bg-black font-black h-16 rounded-2xl shadow-xl shadow-slate-900/10 transition-all"
                                                             onClick={() => {
                                                                 if (user?.role !== 'admin' && user?.status !== 'approved') {
                                                                     toast.error("Action Restricted", {
@@ -306,51 +315,51 @@ export default function ScholarshipDetailsPage() {
                                                                 window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(to)}&su=${subject}`, '_blank');
                                                             }}
                                                         >
-                                                            Contact Provider
+                                                            Contact Administrator
                                                         </Button>
-                                                        <p className="text-[10px] text-gold/50 font-bold uppercase tracking-widest">
-                                                            Direct Inquiry Only
+                                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">
+                                                            Direct Internal Inquiry
                                                         </p>
                                                     </div>
                                                 )}
                                             </div>
-                                        </div>
 
-                                        <Separator className="bg-gold/10 my-10" />
+                                            <Separator className="bg-slate-50 mt-10" />
 
-                                        <div className="space-y-4">
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-6 text-center">Benefit Steward</p>
-                                            <Link href={`/members/${scholarship.posterId}`}>
-                                                <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl hover:bg-gold/5 transition-all group border border-transparent hover:border-gold/10">
-                                                    <div className="h-12 w-12 rounded-2xl bg-maroon/5 flex items-center justify-center text-maroon font-serif font-bold text-xl shrink-0 group-hover:bg-maroon group-hover:text-gold transition-colors">
-                                                        {scholarship.poster?.name?.charAt(0) || "S"}
+                                            <div className="pt-6">
+                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8 text-center">Benefit Steward</p>
+                                                <Link href={`/members/${scholarship.posterId}`}>
+                                                    <div className="flex items-center gap-5 bg-slate-50 p-6 rounded-2xl hover:bg-slate-900 hover:text-white transition-all duration-500 group border border-white">
+                                                        <div className="h-16 w-16 rounded-2xl bg-white flex items-center justify-center text-slate-900 font-sans font-black text-2xl shrink-0 group-hover:bg-white/10 group-hover:text-white transition-all duration-500 shadow-xl shadow-slate-200/50">
+                                                            {scholarship.poster?.name?.charAt(0) || "S"}
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <p className="text-lg font-black truncate leading-tight group-hover:text-white mb-1">{scholarship.poster?.name || "Member"}</p>
+                                                            <p className="text-[10px] text-secondary font-black uppercase tracking-[0.2em] group-hover:text-white/80">Grant Coordinator</p>
+                                                        </div>
                                                     </div>
-                                                    <div className="min-w-0">
-                                                        <p className="text-base font-bold text-gray-800 truncate leading-none mb-1">{scholarship.poster?.name || "Anonymous Member"}</p>
-                                                        <p className="text-[10px] text-gold font-bold uppercase tracking-widest">Chartered Member</p>
-                                                    </div>
-                                                </div>
-                                            </Link>
+                                                </Link>
+                                            </div>
                                         </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                    </CardContent>
+                                </Card>
 
-                            <Card className="border-none shadow-xl shadow-gold/5 bg-white rounded-[2.5rem]">
-                                <CardContent className="p-8 text-center italic text-gray-400 text-xs">
-                                    <div className="flex items-center justify-center gap-2 mb-2">
-                                        <Shield className="h-4 w-4 text-green-600/40" />
-                                        <p className="font-bold uppercase tracking-widest">Verified Opportunity</p>
-                                    </div>
-                                    <p>Community moderated scholarship program.</p>
-                                </CardContent>
-                            </Card>
+                                <Card className="border-transparent shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] bg-white rounded-[2.5rem] border border-slate-50">
+                                    <CardContent className="p-10 text-center">
+                                        <div className="flex items-center justify-center gap-4 mb-3">
+                                            <Shield className="h-6 w-6 text-emerald-500" />
+                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900">Authentic Program</p>
+                                        </div>
+                                        <p className="text-xs font-bold text-slate-500 leading-relaxed">Community moderated and verified educational opportunity.</p>
+                                    </CardContent>
+                                </Card>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </main>
+                </main>
 
-            <Footer />
+                <Footer />
+            </div>
         </div>
     )
 }

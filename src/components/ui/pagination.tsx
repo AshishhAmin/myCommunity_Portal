@@ -59,28 +59,26 @@ export function Pagination({
             variant={currentPage === page ? "primary" : "outline"}
             size="sm"
             className={cn(
-                "h-9 w-9 p-0",
+                "h-9 min-w-9 px-2 rounded-lg font-black text-xs uppercase transition-all",
                 currentPage === page
-                    ? "bg-maroon text-gold hover:bg-maroon/90 border-maroon"
-                    : "text-maroon border-gold/30 hover:bg-gold/10 hover:text-maroon"
+                    ? "bg-slate-900 text-secondary shadow-lg shadow-slate-200"
+                    : "text-slate-500 border border-slate-100 hover:bg-slate-50 hover:text-slate-900"
             )}
             onClick={() => onPageChange(page)}
         >
             {page}
         </Button>
     )
-
     return (
         <div className={cn("flex items-center justify-center gap-2 mt-8", className)}>
             <Button
                 variant="outline"
                 size="sm"
-                className="h-9 w-9 p-0 text-maroon border-gold/30 hover:bg-gold/10 hover:text-maroon disabled:opacity-50"
+                className="h-9 px-3 rounded-lg text-slate-900 border border-slate-100 hover:bg-slate-50 font-black uppercase tracking-widest text-[10px] disabled:opacity-30 transition-all"
                 onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
             >
-                <ChevronLeft className="h-4 w-4" />
-                <span className="sr-only">Previous Page</span>
+                Prev
             </Button>
 
             <div className="flex items-center gap-1">
@@ -90,12 +88,11 @@ export function Pagination({
             <Button
                 variant="outline"
                 size="sm"
-                className="h-9 w-9 p-0 text-maroon border-gold/30 hover:bg-gold/10 hover:text-maroon disabled:opacity-50"
+                className="h-9 px-3 rounded-lg text-slate-900 border border-slate-100 hover:bg-slate-50 font-black uppercase tracking-widest text-[10px] disabled:opacity-30 transition-all"
                 onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
             >
-                <ChevronRight className="h-4 w-4" />
-                <span className="sr-only">Next Page</span>
+                Next
             </Button>
         </div>
     )

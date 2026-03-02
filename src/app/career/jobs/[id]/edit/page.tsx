@@ -125,12 +125,12 @@ export default function EditJobPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
                 <div className="flex-1 flex items-center justify-center">
                     <div className="text-center space-y-4">
-                        <Loader2 className="h-12 w-12 animate-spin text-maroon mx-auto" />
-                        <p className="text-maroon font-serif italic text-lg opacity-60">Preparing your listing...</p>
+                        <Loader2 className="h-12 w-12 animate-spin text-secondary mx-auto" />
+                        <p className="text-secondary font-sans italic text-lg opacity-60">Preparing your listing...</p>
                     </div>
                 </div>
                 <Footer />
@@ -140,12 +140,12 @@ export default function EditJobPage() {
 
     return (
         <AuthGuard allowedRoles={["member", "admin"]}>
-            <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
 
                 <main className="flex-1 pb-24">
                     <div className="container mx-auto px-4 py-8 max-w-4xl">
-                        <Link href={`/career/jobs/${id}`} className="inline-flex items-center text-maroon/60 hover:text-maroon mb-6 transition-all text-sm font-bold uppercase tracking-widest group">
+                        <Link href={`/career/jobs/${id}`} className="inline-flex items-center text-slate-400 hover:text-slate-900 mb-6 transition-all text-sm font-bold uppercase tracking-widest group">
                             <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Job Details
                         </Link>
                         <div className="mb-10">
@@ -157,7 +157,7 @@ export default function EditJobPage() {
                     </div>
 
                     <div className="container mx-auto px-4 max-w-3xl relative z-10">
-                        <Card className="border border-gold/10 shadow-xl shadow-gold/5 bg-white rounded-2xl overflow-hidden">
+                        <Card className="border-transparent shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] bg-white rounded-[3rem] overflow-hidden border border-slate-50">
                             <CardContent className="p-8 md:p-10">
                                 <form onSubmit={handleSubmit} className="space-y-8">
                                     {error && (
@@ -170,7 +170,7 @@ export default function EditJobPage() {
                                     )}
 
                                     <div className="space-y-6">
-                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gold mb-8 border-b border-gold/10 pb-4">Job Particulars</h3>
+                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary mb-8 border-b border-slate-50 pb-4">Job Particulars</h3>
 
                                         <div className="grid gap-6">
                                             <div className="space-y-2">
@@ -180,7 +180,7 @@ export default function EditJobPage() {
                                                     value={formData.title}
                                                     onChange={handleChange}
                                                     placeholder="e.g. Senior React Developer"
-                                                    className={`h-12 rounded-xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.title ? 'border-red-500' : ''}`}
+                                                    className={`h-12 rounded-xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium ${errors.title ? 'border-red-500' : ''}`}
                                                 />
                                                 {errors.title && <p className="text-red-500 text-xs font-bold pl-2">{errors.title}</p>}
                                             </div>
@@ -192,7 +192,7 @@ export default function EditJobPage() {
                                                     value={formData.company}
                                                     onChange={handleChange}
                                                     placeholder="e.g. Acme Tech Solutions"
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.company ? 'border-red-500' : ''}`}
+                                                    className={`h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium ${errors.company ? 'border-red-500' : ''}`}
                                                 />
                                                 {errors.company && <p className="text-red-500 text-xs font-bold pl-2">{errors.company}</p>}
                                             </div>
@@ -206,7 +206,7 @@ export default function EditJobPage() {
                                                     value={formData.location}
                                                     onChange={handleChange}
                                                     placeholder="e.g. Bangalore"
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.location ? 'border-red-500' : ''}`}
+                                                    className={`h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium ${errors.location ? 'border-red-500' : ''}`}
                                                 />
                                                 {errors.location && <p className="text-red-500 text-xs font-bold pl-2">{errors.location}</p>}
                                             </div>
@@ -216,7 +216,7 @@ export default function EditJobPage() {
                                                     name="type"
                                                     value={formData.type}
                                                     onChange={handleChange}
-                                                    className="w-full h-14 rounded-2xl border border-gray-100 bg-gray-50 px-6 font-medium text-sm focus:bg-white focus:ring-2 focus:ring-maroon/20 focus:outline-none transition-all appearance-none cursor-pointer"
+                                                    className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50 px-6 font-medium text-sm focus:bg-white focus:ring-2 focus:ring-secondary/20 focus:outline-none transition-all appearance-none cursor-pointer"
                                                 >
                                                     <option>Full-time</option>
                                                     <option>Part-time</option>
@@ -234,7 +234,7 @@ export default function EditJobPage() {
                                                     value={formData.salary}
                                                     onChange={handleChange}
                                                     placeholder="e.g. ₹5L-8L per annum"
-                                                    className="h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium"
+                                                    className="h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -244,7 +244,7 @@ export default function EditJobPage() {
                                                     type="date"
                                                     value={formData.deadline}
                                                     onChange={handleChange}
-                                                    className="h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium"
+                                                    className="h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium"
                                                 />
                                             </div>
                                         </div>
@@ -256,7 +256,7 @@ export default function EditJobPage() {
                                                 value={formData.description}
                                                 onChange={handleChange}
                                                 rows={8}
-                                                className={`w-full rounded-xl border ${errors.description ? 'border-red-500' : 'border-gray-100'} bg-gray-50 px-6 py-4 text-sm focus:bg-white focus:ring-2 focus:ring-maroon/20 focus:outline-none transition-all font-medium leading-relaxed`}
+                                                className={`w-full rounded-xl border ${errors.description ? 'border-red-500' : 'border-slate-100'} bg-slate-50 px-6 py-4 text-sm focus:bg-white focus:ring-2 focus:ring-secondary/20 focus:outline-none transition-all font-medium leading-relaxed`}
                                                 placeholder="Specify roles, responsibilities, and benefits..."
                                             />
                                             {errors.description && <p className="text-red-500 text-xs font-bold pl-2">{errors.description}</p>}
@@ -264,7 +264,7 @@ export default function EditJobPage() {
                                     </div>
 
                                     <div className="space-y-6 pt-6">
-                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gold mb-8 border-b border-gold/10 pb-4">Point of Contact</h3>
+                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary mb-8 border-b border-slate-50 pb-4">Point of Contact</h3>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
@@ -275,7 +275,7 @@ export default function EditJobPage() {
                                                     value={formData.contactEmail}
                                                     onChange={handleChange}
                                                     placeholder="hr@company.com"
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.contactEmail ? 'border-red-500' : ''}`}
+                                                    className={`h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium ${errors.contactEmail ? 'border-red-500' : ''}`}
                                                 />
                                                 {errors.contactEmail && <p className="text-red-500 text-xs font-bold pl-2">{errors.contactEmail}</p>}
                                             </div>
@@ -286,7 +286,7 @@ export default function EditJobPage() {
                                                     value={formData.contactPhone}
                                                     onChange={handleChange}
                                                     placeholder="+91 98765 43210"
-                                                    className={`h-14 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-maroon/20 focus:border-maroon transition-all px-6 font-medium ${errors.contactPhone ? 'border-red-500' : ''}`}
+                                                    className={`h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-6 font-medium ${errors.contactPhone ? 'border-red-500' : ''}`}
                                                 />
                                                 {errors.contactPhone && <p className="text-red-500 text-xs font-bold pl-2">{errors.contactPhone}</p>}
                                             </div>
@@ -297,9 +297,9 @@ export default function EditJobPage() {
                                         <Button
                                             type="submit"
                                             disabled={saving}
-                                            className="w-full bg-maroon text-gold hover:bg-maroon/90 h-14 rounded-xl font-bold text-lg shadow-lg shadow-maroon/10 transition-all active:scale-95"
+                                            className="w-full bg-slate-900 text-white hover:bg-secondary hover:text-slate-900 h-20 rounded-[2rem] font-black text-xl shadow-2xl shadow-slate-900/10 transition-all active:scale-[0.98]"
                                         >
-                                            {saving ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : null}
+                                            {saving ? <Loader2 className="h-6 w-6 animate-spin mr-4" /> : null}
                                             {saving ? "Saving Changes..." : "Commit Updates"}
                                         </Button>
                                     </div>

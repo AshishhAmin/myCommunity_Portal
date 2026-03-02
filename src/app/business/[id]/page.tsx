@@ -70,10 +70,10 @@ export default function BusinessDetailsPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
                 <div className="flex-1 flex justify-center items-center">
-                    <Loader2 className="h-10 w-10 animate-spin text-maroon" />
+                    <Loader2 className="h-10 w-10 animate-spin text-secondary" />
                 </div>
                 <Footer />
             </div>
@@ -82,12 +82,12 @@ export default function BusinessDetailsPage() {
 
     if (error || !business) {
         return (
-            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
                 <div className="flex-1 flex flex-col items-center justify-center">
-                    <h2 className="text-2xl font-bold text-maroon">Business Not Found</h2>
+                    <h2 className="text-2xl font-bold text-slate-900">Business Not Found</h2>
                     <p className="text-muted-foreground mt-2 mb-4">The business you are looking for does not exist or has been removed.</p>
-                    <Button onClick={() => router.push("/business")} variant="outline">
+                    <Button onClick={() => router.push("/business")} variant="outline" className="border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl">
                         Return to Directory
                     </Button>
                 </div>
@@ -98,18 +98,18 @@ export default function BusinessDetailsPage() {
 
     if (isDeletedByAdmin && !isAdmin) {
         return (
-            <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
                 <div className="flex-1 container mx-auto px-4 py-20 flex flex-col items-center justify-center text-center">
-                    <div className="bg-red-50 p-6 rounded-full mb-6 border border-red-100 shadow-sm">
-                        <Shield className="h-16 w-16 text-red-600/40" />
+                    <div className="bg-slate-100 p-6 rounded-[2.5rem] mb-6 border border-slate-200/50 shadow-sm">
+                        <Shield className="h-16 w-16 text-slate-400" />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-red-900/80 mb-4">Listing Unavailable</h1>
-                    <p className="text-xl text-red-700/60 max-w-2xl mb-8 leading-relaxed">
+                    <h1 className="text-4xl md:text-5xl font-sans font-black text-slate-900 mb-4 tracking-tight">Listing Unavailable</h1>
+                    <p className="text-xl text-slate-500 italic max-w-2xl mb-12 leading-relaxed">
                         This business listing has been deleted by an administrator for violating community guidelines.
                     </p>
                     <Link href="/business">
-                        <Button className="bg-maroon text-gold hover:bg-maroon/90 px-8 h-12 text-lg rounded-xl">
+                        <Button className="bg-slate-900 text-white hover:bg-secondary hover:text-slate-900 px-10 h-16 text-lg rounded-[1.5rem] font-bold shadow-xl transition-all">
                             Back to Directory
                         </Button>
                     </Link>
@@ -127,8 +127,8 @@ export default function BusinessDetailsPage() {
                 <div className="container mx-auto px-4 max-w-6xl">
 
                     {/* Back Button */}
-                    <Link href="/business" className="inline-flex items-center text-gray-500 hover:text-maroon transition-colors mb-6 font-medium">
-                        <ArrowLeft className="h-4 w-4 mr-2" /> Back to Directory
+                    <Link href="/business" className="inline-flex items-center text-slate-400 hover:text-slate-900 transition-colors mb-6 font-black uppercase tracking-[0.2em] text-[10px] group">
+                        <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Directory
                     </Link>
 
                     <div className="grid lg:grid-cols-3 gap-8">
@@ -136,7 +136,7 @@ export default function BusinessDetailsPage() {
                         <div className="lg:col-span-2 space-y-8">
 
                             {/* Image Gallery Header */}
-                            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] rounded-3xl overflow-hidden bg-gray-100 shadow-sm border border-gold/20 group">
+                            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] rounded-[3rem] overflow-hidden bg-slate-100 shadow-sm border border-slate-50 group">
                                 <Image
                                     src={business.images && business.images.length > 0 ? business.images[activeImage] : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200'}
                                     alt={business.name}
@@ -154,7 +154,7 @@ export default function BusinessDetailsPage() {
 
                                 {/* Tags overlay */}
                                 <div className="absolute top-4 right-4 flex gap-2">
-                                    <Badge className="bg-white/90 text-maroon hover:bg-white backdrop-blur-md shadow-lg text-sm px-3 py-1">
+                                    <Badge className="bg-white/90 text-slate-900 hover:bg-white backdrop-blur-md shadow-lg text-xs font-bold px-4 py-1.5 rounded-full">
                                         {business.category}
                                     </Badge>
                                     {business.status === 'approved' && (
@@ -172,7 +172,7 @@ export default function BusinessDetailsPage() {
                                         <button
                                             key={idx}
                                             onClick={() => setActiveImage(idx)}
-                                            className={`relative h-20 w-28 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all ${activeImage === idx ? 'border-maroon ring-2 ring-maroon/20 ring-offset-2' : 'border-transparent hover:border-gray-300'
+                                            className={`relative h-20 w-28 rounded-2xl overflow-hidden flex-shrink-0 border-4 transition-all ${activeImage === idx ? 'border-secondary' : 'border-transparent hover:border-slate-200'
                                                 }`}
                                         >
                                             <Image src={img} alt={`Thumb ${idx}`} fill className="object-cover" />
@@ -184,7 +184,7 @@ export default function BusinessDetailsPage() {
                             {/* Title & Basics */}
                             <div>
                                 <div className="flex justify-between items-start gap-4 mb-4">
-                                    <h1 className="text-3xl sm:text-4xl font-serif font-bold text-gray-900 leading-tight">
+                                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-sans font-black text-slate-900 leading-none tracking-tight">
                                         {business.name}
                                     </h1>
                                     <div className="flex items-center gap-2">
@@ -194,7 +194,7 @@ export default function BusinessDetailsPage() {
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        className="shrink-0 h-10 border-gold text-maroon hover:bg-gold hover:text-white px-4 rounded-xl"
+                                                        className="shrink-0 h-10 border-slate-200 text-slate-600 hover:bg-slate-50 px-4 rounded-xl font-bold"
                                                     >
                                                         <Edit className="h-4 w-4 mr-2" /> Edit
                                                     </Button>
@@ -231,25 +231,25 @@ export default function BusinessDetailsPage() {
                                             title={business.name}
                                             variant="button"
                                             size="sm"
-                                            className="rounded-xl shrink-0 h-10 px-4 bg-gold/10 text-maroon hover:bg-gold/20"
-                                            details={`🏢 *${business.name}*\nCategory: ${business.category}\nLocation: ${business.city || 'India'}\n\n${business.description}`}
+                                            className="rounded-xl shrink-0 h-10 px-4 bg-slate-900 text-white hover:bg-secondary hover:text-slate-900 border-none font-bold"
+                                            description={`🏢 *${business.name}*\nCategory: ${business.category}\nLocation: ${business.city || 'India'}\n\n${business.description}`}
                                         />
                                     </div>
                                 </div>
 
                                 <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-gray-600 font-medium">
                                     <div className="flex items-center">
-                                        <MapPin className="h-5 w-5 mr-2 text-maroon" />
+                                        <MapPin className="h-5 w-5 mr-3 text-secondary" />
                                         {business.address ? `${business.address}, ` : ''}{business.city || "India"}
                                     </div>
                                 </div>
                             </div>
 
-                            <Separator className="bg-gold/20" />
+                            <Separator className="bg-slate-100" />
 
                             {/* Description */}
                             <div>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-4">About the Business</h2>
+                                <h2 className="text-2xl font-black text-slate-900 mb-6 uppercase tracking-wider">About the Enterprise</h2>
                                 <div className="prose prose-gray max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap text-lg">
                                     {business.description}
                                 </div>
@@ -261,35 +261,35 @@ export default function BusinessDetailsPage() {
                             <div className="sticky top-24 space-y-6">
 
                                 {/* Contact Card */}
-                                <Card className="border-gold/20 shadow-xl shadow-gold/5 bg-white overflow-hidden rounded-3xl">
-                                    <div className="bg-maroon p-6 text-white text-center relative overflow-hidden">
+                                <Card className="border-transparent shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] bg-white overflow-hidden rounded-[3rem] border border-slate-50">
+                                    <div className="bg-slate-900 p-8 text-white text-center relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-4 opacity-10"><Building2 className="h-24 w-24" /></div>
-                                        <p className="text-maroon-100 text-sm font-semibold uppercase tracking-wider mb-2 relative z-10">Business Category</p>
-                                        <h3 className="text-3xl font-bold relative z-10">{business.category}</h3>
+                                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mb-3 relative z-10">Business Category</p>
+                                        <h3 className="text-2xl font-sans font-black relative z-10">{business.category}</h3>
                                     </div>
 
                                     <CardContent className="p-6">
                                         <h4 className="font-bold text-gray-900 mb-4">Contact Person</h4>
 
                                         <div className="flex items-center gap-4 mb-6 p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                                            <div className="h-14 w-14 rounded-full bg-maroon/10 text-maroon flex items-center justify-center font-bold text-xl shrink-0">
+                                            <div className="h-14 w-14 rounded-2xl bg-slate-100 text-slate-900 flex items-center justify-center font-black text-xl shrink-0 border border-slate-200/50">
                                                 {business.owner?.name?.[0] || 'B'}
                                             </div>
                                             <div>
-                                                <p className="font-bold text-gray-900">{business.owner?.name || "Business Owner"}</p>
-                                                <p className="text-xs text-gray-500 font-medium">Community Member</p>
+                                                <p className="font-black text-slate-900">{business.owner?.name || "Business Owner"}</p>
+                                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Community Member</p>
                                             </div>
                                         </div>
 
                                         {!isAuthenticated ? (
-                                            <div className="text-center p-6 bg-orange-50 border border-orange-100 rounded-2xl">
-                                                <ShieldCheck className="h-10 w-10 text-orange-400 mx-auto mb-3" />
-                                                <h4 className="font-bold text-gray-900 mb-2">Contact Details Hidden</h4>
-                                                <p className="text-sm text-gray-600 mb-4 text-center">
+                                            <div className="text-center p-8 bg-slate-50 border border-slate-100 rounded-[2rem]">
+                                                <ShieldCheck className="h-12 w-12 text-secondary mx-auto mb-4" />
+                                                <h4 className="font-black text-slate-900 mb-2 uppercase tracking-tight">Access Restricted</h4>
+                                                <p className="text-sm text-slate-500 mb-8 text-center italic font-medium leading-relaxed">
                                                     For the safety of our members, contact information is only visible to logged-in community members.
                                                 </p>
                                                 <Link href="/login" className="w-full">
-                                                    <Button className="w-full bg-maroon hover:bg-maroon/90 text-white rounded-full">
+                                                    <Button className="w-full bg-slate-900 hover:bg-secondary hover:text-slate-900 text-white rounded-2xl h-14 font-black shadow-lg">
                                                         Login to View Details
                                                     </Button>
                                                 </Link>
@@ -309,13 +309,13 @@ export default function BusinessDetailsPage() {
                                                 )}
 
                                                 {business.owner?.email && (
-                                                    <div className="flex items-center gap-3 p-4 border border-gray-100 rounded-2xl bg-white hover:border-gold/30 transition-colors">
-                                                        <div className="h-10 w-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-full shrink-0">
+                                                    <div className="flex items-center gap-4 p-4 border border-slate-100 rounded-2xl bg-slate-50/50 hover:bg-white transition-all cursor-default">
+                                                        <div className="h-11 w-11 flex items-center justify-center bg-white text-slate-400 rounded-xl shrink-0 shadow-sm border border-slate-100">
                                                             <Mail className="h-5 w-5" />
                                                         </div>
                                                         <div className="overflow-hidden">
-                                                            <p className="text-xs text-gray-500 font-medium">Email Address</p>
-                                                            <p className="font-bold text-gray-900 truncate">{business.owner.email}</p>
+                                                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Email Address</p>
+                                                            <p className="font-bold text-slate-700 truncate">{business.owner.email}</p>
                                                         </div>
                                                     </div>
                                                 )}

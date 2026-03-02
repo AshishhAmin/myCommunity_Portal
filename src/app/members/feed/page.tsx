@@ -80,34 +80,34 @@ export default function FeedPage() {
 
     return (
         <AuthGuard allowedRoles={["member", "admin"]}>
-            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
                 <main className="flex-1 container mx-auto px-4 py-8 max-w-2xl">
-                    <Button variant="ghost" onClick={() => router.push('/members')} className="mb-6 hover:bg-transparent hover:text-maroon pl-0">
+                    <Button variant="ghost" onClick={() => router.push('/members')} className="mb-6 hover:bg-transparent hover:text-secondary pl-0 font-black uppercase tracking-widest text-xs">
                         <ArrowLeft className="h-4 w-4 mr-2" /> Member Directory
                     </Button>
 
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="h-10 w-10 rounded-full bg-maroon flex items-center justify-center">
-                            <Rss className="h-5 w-5 text-gold" />
+                    <div className="flex items-center gap-4 mb-10 bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50">
+                        <div className="h-14 w-14 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-200">
+                            <Rss className="h-6 w-6 text-secondary" />
                         </div>
                         <div>
-                            <h1 className="font-serif text-2xl font-bold text-maroon">My Feed</h1>
-                            <p className="text-sm text-muted-foreground">Latest activity from people you follow.</p>
+                            <h1 className="font-black text-3xl text-slate-900 tracking-tight uppercase">My Feed</h1>
+                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Latest activity from people you follow</p>
                         </div>
                     </div>
 
                     {loading ? (
                         <div className="flex justify-center py-20">
-                            <Loader2 className="h-10 w-10 animate-spin text-maroon" />
+                            <Loader2 className="h-10 w-10 animate-spin text-secondary" />
                         </div>
                     ) : feed.length === 0 ? (
-                        <Card className="bg-white/80">
-                            <CardContent className="py-16 text-center">
-                                <Rss className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
-                                <p className="text-muted-foreground">{emptyMessage || "No activity yet."}</p>
+                        <Card className="bg-white rounded-[2.5rem] border-slate-100 shadow-xl">
+                            <CardContent className="py-20 text-center">
+                                <Rss className="h-16 w-16 mx-auto text-slate-100 mb-6" />
+                                <p className="text-slate-500 font-black uppercase tracking-widest text-xs mb-8">{emptyMessage || "No activity yet."}</p>
                                 <Link href="/members">
-                                    <Button className="mt-4 bg-maroon text-gold hover:bg-maroon/90">
+                                    <Button className="h-14 px-10 bg-slate-900 hover:bg-secondary text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-slate-200">
                                         Discover Members
                                     </Button>
                                 </Link>
@@ -130,18 +130,18 @@ export default function FeedPage() {
                                                     </div>
                                                     {link ? (
                                                         <Link href={link}>
-                                                            <h3 className="font-bold text-maroon hover:underline">{item.title}</h3>
+                                                            <h3 className="font-black text-slate-900 hover:text-secondary transition-colors text-lg tracking-tight">{item.title}</h3>
                                                         </Link>
                                                     ) : (
-                                                        <h3 className="font-bold text-maroon">{item.title}</h3>
+                                                        <h3 className="font-black text-slate-900 text-lg tracking-tight">{item.title}</h3>
                                                     )}
-                                                    <p className="text-sm text-muted-foreground">{item.subtitle}</p>
-                                                    <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                                                        <Link href={`/members/${item.user.id}`} className="font-medium text-maroon hover:underline">
+                                                    <p className="text-slate-500 font-bold mt-1">{item.subtitle}</p>
+                                                    <div className="flex items-center gap-3 mt-4 text-[10px] font-black uppercase tracking-widest">
+                                                        <Link href={`/members/${item.user.id}`} className="text-secondary hover:text-slate-900 transition-colors">
                                                             {item.user.name || item.user.email}
                                                         </Link>
-                                                        <span>•</span>
-                                                        <span>{formatDate(item.createdAt)}</span>
+                                                        <span className="text-slate-200">•</span>
+                                                        <span className="text-slate-400">{formatDate(item.createdAt)}</span>
                                                     </div>
                                                 </div>
                                             </div>

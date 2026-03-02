@@ -113,12 +113,12 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
                 <div className="flex-1 flex items-center justify-center">
                     <div className="text-center space-y-4">
-                        <Loader2 className="h-12 w-12 animate-spin text-maroon mx-auto" />
-                        <p className="text-maroon font-serif italic text-lg opacity-60">Preparing your profile details...</p>
+                        <Loader2 className="h-12 w-12 animate-spin text-secondary mx-auto" />
+                        <p className="text-secondary font-sans italic text-lg opacity-60">Preparing your profile details...</p>
                     </div>
                 </div>
                 <Footer />
@@ -133,7 +133,7 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
 
                 <main className="flex-1 pb-24">
                     <div className="container mx-auto px-4 py-8 max-w-4xl">
-                        <Link href={`/career/mentorship/${id}`} className="inline-flex items-center text-maroon/60 hover:text-maroon mb-6 transition-all text-sm font-bold uppercase tracking-widest group">
+                        <Link href={`/career/mentorship/${id}`} className="inline-flex items-center text-slate-400 hover:text-slate-900 mb-6 transition-all text-sm font-bold uppercase tracking-widest group">
                             <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Profile
                         </Link>
                         <div className="mb-10">
@@ -145,7 +145,7 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
                     </div>
 
                     <div className="container mx-auto px-4 max-w-3xl relative z-10">
-                        <Card className="border border-gold/10 shadow-xl shadow-gold/5 bg-white rounded-2xl overflow-hidden">
+                        <Card className="border-transparent shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] bg-white rounded-[3rem] overflow-hidden border border-slate-50">
                             <CardContent className="p-8 md:p-10">
                                 <form onSubmit={handleSubmit} className="space-y-8">
                                     {error && (
@@ -158,7 +158,7 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
                                     )}
 
                                     <div className="space-y-6">
-                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gold mb-8 border-b border-gold/10 pb-4">Mentorship Details</h3>
+                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary mb-8 border-b border-slate-50 pb-4">Mentorship Details</h3>
 
                                         <div className="space-y-2">
                                             <label className="text-sm font-bold text-gray-400 uppercase tracking-widest pl-2">Core Expertise</label>
@@ -166,7 +166,7 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
                                                 name="expertise"
                                                 value={formData.expertise}
                                                 onChange={handleChange}
-                                                className="w-full h-14 rounded-2xl border border-gray-100 bg-gray-50 px-6 font-medium text-sm focus:bg-white focus:ring-2 focus:ring-maroon/20 focus:outline-none transition-all appearance-none cursor-pointer"
+                                                className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50 px-6 font-medium text-sm focus:bg-white focus:ring-2 focus:ring-secondary/20 focus:outline-none transition-all appearance-none cursor-pointer"
                                             >
                                                 {expertiseOptions.map(opt => (
                                                     <option key={opt} value={opt}>{opt}</option>
@@ -181,7 +181,7 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
                                                 value={formData.bio}
                                                 onChange={handleChange}
                                                 rows={10}
-                                                className={`w-full rounded-[2rem] border ${errors.bio ? 'border-red-500' : 'border-gray-100'} bg-gray-50 px-8 py-6 text-sm focus:bg-white focus:ring-2 focus:ring-maroon/20 focus:outline-none transition-all font-medium leading-relaxed`}
+                                                className={`w-full rounded-[2rem] border ${errors.bio ? 'border-red-500' : 'border-slate-100'} bg-slate-50 px-8 py-6 text-sm focus:bg-white focus:ring-2 focus:ring-secondary/20 focus:outline-none transition-all font-medium leading-relaxed`}
                                                 placeholder="Provide updates to your experience or mentoring style..."
                                             />
                                             {errors.bio && <p className="text-red-500 text-xs font-bold pl-2">{errors.bio}</p>}
@@ -202,7 +202,7 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
                                                         onChange={handleChange}
                                                         className="sr-only peer"
                                                     />
-                                                    <div className="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-maroon shadow-inner transition-colors"></div>
+                                                    <div className="w-14 h-8 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-secondary shadow-inner transition-colors"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -212,9 +212,9 @@ export default function EditMentorshipPage({ params }: { params: Promise<{ id: s
                                         <Button
                                             type="submit"
                                             disabled={saving}
-                                            className="w-full bg-maroon text-gold hover:bg-maroon/90 h-14 rounded-xl font-bold text-lg shadow-lg shadow-maroon/10 transition-all active:scale-95"
+                                            className="w-full bg-slate-900 text-white hover:bg-secondary hover:text-slate-900 h-20 rounded-[2rem] font-black text-xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] transition-all active:scale-[0.98]"
                                         >
-                                            {saving ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : null}
+                                            {saving ? <Loader2 className="h-6 w-6 animate-spin mr-4" /> : null}
                                             {saving ? "Saving Updates..." : "Publish Changes"}
                                         </Button>
                                     </div>

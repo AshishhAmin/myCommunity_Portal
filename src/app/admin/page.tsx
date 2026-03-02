@@ -51,7 +51,7 @@ export default function AdminDashboard() {
 
     if (loading) return (
         <div className="flex items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-maroon" />
+            <Loader2 className="h-8 w-8 animate-spin text-secondary" />
         </div>
     )
 
@@ -59,7 +59,7 @@ export default function AdminDashboard() {
     const breakdown = stats?.stats?.breakdown || {}
 
     const totalCards = [
-        { label: "Total Members", value: stats?.stats?.totalUsers || 0, icon: Users, color: "text-maroon", bg: "bg-maroon/5", accent: "border-l-maroon", link: "/admin/users?status=approved" },
+        { label: "Total Members", value: stats?.stats?.totalUsers || 0, icon: Users, color: "text-slate-900", bg: "bg-slate-100", accent: "border-l-slate-900", link: "/admin/users?status=approved" },
         { label: "Events", value: totals.events || 0, icon: Calendar, color: "text-green-600", bg: "bg-green-50", accent: "border-l-green-500", link: "/admin/events?status=approved" },
         { label: "Businesses", value: totals.businesses || 0, icon: Building2, color: "text-emerald-600", bg: "bg-emerald-50", accent: "border-l-emerald-500", link: "/admin/business?status=approved" },
         { label: "Job Posts", value: totals.jobs || 0, icon: Briefcase, color: "text-blue-600", bg: "bg-blue-50", accent: "border-l-blue-500", link: "/admin/career?type=jobs&status=approved" },
@@ -67,16 +67,16 @@ export default function AdminDashboard() {
         { label: "Mentorships", value: totals.mentorships || 0, icon: HeartHandshake, color: "text-pink-600", bg: "bg-pink-50", accent: "border-l-pink-500", link: "/admin/career?type=mentorship&status=approved" },
         { label: "Help Requests", value: totals.helpRequests || 0, icon: Heart, color: "text-red-600", bg: "bg-red-50", accent: "border-l-red-500", link: "/admin/verification?tab=help" },
         { label: "Donations", value: totals.donations || 0, icon: IndianRupee, color: "text-amber-600", bg: "bg-amber-50", accent: "border-l-amber-500", link: "/admin/donations", subtitle: `₹${(totals.donationAmount || 0).toLocaleString('en-IN')} total` },
-        { label: "Hostels", value: totals.accommodations || 0, icon: Building2, color: "text-orange-700", bg: "bg-orange-50", accent: "border-l-orange-700", link: "/admin/accommodations" },
+        { label: "Hostels", value: totals.accommodations || 0, icon: Building2, color: "text-secondary", bg: "bg-secondary/10", accent: "border-l-secondary", link: "/admin/accommodations" },
     ]
 
     const pendingCards = [
-        { label: "Total Pending", value: stats?.stats?.totalPending || 0, icon: AlertTriangle, color: "text-orange-600", bg: "bg-orange-50", accent: "border-l-orange-500", link: "/admin/verification" },
+        { label: "Total Pending", value: stats?.stats?.totalPending || 0, icon: AlertTriangle, color: "text-secondary", bg: "bg-secondary/10", accent: "border-l-secondary", link: "/admin/verification" },
         { label: "Job Posts", value: breakdown.pendingJobs || 0, icon: Briefcase, color: "text-blue-600", bg: "bg-blue-50", accent: "border-l-blue-500", link: "/admin/verification?tab=jobs" },
         { label: "Mentorships", value: breakdown.pendingMentorships || 0, icon: HeartHandshake, color: "text-pink-600", bg: "bg-pink-50", accent: "border-l-pink-500", link: "/admin/career?type=mentorship&status=pending" },
         { label: "Help Requests", value: breakdown.pendingHelpRequests || 0, icon: Heart, color: "text-red-600", bg: "bg-red-50", accent: "border-l-red-500", link: "/admin/verification?tab=help" },
-        { label: "Hostels", value: breakdown.pendingAccommodations || 0, icon: Building2, color: "text-orange-700", bg: "bg-orange-50", accent: "border-l-orange-700", link: "/admin/accommodations" },
-        { label: "Members", value: stats?.stats?.totalUsers || 0, icon: Users, color: "text-maroon", bg: "bg-maroon/5", accent: "border-l-maroon", link: "/admin/users?status=pending", subtitle: "Registered users" },
+        { label: "Hostels", value: breakdown.pendingAccommodations || 0, icon: Building2, color: "text-secondary", bg: "bg-secondary/10", accent: "border-l-secondary", link: "/admin/accommodations" },
+        { label: "Members", value: stats?.stats?.totalUsers || 0, icon: Users, color: "text-slate-900", bg: "bg-slate-100", accent: "border-l-slate-900", link: "/admin/users?status=pending", subtitle: "Registered users" },
     ]
 
     const activeCards = statsView === 'total' ? totalCards : pendingCards
@@ -107,7 +107,7 @@ export default function AdminDashboard() {
         ]
 
     const growthMetrics = [
-        { id: 'userGrowth', label: 'Users', icon: Users, color: '#800000' },
+        { id: 'userGrowth', label: 'Users', icon: Users, color: '#0F172A' },
         { id: 'businessGrowth', label: 'Business', icon: Building2, color: '#10b981' },
         { id: 'eventGrowth', label: 'Events', icon: Calendar, color: '#22c55e' },
         { id: 'jobGrowth', label: 'Jobs', icon: Briefcase, color: '#3b82f6' },
@@ -115,7 +115,7 @@ export default function AdminDashboard() {
         { id: 'scholarshipGrowth', label: 'Scholarships', icon: GraduationCap, color: '#a855f7' },
         { id: 'mentorshipGrowth', label: 'Mentorships', icon: HeartHandshake, color: '#ec4899' },
         { id: 'helpGrowth', label: 'Help Needs', icon: Heart, color: '#ef4444' },
-        { id: 'accommodationGrowth', label: 'Hostels', icon: Building2, color: '#c2410c' },
+        { id: 'accommodationGrowth', label: 'Hostels', icon: Building2, color: '#D4AF37' },
     ]
 
     const selectedMetric = growthMetrics.find(m => m.id === activeGrowthMetric) || growthMetrics[0]
@@ -124,15 +124,15 @@ export default function AdminDashboard() {
         <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500">
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h1 className="text-3xl md:text-5xl font-bold text-maroon font-serif">Admin Dashboard</h1>
+                <h1 className="text-3xl md:text-5xl font-bold text-slate-900 font-serif">Admin Dashboard</h1>
 
                 {/* Total / Pending Toggle */}
-                <div className="flex items-center gap-1 md:gap-2 bg-cream/70 border border-gold/20 rounded-lg p-1 shadow-sm backdrop-blur-sm self-stretch sm:self-auto">
+                <div className="flex items-center gap-1 md:gap-2 bg-background border border-secondary/20 rounded-lg p-1 shadow-sm backdrop-blur-sm self-stretch sm:self-auto">
                     <button
                         onClick={() => setStatsView('total')}
                         className={`flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-md text-sm md:text-base font-bold transition-all ${statsView === 'total'
-                            ? 'bg-maroon text-gold shadow-sm'
-                            : 'text-muted-foreground hover:text-maroon hover:bg-gold/10'
+                            ? 'bg-slate-900 text-secondary shadow-sm'
+                            : 'text-muted-foreground hover:text-slate-900 hover:bg-secondary/10'
                             }`}
                     >
                         <TrendingUp className="h-4 w-4 shrink-0" />
@@ -141,16 +141,16 @@ export default function AdminDashboard() {
                     <button
                         onClick={() => setStatsView('pending')}
                         className={`flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-md text-sm md:text-base font-bold transition-all ${statsView === 'pending'
-                            ? 'bg-orange-500 text-white shadow-sm'
-                            : 'text-muted-foreground hover:text-orange-600 hover:bg-orange-50'
+                            ? 'bg-secondary text-slate-900 shadow-sm'
+                            : 'text-muted-foreground hover:text-secondary hover:bg-secondary/10'
                             }`}
                     >
                         <AlertTriangle className="h-4 w-4" />
                         Pending
                         {(stats?.stats?.totalPending || 0) > 0 && (
                             <span className={`text-[11px] px-2 py-0.5 rounded-full font-black ${statsView === 'pending'
-                                ? 'bg-white/30 text-white'
-                                : 'bg-orange-100 text-orange-700'
+                                ? 'bg-slate-900/10 text-slate-900'
+                                : 'bg-secondary/20 text-secondary'
                                 }`}>
                                 {stats?.stats?.totalPending}
                             </span>
@@ -163,7 +163,7 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {activeCards.map((card, i) => (
                     <Link key={`${statsView}-${i}`} href={card.link}>
-                        <Card className={`border-gold/20 shadow-sm border-l-4 ${card.accent} hover:shadow-md transition-all cursor-pointer h-full`}>
+                        <Card className={`border-secondary/20 shadow-sm border-l-4 ${card.accent} hover:shadow-md transition-all cursor-pointer h-full`}>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
                                     {card.label}
@@ -186,11 +186,11 @@ export default function AdminDashboard() {
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* User Growth Chart */}
-                <Card className="border-gold/20 shadow-sm col-span-1 lg:col-span-2">
+                <Card className="border-secondary/20 shadow-sm col-span-1 lg:col-span-2">
                     <CardHeader className="pb-4">
                         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
                             <div className="space-y-1">
-                                <CardTitle className="text-xl md:text-2xl font-serif text-maroon flex items-center gap-2">
+                                <CardTitle className="text-xl md:text-2xl font-serif text-slate-900 flex items-center gap-2">
                                     <selectedMetric.icon className="h-5 w-5 md:h-6 md:w-6" /> {selectedMetric.label} Growth Hub
                                 </CardTitle>
                                 <p className="text-sm text-muted-foreground">Historical trends for community participation</p>
@@ -198,14 +198,14 @@ export default function AdminDashboard() {
 
                             <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
                                 {/* Metric Selector */}
-                                <div className="flex flex-wrap gap-1 bg-cream/50 p-1 rounded-lg border border-gold/10">
+                                <div className="flex flex-wrap gap-1 bg-slate-100 p-1 rounded-lg border border-secondary/10">
                                     {growthMetrics.map(m => (
                                         <button
                                             key={m.id}
                                             onClick={() => setActiveGrowthMetric(m.id)}
                                             className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${activeGrowthMetric === m.id
-                                                ? 'bg-white text-maroon shadow-sm border border-gold/20'
-                                                : 'text-muted-foreground hover:text-maroon'
+                                                ? 'bg-white text-slate-900 shadow-sm border border-secondary/20'
+                                                : 'text-muted-foreground hover:text-slate-900'
                                                 }`}
                                         >
                                             {m.label}
@@ -216,15 +216,15 @@ export default function AdminDashboard() {
                                 <div className="h-8 w-px bg-gold/20 hidden md:block"></div>
 
                                 {/* Range Selector */}
-                                <div className="flex items-center gap-1 bg-gray-100/80 rounded-lg p-0.5">
+                                <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-0.5">
                                     {timeRanges.map(r => (
                                         <button
                                             key={r.value}
                                             onClick={() => handleRangeChange(r.value)}
                                             disabled={chartLoading}
                                             className={`px-2 py-1 md:px-3 text-[10px] md:text-xs font-semibold rounded-md transition-all ${timeRange === r.value
-                                                ? 'bg-maroon text-gold shadow-sm'
-                                                : 'text-muted-foreground hover:text-maroon hover:bg-white'
+                                                ? 'bg-slate-900 text-secondary shadow-sm'
+                                                : 'text-muted-foreground hover:text-slate-900 hover:bg-white'
                                                 }`}
                                         >
                                             {r.label}
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
                     <CardContent className="h-[250px] md:h-[350px]">
                         {chartLoading ? (
                             <div className="flex items-center justify-center h-full">
-                                <Loader2 className="h-6 w-6 animate-spin text-maroon" />
+                                <Loader2 className="h-6 w-6 animate-spin text-secondary" />
                             </div>
                         ) : (
                             <ResponsiveContainer width="100%" height="100%">
@@ -278,13 +278,13 @@ export default function AdminDashboard() {
                 </Card>
 
                 {/* Breakdown Bar Chart */}
-                <Card className="border-gold/20 shadow-sm col-span-1">
+                <Card className="border-secondary/20 shadow-sm col-span-1">
                     <CardHeader>
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-lg font-serif text-maroon">
+                            <CardTitle className="text-lg font-serif text-slate-900">
                                 {statsView === 'pending' ? 'Pending Items' : 'Total Items'} Breakdown
                             </CardTitle>
-                            <span className={`text-xs font-bold px-2 py-1 rounded-full ${statsView === 'pending' ? 'bg-orange-100 text-orange-700' : 'bg-maroon/10 text-maroon'
+                            <span className={`text-xs font-bold px-2 py-1 rounded-full ${statsView === 'pending' ? 'bg-secondary/20 text-secondary' : 'bg-slate-900/10 text-slate-900'
                                 }`}>
                                 {statsView === 'pending' ? 'Pending' : 'All'}
                             </span>
@@ -312,12 +312,12 @@ export default function AdminDashboard() {
             </div>
 
             {/* Activity Link */}
-            <div className="bg-cream/40 rounded-lg border border-gold/20 shadow-sm p-6 flex justify-between items-center group hover:bg-gold/10 transition-colors">
+            <div className="bg-slate-50 rounded-lg border border-secondary/20 shadow-sm p-6 flex justify-between items-center group hover:bg-secondary/5 transition-colors">
                 <div>
-                    <h3 className="font-semibold text-lg">Detailed Verification Requests</h3>
+                    <h3 className="font-semibold text-lg text-slate-900">Detailed Verification Requests</h3>
                     <p className="text-muted-foreground text-sm">Review full list of pending users and content.</p>
                 </div>
-                <a href="/admin/users" className="bg-maroon text-white px-4 py-2 rounded-md hover:bg-maroon/90 transition-colors text-sm font-medium">
+                <a href="/admin/users" className="bg-slate-900 text-secondary px-4 py-2 rounded-md hover:bg-slate-800 transition-colors text-sm font-medium">
                     Manage Verifications
                 </a>
             </div>

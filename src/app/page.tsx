@@ -7,7 +7,7 @@ import { AchievementsCarousel } from "@/components/home/achievements-carousel";
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col bg-cream/20">
+    <main className="min-h-screen flex flex-col bg-[#FAF9F6]">
       <Navbar />
       <HeroSection />
       <EmergencyAlerts />
