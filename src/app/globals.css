@@ -12,6 +12,32 @@
   --color-secondary-base: #D97706;
   --color-cta: #10B981;
 
+  --color-maroon-50: #fdf5f5;
+  --color-maroon-100: #fae8e8;
+  --color-maroon-200: #f4d3d3;
+  --color-maroon-300: #ecb3b3;
+  --color-maroon-400: #e08888;
+  --color-maroon-500: #cf5c5c;
+  --color-maroon-600: #b93f3f;
+  --color-maroon-700: #9b3131;
+  --color-maroon-800: #802e2e;
+  --color-maroon-900: #6b2a2a;
+  --color-maroon-950: #3b1111;
+  --color-maroon: #800000;
+
+  --color-gold-50: #fdfce8;
+  --color-gold-100: #fbf8c3;
+  --color-gold-200: #f9f08f;
+  --color-gold-300: #f5e252;
+  --color-gold-400: #f0ce21;
+  --color-gold-500: #deb412;
+  --color-gold-600: #bfa00c;
+  --color-gold-700: #99780d;
+  --color-gold-800: #806112;
+  --color-gold-900: #6d5015;
+  --color-gold-950: #3f2c06;
+  --color-gold: #FFD700;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 }

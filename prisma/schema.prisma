@@ -41,6 +41,7 @@ model User {
   shares             Share[]
   notifications      Notification[]      @relation("UserNotifications")
   accommodations     Accommodation[]     @relation("UserAccommodations")
+  accommodationApps  AccommodationApplication[]
 }
 
 model Business {
@@ -298,4 +299,23 @@ model Accommodation {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   owner           User     @relation("UserAccommodations", fields: [ownerId], references: [id], onDelete: Cascade)
+  applications    AccommodationApplication[]
+}
+
+model AccommodationApplication {
+  id              String   @id @default(cuid())
+  accommodationId String
+  userId          String
+  name            String
+  age             String
+  occupation      String
+  message         String?
+  status          String   @default("pending") // 'pending', 'approved', 'rejected'
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([accommodationId, userId])
 }

@@ -39,6 +39,9 @@ export function Navbar() {
 
     const isActive = (path: string) => {
         if (path === "/") return pathname === "/"
+        if (path === "/features") {
+            return pathname?.startsWith("/social") || pathname?.startsWith("/events") || pathname?.startsWith("/business") || pathname?.startsWith("/accommodations")
+        }
         return pathname?.startsWith(path)
     }
 
@@ -64,8 +67,8 @@ export function Navbar() {
                         Home
                     </Link>
                     {showAuth && isAuthenticated && (
-                        <Link href="/dashboard" className={linkClass("/dashboard")}>
-                            Dashboard
+                        <Link href="/social" className={linkClass("/social")}>
+                            Social Feed
                         </Link>
                     )}
                     {/* Authenticated-only links — only render after mount */}
@@ -76,50 +79,87 @@ export function Navbar() {
                         </Link>
                     )}
                     {/* Public Links */}
-                    <Link href="/social" className={linkClass("/social")}>
-                        Social
-                    </Link>
-                    <Link href="/events" className={linkClass("/events")}>
-                        Events
-                    </Link>
-                    <Link href="/business" className={linkClass("/business")}>
-                        Business
-                    </Link>
-                    <Link href="/accommodations" className={linkClass("/accommodations")}>
-                        Hostels
-                    </Link>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button suppressHydrationWarning className={cn(linkClass("/career"), "flex items-center gap-1 cursor-pointer outline-none")}>
-                                Careers
+                            <button suppressHydrationWarning className={cn(linkClass("/explore"), "flex items-center gap-1 cursor-pointer outline-none")}>
+                                Explore
                                 <ChevronDown className="h-4 w-4 opacity-50" />
                             </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="w-52 p-2 bg-background/95 backdrop-blur-md border border-border shadow-xl rounded-xl">
-                            <DropdownMenuItem asChild>
-                                <Link href="/career?tab=jobs" className="cursor-pointer py-2 px-3 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors group flex items-center w-full">
-                                    <Briefcase className="h-4 w-4 mr-2 text-primary/70 group-hover:text-primary" />
-                                    <span className="font-medium">Job Listings</span>
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href="/career?tab=scholarships" className="cursor-pointer py-2 px-3 rounded-lg hover:bg-maroon hover:text-gold transition-colors group flex items-center w-full">
-                                    <Briefcase className="h-4 w-4 mr-2 text-maroon group-hover:text-gold" />
-                                    <span className="font-medium">Scholarships</span>
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href="/career?tab=mentorship" className="cursor-pointer py-2 px-3 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors group flex items-center w-full">
-                                    <Users className="h-4 w-4 mr-2 text-primary/70 group-hover:text-primary" />
-                                    <span className="font-medium">Mentorship</span>
-                                </Link>
-                            </DropdownMenuItem>
-                            <div className="h-px bg-border my-1" />
-                            <DropdownMenuItem asChild>
-                                <Link href="/career" className="cursor-pointer py-2 px-3 rounded-lg hover:bg-primary/5 text-primary/80 hover:text-primary transition-colors flex items-center w-full">
-                                    <span className="text-xs font-bold uppercase tracking-widest pl-6">View All Careers</span>
-                                </Link>
-                            </DropdownMenuItem>
+                        <DropdownMenuContent align="center" className="w-[800px] p-6 bg-background/95 backdrop-blur-md border border-border shadow-2xl rounded-2xl hidden md:block">
+                            <div className="grid grid-cols-4 gap-6">
+                                {/* Community */}
+                                <div className="space-y-1">
+                                    <h4 className="text-sm font-bold text-maroon px-3 mb-2">Community</h4>
+                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 focus:text-primary rounded-lg transition-colors py-2">
+                                        <Link href="/events" className="w-full px-3 text-sm font-semibold text-foreground/80">
+                                            Events
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 focus:text-primary rounded-lg transition-colors py-2">
+                                        <Link href="/achievements" className="w-full px-3 text-sm font-semibold text-foreground/80">
+                                            Achievements
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 focus:text-primary rounded-lg transition-colors py-2">
+                                        <Link href="/social" className="w-full px-3 text-sm font-semibold text-foreground/80">
+                                            Newsletters
+                                        </Link>
+                                    </DropdownMenuItem>
+
+                                </div>
+
+                                {/* Career & Growth */}
+                                <div className="space-y-1">
+                                    <h4 className="text-sm font-bold text-maroon px-3 mb-2">Career & Growth</h4>
+                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 focus:text-primary rounded-lg transition-colors py-2">
+                                        <Link href="/career?tab=jobs" className="w-full px-3 text-sm font-semibold text-foreground/80">
+                                            Jobs
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 focus:text-primary rounded-lg transition-colors py-2">
+                                        <Link href="/career?tab=scholarships" className="w-full px-3 text-sm font-semibold text-foreground/80">
+                                            Scholarships
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 focus:text-primary rounded-lg transition-colors py-2">
+                                        <Link href="/career?tab=mentorship" className="w-full px-3 text-sm font-semibold text-foreground/80">
+                                            Loans / Mentorship
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </div>
+
+                                {/* Business */}
+                                <div className="space-y-1">
+                                    <h4 className="text-sm font-bold text-maroon px-3 mb-2">Business</h4>
+                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 focus:text-primary rounded-lg transition-colors py-2">
+                                        <Link href="/business" className="w-full px-3 text-sm font-semibold text-foreground/80">
+                                            Directory
+                                        </Link>
+                                    </DropdownMenuItem>
+
+                                </div>
+
+                                {/* Support */}
+                                <div className="space-y-1">
+                                    <h4 className="text-sm font-bold text-maroon px-3 mb-2">Support</h4>
+                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 focus:text-primary rounded-lg transition-colors py-2">
+                                        <Link href="/help" className="w-full px-3 text-sm font-semibold text-foreground/80">
+                                            Help Requests
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 focus:text-primary rounded-lg transition-colors py-2">
+                                        <Link href="/blood" className="w-full px-3 text-sm font-semibold text-foreground/80">
+                                            Blood
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/5 focus:text-primary rounded-lg transition-colors py-2">
+                                        <Link href="/accommodations" className="w-full px-3 text-sm font-semibold text-foreground/80">
+                                            Hostels
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </div>
+                            </div>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
@@ -200,19 +240,42 @@ export function Navbar() {
                     <div className="flex flex-col gap-4">
                         <Link href="/" className={linkClass("/")}>Home</Link>
                         {showAuth && isAuthenticated && (
-                            <Link href="/dashboard" className={linkClass("/dashboard")}>Dashboard</Link>
+                            <Link href="/social" className={linkClass("/social")}>Social Feed</Link>
                         )}
                         {showAuth && user?.role === "admin" && (
                             <Link href="/admin" className={linkClass("/admin")}>Admin Panel</Link>
                         )}
-                        <Link href="/social" className={linkClass("/social")}>Social</Link>
-                        <Link href="/events" className={linkClass("/events")}>Events</Link>
-                        <Link href="/business" className={linkClass("/business")}>Business</Link>
-                        <div className="flex flex-col space-y-2 border-l-2 border-border pl-4 py-1">
-                            <span className="text-sm font-bold text-primary uppercase">Careers</span>
-                            <Link href="/career?tab=jobs" className="text-foreground/80 hover:text-primary transition-colors">Job Listings</Link>
-                            <Link href="/career?tab=scholarships" className="text-foreground/80 hover:text-primary transition-colors">Scholarships</Link>
-                            <Link href="/career?tab=mentorship" className="text-foreground/80 hover:text-primary transition-colors">Mentorship</Link>
+                        <div className="flex flex-col space-y-4 py-2">
+                            <div>
+                                <span className="text-sm font-bold text-maroon uppercase pl-2 mb-2 block">Community</span>
+                                <div className="flex flex-col space-y-1 border-l-2 border-border pl-4">
+                                    <Link href="/events" className="text-foreground/80 hover:text-primary transition-colors py-1 cursor-pointer text-sm font-medium">Events</Link>
+                                    <Link href="/achievements" className="text-foreground/80 hover:text-primary transition-colors py-1 cursor-pointer text-sm font-medium">Achievements</Link>
+                                    <Link href="/social" className="text-foreground/80 hover:text-primary transition-colors py-1 cursor-pointer text-sm font-medium">Newsletters</Link>
+                                </div>
+                            </div>
+                            <div>
+                                <span className="text-sm font-bold text-maroon uppercase pl-2 mb-2 block">Career & Growth</span>
+                                <div className="flex flex-col space-y-1 border-l-2 border-border pl-4">
+                                    <Link href="/career?tab=jobs" className="text-foreground/80 hover:text-primary transition-colors py-1 cursor-pointer text-sm font-medium">Jobs</Link>
+                                    <Link href="/career?tab=scholarships" className="text-foreground/80 hover:text-primary transition-colors py-1 cursor-pointer text-sm font-medium">Scholarships</Link>
+                                    <Link href="/career?tab=mentorship" className="text-foreground/80 hover:text-primary transition-colors py-1 cursor-pointer text-sm font-medium">Loans / Mentorship</Link>
+                                </div>
+                            </div>
+                            <div>
+                                <span className="text-sm font-bold text-maroon uppercase pl-2 mb-2 block">Business</span>
+                                <div className="flex flex-col space-y-1 border-l-2 border-border pl-4">
+                                    <Link href="/business" className="text-foreground/80 hover:text-primary transition-colors py-1 cursor-pointer text-sm font-medium">Directory</Link>
+                                </div>
+                            </div>
+                            <div>
+                                <span className="text-sm font-bold text-maroon uppercase pl-2 mb-2 block">Support</span>
+                                <div className="flex flex-col space-y-1 border-l-2 border-border pl-4">
+                                    <Link href="/help" className="text-foreground/80 hover:text-primary transition-colors py-1 cursor-pointer text-sm font-medium">Help Requests</Link>
+                                    <Link href="/blood" className="text-foreground/80 hover:text-primary transition-colors py-1 cursor-pointer text-sm font-medium">Blood</Link>
+                                    <Link href="/accommodations" className="text-foreground/80 hover:text-primary transition-colors py-1 cursor-pointer text-sm font-medium">Hostels</Link>
+                                </div>
+                            </div>
                         </div>
 
                         {showAuth && isAuthenticated && (
