@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import cloudinary from '@/lib/cloudinary'
+import cloudinary, { configureCloudinary } from '@/lib/cloudinary'
 import { verifyFirebaseToken } from '@/lib/auth'
 
 export async function POST(req: Request) {
@@ -28,6 +28,9 @@ export async function POST(req: Request) {
         // Convert file to Buffer for Cloudinary
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
+
+        // Ensure Cloudinary is configured
+        configureCloudinary()
 
         // Upload to Cloudinary
         const uploadResponse = await new Promise((resolve, reject) => {

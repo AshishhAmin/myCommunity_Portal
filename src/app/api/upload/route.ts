@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { adminAuth } from "@/lib/firebase-admin"
-import cloudinary from "@/lib/cloudinary"
+import cloudinary, { configureCloudinary } from "@/lib/cloudinary"
 
 export async function POST(req: NextRequest) {
     try {
@@ -31,6 +31,9 @@ export async function POST(req: NextRequest) {
         // Convert file to Buffer for Cloudinary
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
+
+        // Ensure Cloudinary is configured
+        configureCloudinary()
 
         // Upload to Cloudinary
         const uploadResponse = await new Promise((resolve, reject) => {
