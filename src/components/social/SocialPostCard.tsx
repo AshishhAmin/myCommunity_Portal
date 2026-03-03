@@ -247,13 +247,23 @@ export function SocialPostCard({ post }: SocialPostProps) {
 
                 {/* Media */}
                 {post.images && post.images.length > 0 && (
-                    <div className="relative w-full aspect-video bg-slate-50 overflow-hidden border-y border-slate-50 group/slider mx-auto mb-2">
-                        <Link href={postLink} className="block h-full w-full">
+                    <div className="relative w-full aspect-video bg-slate-100 overflow-hidden border-y border-slate-100 group/slider mx-auto mb-2">
+                        {/* Blurred Background */}
+                        <div className="absolute inset-0 overflow-hidden">
+                            <Image
+                                src={post.images[currentImageIndex]}
+                                alt="Background Blur"
+                                fill
+                                className="object-cover blur-2xl scale-110 opacity-30 brightness-90"
+                            />
+                        </div>
+
+                        <Link href={postLink} className="block h-full w-full relative z-10">
                             <Image
                                 src={post.images[currentImageIndex]}
                                 alt={post.title}
                                 fill
-                                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                className="object-contain transition-transform duration-700 group-hover:scale-105"
                                 priority={currentImageIndex === 0}
                             />
                         </Link>

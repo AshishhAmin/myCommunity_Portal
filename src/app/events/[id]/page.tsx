@@ -200,19 +200,29 @@ export default function EventDetailPage() {
                 <div className="relative h-[65vh] md:h-[75vh] min-h-[550px] w-full overflow-hidden">
                     <div className="absolute inset-0">
                         {event.images && event.images.length > 0 ? (
-                            <Image
-                                src={event.images[0]}
-                                alt={event.title}
-                                fill
-                                className="object-cover transition-transform duration-[2s] hover:scale-105"
-                                priority
-                            />
+                            <>
+                                {/* Blurred Background Backdrop */}
+                                <Image
+                                    src={event.images[0]}
+                                    alt="Backdrop Blur"
+                                    fill
+                                    className="object-cover blur-3xl scale-125 opacity-40 brightness-50"
+                                    priority
+                                />
+                                <Image
+                                    src={event.images[0]}
+                                    alt={event.title}
+                                    fill
+                                    className="object-contain transition-transform duration-[2s] hover:scale-105 relative z-10"
+                                    priority
+                                />
+                            </>
                         ) : (
                             <div className="w-full h-full bg-slate-900 flex items-center justify-center">
                                 <Calendar className="w-32 h-32 text-white/5" />
                             </div>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-10" />
                     </div>
 
                     <div className="absolute inset-0 container mx-auto px-4 flex flex-col justify-end pb-16">
@@ -326,7 +336,7 @@ export default function EventDetailPage() {
                                                     src={img}
                                                     alt={`Event Moment ${idx + 2}`}
                                                     fill
-                                                    className="object-cover transition-transform duration-[1.5s] group-hover:scale-110"
+                                                    className="object-contain bg-slate-100 transition-transform duration-[1.5s] group-hover:scale-110"
                                                 />
                                                 <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/40 transition-all duration-700 flex items-center justify-center">
                                                     <div className="h-14 w-14 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100">

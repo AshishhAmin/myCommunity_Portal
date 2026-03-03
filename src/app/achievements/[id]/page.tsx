@@ -133,13 +133,20 @@ export default function AchievementDetailsPage() {
                 <div className="relative h-[320px] w-full bg-slate-900 overflow-hidden">
                     {achievement.images && achievement.images.length > 0 ? (
                         <>
+                            {/* Blurred Backdrop */}
+                            <Image
+                                src={achievement.images[0]}
+                                alt="Backdrop Blur"
+                                fill
+                                className="object-cover blur-3xl scale-125 opacity-40 brightness-50"
+                            />
                             <Image
                                 src={achievement.images[0]}
                                 alt={achievement.title}
                                 fill
-                                className="object-cover opacity-60"
+                                className="object-contain transition-transform duration-700 hover:scale-105 relative z-10"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent z-10" />
                         </>
                     ) : (
                         <div className="absolute inset-0 flex items-center justify-center opacity-10">
@@ -232,7 +239,7 @@ export default function AchievementDetailsPage() {
                                                     <img
                                                         src={img}
                                                         alt={`Achievement gallery photo ${idx + 1}`}
-                                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                        className="w-full h-full object-contain bg-slate-100 transition-transform duration-700 group-hover:scale-110"
                                                     />
                                                 </div>
                                             ))}

@@ -141,7 +141,7 @@ export default function BusinessDetailsPage() {
                                     src={business.images && business.images.length > 0 ? business.images[activeImage] : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200'}
                                     alt={business.name}
                                     fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                    className="object-contain transition-transform duration-700"
                                     priority
                                 />
 
@@ -175,7 +175,7 @@ export default function BusinessDetailsPage() {
                                             className={`relative h-20 w-28 rounded-2xl overflow-hidden flex-shrink-0 border-4 transition-all ${activeImage === idx ? 'border-secondary' : 'border-transparent hover:border-slate-200'
                                                 }`}
                                         >
-                                            <Image src={img} alt={`Thumb ${idx}`} fill className="object-cover" />
+                                            <Image src={img} alt={`Thumb ${idx}`} fill className="object-contain bg-slate-50" />
                                         </button>
                                     ))}
                                 </div>
