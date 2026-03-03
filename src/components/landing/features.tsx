@@ -68,10 +68,10 @@ export function FeaturesSection() {
 
                 {/* Section Header */}
                 <ScrollAnimation animation="fade-up">
-                    <div className="text-center max-w-4xl mx-auto mb-16 md:mb-24 animate-slide-up">
-                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">Integrated <span className="text-secondary">Ecosystem</span></h2>
-                        <div className="w-24 md:w-32 h-1.5 bg-secondary mx-auto mb-8 rounded-full shadow-sm"></div>
-                        <p className="text-slate-500 text-lg md:text-2xl leading-relaxed font-medium">
+                    <div className="text-center max-w-4xl mx-auto mb-12 md:mb-24 animate-slide-up">
+                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6 uppercase tracking-tight">Integrated <span className="text-secondary">Ecosystem</span></h2>
+                        <div className="w-20 md:w-32 h-1.5 bg-secondary mx-auto mb-6 md:mb-8 rounded-full shadow-sm"></div>
+                        <p className="text-slate-500 text-base md:text-2xl leading-relaxed font-medium">
                             Our platform is designed to provide comprehensive support for personal and professional growth while preserving our rich cultural values.
                         </p>
                     </div>

@@ -109,22 +109,22 @@ export default function DashboardPage() {
                 <main className="flex-1 container mx-auto px-4 py-8">
 
                     {/* Welcome Section */}
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10 mb-12 bg-white p-8 md:p-12 rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/50 relative overflow-hidden group">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10 mb-8 md:mb-12 bg-white p-6 md:p-12 rounded-[2.5rem] md:rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/50 relative overflow-hidden group">
                         {/* Decorative Background Elements */}
                         <div className="absolute -right-12 -top-12 w-48 h-48 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 transition-all duration-700" />
                         <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-slate-900/5 rounded-full blur-3xl group-hover:bg-slate-900/10 transition-all duration-700" />
 
-                        <div className="flex items-center gap-6 md:gap-10 relative z-10 text-center md:text-left flex-col md:flex-row">
-                            <div className="h-20 w-20 md:h-24 md:w-24 rounded-[2rem] bg-slate-50 border-2 border-slate-100 flex items-center justify-center shadow-inner overflow-hidden relative group-hover:border-secondary/20 transition-all duration-500 shrink-0">
+                        <div className="flex items-center gap-6 md:gap-10 relative z-10 text-center md:text-left flex-col md:flex-row w-full md:w-auto">
+                            <div className="h-20 w-20 md:h-24 md:w-24 rounded-[1.5rem] md:rounded-[2rem] bg-slate-50 border-2 border-slate-100 flex items-center justify-center shadow-inner overflow-hidden relative group-hover:border-secondary/20 transition-all duration-500 shrink-0">
                                 <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/5 transition-colors" />
                                 <User className="h-10 w-10 md:h-12 md:w-12 text-slate-900 relative z-10 group-hover:scale-110 transition-transform duration-500" />
                             </div>
-                            <div>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Member Portal</p>
-                                <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-none">
-                                    Namaskaram, <span className="text-secondary">{user?.name || "Member"}</span>
+                            <div className="flex-1">
+                                <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Member Portal</p>
+                                <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight md:leading-none">
+                                    Namaskaram, <br className="block md:hidden" /> <span className="text-secondary">{user?.name ? user.name.split(" ")[0] : "Member"}</span>
                                 </h1>
-                                <p className="text-slate-500 font-bold mt-4 max-w-md">Access your personal dashboard and community services.</p>
+                                <p className="text-slate-500 text-sm md:text-base font-bold mt-4 max-w-md mx-auto md:mx-0">Access your personal dashboard and community services.</p>
                             </div>
                         </div>
 

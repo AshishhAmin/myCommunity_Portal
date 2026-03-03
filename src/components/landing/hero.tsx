@@ -46,13 +46,13 @@ export function HeroSection() {
                 </ScrollAnimation>
 
                 <ScrollAnimation animation="fade-up" delay={0.2}>
-                    <h1 className="mx-auto max-w-5xl font-sans text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight text-slate-900 animate-slide-up [animation-delay:200ms] leading-[1.1]">
+                    <h1 className="mx-auto max-w-5xl font-sans text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight text-slate-900 animate-slide-up [animation-delay:200ms] leading-[1.1]">
                         A Trusted Digital Platform for community  <span className="text-secondary">CommuNet</span>
                     </h1>
                 </ScrollAnimation>
 
                 <ScrollAnimation animation="fade-up" delay={0.4}>
-                    <p className="mx-auto mt-6 md:mt-8 max-w-3xl text-lg md:text-2xl text-slate-600 leading-relaxed font-medium animate-slide-up [animation-delay:400ms]">
+                    <p className="mx-auto mt-6 md:mt-8 max-w-3xl text-base md:text-2xl text-slate-600 leading-relaxed font-medium animate-slide-up [animation-delay:400ms]">
                         Uniting members through business enablement, career development, and dedicated support.
                         A secure space to connect, grow, and uphold our shared heritage.
                     </p>

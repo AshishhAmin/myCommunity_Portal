@@ -108,16 +108,16 @@ export default function SocialFeedPage() {
 
             <main className="flex-1 pb-24">
                 {/* Header Section */}
-                <div className="bg-white border-b border-slate-100 pt-16 pb-20 mb-8">
+                <div className="bg-white border-b border-slate-100 pt-10 md:pt-16 pb-12 md:pb-20 mb-6 md:mb-8">
                     <div className="container mx-auto px-4 text-center max-w-4xl">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 mb-8">
-                            <Activity className="h-4 w-4 text-secondary" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-secondary">Real-time pulses</span>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 mb-6 md:mb-8">
+                            <Activity className="h-3.5 w-3.5 md:h-4 md:w-4 text-secondary" />
+                            <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-secondary">Real-time pulses</span>
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none mb-8">
+                        <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter leading-tight mb-4 md:mb-8">
                             Community <span className="text-secondary">Pulse</span>
                         </h1>
-                        <p className="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-2xl mx-auto">
+                        <p className="text-slate-500 text-base md:text-xl font-medium leading-relaxed max-w-2xl mx-auto">
                             Stay connected with the latest events, business updates, and member achievements across our global network.
                         </p>
                     </div>

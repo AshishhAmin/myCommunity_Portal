@@ -105,23 +105,23 @@ export default function CompleteProfilePage() {
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-slate-900/5 rounded-full blur-3xl -mb-48 -ml-48 pointer-events-none" />
 
             <div className="w-full max-w-lg relative z-10">
-                <div className="text-center mb-8">
-                    <div className="mx-auto h-16 w-16 rounded-2xl bg-secondary flex items-center justify-center mb-6 shadow-lg shadow-secondary/20 text-slate-900 font-black text-2xl">
+                <div className="text-center mb-6 md:mb-8">
+                    <div className="mx-auto h-14 w-14 md:h-16 md:w-16 rounded-2xl bg-secondary flex items-center justify-center mb-4 md:mb-6 shadow-lg shadow-secondary/20 text-slate-900 font-black text-xl md:text-2xl">
                         C
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight uppercase">
+                    <h1 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight uppercase">
                         Complete <span className="text-secondary">Profile</span>
                     </h1>
-                    <p className="text-slate-500 font-bold mt-2 uppercase tracking-widest text-xs">One last step to join the community</p>
+                    <p className="text-slate-500 font-bold mt-2 uppercase tracking-widest text-[9px] md:text-xs px-4">One last step to join the community</p>
                 </div>
 
-                <Card className="bg-white border-transparent shadow-2xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden">
-                    <CardHeader className="text-center border-b border-slate-50 pb-6 pt-8 bg-slate-50/30">
-                        <CardDescription className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+                <Card className="bg-white border-transparent shadow-2xl shadow-slate-200/50 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
+                    <CardHeader className="text-center border-b border-slate-50 pb-4 md:pb-6 pt-6 md:pt-8 bg-slate-50/30">
+                        <CardDescription className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-wider px-2">
                             We need a few more details for verification
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="p-8">
+                    <CardContent className="p-5 md:p-8">
                         <form onSubmit={handleCompleteProfile} className="space-y-6">
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>

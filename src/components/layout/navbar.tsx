@@ -11,7 +11,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, User, PlusCircle, Briefcase, GraduationCap, Building2, Calendar, Trophy, Users, Menu, ChevronDown, X, Network } from "lucide-react"
+import { LogOut, User, PlusCircle, Briefcase, GraduationCap, Building2, Calendar, Trophy, Users, Menu, ChevronDown, X, Network, Activity, ShieldCheck } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
 import { NotificationBell } from "@/components/notifications/notification-bell"
@@ -241,84 +241,91 @@ export function Navbar() {
 
             {/* Mobile Menu Overlay */}
             {isMobileMenuOpen && (
-                <div className="md:hidden border-t border-slate-200 bg-[#FAF9F6]/98 backdrop-blur-xl px-4 py-6 shadow-inner absolute top-14 sm:top-16 left-0 w-full z-40 max-h-[calc(100vh-3.5rem)] overflow-y-auto">
-                    <div className="flex flex-col gap-4">
-                        <Link href="/" className={linkClass("/")}>Home</Link>
-                        {showAuth && isAuthenticated && (
-                            <Link href="/social" className={linkClass("/social")}>Social Feed</Link>
-                        )}
-                        {showAuth && user?.role === "admin" && (
-                            <Link href="/admin" className={linkClass("/admin")}>Admin Panel</Link>
-                        )}
-                        <div className="flex flex-col space-y-4 py-2">
+                <div className="md:hidden border-t border-slate-200 bg-white absolute top-14 sm:top-16 left-0 w-full z-40 max-h-[calc(100vh-4rem)] overflow-y-auto animate-in slide-in-from-top duration-300">
+                    <div className="flex flex-col px-6 py-8 pb-12">
+                        {/* Direct Navigation */}
+                        <div className="flex flex-col gap-2 mb-8">
+                            <Link href="/" className={cn("flex items-center gap-4 p-4 rounded-2xl transition-all", isActive("/") ? "bg-slate-900 text-white shadow-lg shadow-slate-900/10" : "bg-slate-50 text-slate-600")}>
+                                <Network className="h-5 w-5" />
+                                <span className="font-black text-sm uppercase tracking-widest">Home</span>
+                            </Link>
+                            {showAuth && isAuthenticated && (
+                                <Link href="/social" className={cn("flex items-center gap-4 p-4 rounded-2xl transition-all", isActive("/social") ? "bg-slate-900 text-white shadow-lg shadow-slate-900/10" : "bg-slate-50 text-slate-600")}>
+                                    <Activity className="h-5 w-5" />
+                                    <span className="font-black text-sm uppercase tracking-widest">Social Feed</span>
+                                </Link>
+                            )}
+                            {showAuth && user?.role === "admin" && (
+                                <Link href="/admin" className={cn("flex items-center gap-4 p-4 rounded-2xl transition-all", isActive("/admin") ? "bg-secondary text-slate-900 shadow-lg shadow-secondary/10" : "bg-slate-100/50 text-slate-600")}>
+                                    <ShieldCheck className="h-5 w-5" />
+                                    <span className="font-black text-sm uppercase tracking-widest text-slate-900">Admin Panel</span>
+                                </Link>
+                            )}
+                        </div>
+
+                        {/* Discovery Sections */}
+                        <div className="grid grid-cols-1 gap-8 mb-10">
                             <div>
-                                <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase pl-2 mb-2 block">Community</span>
-                                <div className="flex flex-col space-y-1 border-l-2 border-slate-200 pl-4">
-                                    <Link href="/events" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Events</Link>
-                                    <Link href="/achievements" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Achievements</Link>
-                                    <Link href="/social" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Newsletters</Link>
+                                <h4 className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase mb-4 px-2">Community Catalyst</h4>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <Link href="/events" className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-slate-100 text-slate-600 transition-all active:scale-[0.98]">
+                                        <Calendar className="h-5 w-5 mb-2 text-secondary" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Events</span>
+                                    </Link>
+                                    <Link href="/achievements" className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-slate-100 text-slate-600 transition-all active:scale-[0.98]">
+                                        <Trophy className="h-5 w-5 mb-2 text-secondary" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Global Win</span>
+                                    </Link>
+                                    <Link href="/career" className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-slate-100 text-slate-600 transition-all active:scale-[0.98]">
+                                        <GraduationCap className="h-5 w-5 mb-2 text-red-500" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Growth</span>
+                                    </Link>
+                                    <Link href="/business" className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-slate-100 text-slate-600 transition-all active:scale-[0.98]">
+                                        <Building2 className="h-5 w-5 mb-2 text-secondary" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Business</span>
+                                    </Link>
                                 </div>
                             </div>
+
                             <div>
-                                <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase pl-2 mb-2 block">Career & Growth</span>
-                                <div className="flex flex-col space-y-1 border-l-2 border-slate-200 pl-4">
-                                    <Link href="/career?tab=jobs" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Jobs</Link>
-                                    <Link href="/career?tab=scholarships" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Scholarships</Link>
-                                    <Link href="/career?tab=mentorship" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Loans / Mentorship</Link>
-                                </div>
-                            </div>
-                            <div>
-                                <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase pl-2 mb-2 block">Business</span>
-                                <div className="flex flex-col space-y-1 border-l-2 border-slate-200 pl-4">
-                                    <Link href="/business" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Directory</Link>
-                                    <Link href="/business/collaboration" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Collaboration</Link>
-                                </div>
-                            </div>
-                            <div>
-                                <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase pl-2 mb-2 block">Support</span>
-                                <div className="flex flex-col space-y-1 border-l-2 border-slate-200 pl-4">
-                                    <Link href="/help" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Help Requests</Link>
-                                    <Link href="/blood" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Blood</Link>
-                                    <Link href="/accommodations" className="text-slate-600 hover:text-secondary transition-colors py-1 cursor-pointer text-sm font-bold">Hostels</Link>
+                                <h4 className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase mb-4 px-2">Critical Support</h4>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <Link href="/help" className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-slate-100 text-slate-600 transition-all active:scale-[0.98]">
+                                        <Network className="h-5 w-5 mb-2 text-red-500" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Help Hub</span>
+                                    </Link>
+                                    <Link href="/accommodations" className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-slate-100 text-slate-600 transition-all active:scale-[0.98]">
+                                        <Building2 className="h-5 w-5 mb-2 text-secondary" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Housing</span>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
 
-                        {showAuth && isAuthenticated && (
-                            <div className="flex items-center gap-4 py-2">
-                                <span className="text-base font-semibold">Notifications</span>
-                                <NotificationBell />
-                            </div>
-                        )}
-
-                        {!isAuthenticated && showAuth && (
-                            <div className="pt-4 border-t border-slate-200 flex flex-col gap-3">
-                                <Link href="/login" className="w-full">
-                                    <Button variant="outline" className="w-full border-slate-200 text-slate-600 hover:text-secondary hover:bg-secondary/10 font-bold rounded-xl h-12">Login</Button>
-                                </Link>
-                                <Link href="/join" className="w-full">
-                                    <Button className="w-full bg-secondary text-slate-900 font-bold rounded-xl h-12">Join Community</Button>
-                                </Link>
-                            </div>
-                        )}
-
-                        {isAuthenticated && showAuth && (
-                            <div className="pt-4 border-t border-slate-200 flex flex-col gap-3 mb-4">
-                                <Link href="/posts/create" className="w-full">
-                                    <Button variant="outline" className="w-full border-slate-200 text-slate-600 hover:text-secondary hover:bg-secondary/10 font-bold rounded-xl h-12 gap-2">
-                                        <PlusCircle className="h-4 w-4" /> Create Post
-                                    </Button>
-                                </Link>
-                                <Link href="/profile" className="w-full">
-                                    <Button variant="ghost" className="w-full bg-slate-50 text-slate-900 border border-slate-100 hover:border-secondary font-bold rounded-xl h-12 justify-start gap-2">
-                                        <User className="h-4 w-4 text-secondary" /> View Profile
-                                    </Button>
-                                </Link>
-                                <Button variant="ghost" onClick={logout} className="w-full text-red-600 font-bold hover:bg-red-50 rounded-xl h-12 justify-start gap-2 overflow-hidden border border-transparent">
-                                    <LogOut className="h-4 w-4 shrink-0" /> Logout
-                                </Button>
-                            </div>
-                        )}
+                        {/* Account Actions */}
+                        <div className="pt-8 border-t border-slate-100">
+                            {showAuth && isAuthenticated ? (
+                                <div className="flex flex-col gap-3">
+                                    <Link href="/profile" className="flex items-center gap-4 p-4 rounded-2xl bg-slate-900 text-white shadow-xl shadow-slate-900/10 active:scale-[0.98] transition-all">
+                                        <User className="h-5 w-5 text-secondary" />
+                                        <span className="font-black text-sm uppercase tracking-widest">View Profile</span>
+                                    </Link>
+                                    <button onClick={logout} className="flex items-center gap-4 p-4 rounded-2xl bg-red-50 text-red-600 font-black text-sm uppercase tracking-widest active:scale-[0.98] transition-all">
+                                        <LogOut className="h-5 w-5" />
+                                        Logout
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col gap-3">
+                                    <Link href="/login" className="w-full">
+                                        <Button variant="outline" className="w-full h-14 rounded-2xl border-slate-200 text-slate-900 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-50">Login</Button>
+                                    </Link>
+                                    <Link href="/join" className="w-full">
+                                        <Button className="w-full h-14 rounded-2xl bg-secondary text-slate-900 font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-secondary/20 active:scale-[0.98] transition-all">Join Community</Button>
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

@@ -48,6 +48,24 @@
   --radius: 0.75rem;
   --background: #FAF9F6;
   --foreground: #0F172A;
+
+  /* Fluid Typography - Scales from 320px to 1280px */
+  --text-xs: clamp(0.65rem, 0.6rem + 0.25vw, 0.75rem);
+  --text-sm: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --text-base: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+  --text-lg: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  --text-xl: clamp(1.125rem, 1rem + 0.6vw, 1.25rem);
+  --text-2xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+  --text-3xl: clamp(1.5rem, 1.3rem + 1vw, 1.875rem);
+  --text-4xl: clamp(1.875rem, 1.6rem + 1.25vw, 2.25rem);
+  --text-5xl: clamp(2.25rem, 2rem + 1.5vw, 3rem);
+  --text-6xl: clamp(3rem, 2.5rem + 2.5vw, 4.5rem);
+  --text-7xl: clamp(3.5rem, 3rem + 3.5vw, 6rem);
+  --text-8xl: clamp(4rem, 3.5rem + 5vw, 8rem);
+
+  /* Responsive Spacing */
+  --space-container: clamp(1rem, 5vw, 2rem);
+
   --card: #FFFFFF;
   --card-foreground: #0F172A;
   --popover: #FFFFFF;
@@ -91,6 +109,14 @@ body {
     radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.05) 0px, transparent 50%),
     radial-gradient(at 100% 0%, rgba(15, 23, 42, 0.02) 0px, transparent 50%);
   background-attachment: fixed;
+  overflow-x: hidden;
+  /* Prevent horizontal scroll from animations */
+}
+
+/* Custom Spacing Overlay for Containers */
+.container {
+  padding-left: var(--space-container) !important;
+  padding-right: var(--space-container) !important;
 }
 
 @layer utilities {
