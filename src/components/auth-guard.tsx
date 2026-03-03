@@ -62,13 +62,15 @@ function VerificationRequired() {
 }
 
 export function AuthGuard({ children, allowedRoles, requireVerified = false }: AuthGuardProps) {
-    const { user, isLoading, isAuthenticated } = useAuth()
+    const { user, isLoading, isAuthenticated, isNewSocialUser } = useAuth()
     const router = useRouter()
     const [isUnverified, setIsUnverified] = useState(false)
 
     useEffect(() => {
         if (!isLoading) {
-            if (!isAuthenticated) {
+            if (isNewSocialUser) {
+                router.push("/complete-profile")
+            } else if (!isAuthenticated) {
                 router.push("/login")
             } else if (allowedRoles && user && !allowedRoles.includes(user.role as "admin" | "member")) {
                 router.push("/dashboard")
@@ -78,7 +80,7 @@ export function AuthGuard({ children, allowedRoles, requireVerified = false }: A
                 setIsUnverified(false)
             }
         }
-    }, [user, isLoading, isAuthenticated, router, allowedRoles, requireVerified])
+    }, [user, isLoading, isAuthenticated, isNewSocialUser, router, allowedRoles, requireVerified])
 
     if (isLoading) {
         return (

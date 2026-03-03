@@ -44,19 +44,24 @@ interface AuthContextType {
     changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; message?: string }>
     isPasswordUser: boolean
     getToken: () => Promise<string | null>
+    firebaseUser: FirebaseUser | null
+    isNewSocialUser: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null)
+    const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null)
+    const [isNewSocialUser, setIsNewSocialUser] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-            if (firebaseUser) {
-                await fetchUserData(firebaseUser)
+        const unsubscribe = onAuthStateChanged(auth, async (fUser) => {
+            setFirebaseUser(fUser)
+            if (fUser) {
+                await fetchUserData(fUser)
             } else {
                 // If not in Firebase, check if we have a server session (for dummy accounts)
                 const res = await fetch("/api/auth/me")
@@ -66,6 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 } else {
                     setUser(null)
                 }
+                setIsNewSocialUser(false)
             }
             setIsLoading(false)
         })
@@ -73,9 +79,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return () => unsubscribe()
     }, [])
 
-    const fetchUserData = async (firebaseUser: FirebaseUser) => {
+    const fetchUserData = async (fUser: FirebaseUser) => {
         try {
-            const token = await getIdToken(firebaseUser)
+            const token = await getIdToken(fUser)
             const res = await fetch("/api/auth/me", {
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -84,9 +90,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (res.ok) {
                 const data = await res.json()
                 setUser(data.user)
+                setIsNewSocialUser(false)
+            } else if (res.status === 404 || res.status === 401) {
+                // Firebase authenticated but not in our DB
+                setUser(null)
+                setIsNewSocialUser(true)
             }
         } catch (error) {
             console.error("Failed to fetch user data", error)
+            setIsNewSocialUser(false)
         }
     }
 
@@ -136,13 +148,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }
 
-    const register = async (details: { name: string, email: string, password?: string, mobile: string, gotra?: string }): Promise<boolean> => {
+    const register = async (details: { name: string, email: string, password?: string, mobile: string, gotra?: string, location?: string }): Promise<boolean> => {
         setIsLoading(true)
         try {
-            // 1. Create user in Firebase
-            const userCredential = await createUserWithEmailAndPassword(auth, details.email, details.password || "password123")
-            const firebaseUser = userCredential.user
-            const token = await getIdToken(firebaseUser)
+            let fUser = firebaseUser
+            let token = ""
+
+            if (!fUser) {
+                // 1. Create user in Firebase if not already authenticated (e.g., standard email/password registration)
+                const userCredential = await createUserWithEmailAndPassword(auth, details.email, details.password || "password123")
+                fUser = userCredential.user
+                token = await getIdToken(fUser)
+            } else {
+                // Already authenticated via Google/Social, just get token
+                token = await getIdToken(fUser)
+            }
 
             // 2. Create user in our Database
             const res = await fetch("/api/auth/register", {
@@ -151,11 +171,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({ ...details, firebaseUid: firebaseUser.uid })
+                body: JSON.stringify({
+                    name: details.name,
+                    email: details.email,
+                    mobile: details.mobile,
+                    gotra: details.gotra,
+                    location: details.location,
+                    firebaseUid: fUser.uid
+                })
             })
 
             if (res.ok) {
-                await fetchUserData(firebaseUser)
+                await fetchUserData(fUser)
                 return true
             }
             return false
@@ -223,7 +250,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             isAuthenticated: !!user,
             changePassword,
             isPasswordUser,
-            getToken
+            getToken,
+            firebaseUser,
+            isNewSocialUser
         }}>
             {children}
         </AuthContext.Provider>
