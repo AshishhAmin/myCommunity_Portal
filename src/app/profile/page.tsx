@@ -160,7 +160,7 @@ export default function ProfilePage() {
 
         setUploading(true)
         try {
-            const token = auth.currentUser ? await getIdToken(auth.currentUser) : ""
+            const token = await getToken()
             const res = await fetch("/api/profile/upload", {
                 method: "POST",
                 headers: {

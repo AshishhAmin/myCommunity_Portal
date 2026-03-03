@@ -69,7 +69,7 @@ export default function AddAchievementPage() {
                 const formDataUpload = new FormData()
                 formDataUpload.append("file", files[i])
 
-                const token = auth.currentUser ? await getIdToken(auth.currentUser) : ""
+                const token = await getToken()
                 const uploadRes = await fetch("/api/upload", {
                     method: "POST",
                     headers: {

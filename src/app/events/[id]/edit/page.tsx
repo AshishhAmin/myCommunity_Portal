@@ -10,12 +10,13 @@ import { ArrowLeft, Save, Loader2, Info } from "lucide-react"
 import Link from "next/link"
 import { AuthGuard } from "@/components/auth-guard"
 import { validateRequired, validateLength, validateFutureDate, validateUrl, collectErrors } from "@/lib/validation"
-import { getIdToken } from "firebase/auth"
 import { auth } from "@/lib/firebase"
+import { useAuth } from "@/lib/auth-context"
 
 export default function EditEventPage() {
     const router = useRouter()
     const params = useParams()
+    const { getToken } = useAuth()
     const id = params.id as string
 
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -106,7 +107,7 @@ export default function EditEventPage() {
                 const formDataUpload = new FormData()
                 formDataUpload.append("file", files[i])
 
-                const token = auth.currentUser ? await getIdToken(auth.currentUser) : ""
+                const token = await getToken()
                 const uploadRes = await fetch("/api/upload", {
                     method: "POST",
                     headers: {
@@ -149,7 +150,7 @@ export default function EditEventPage() {
         setError(null)
 
         try {
-            const token = auth.currentUser ? await getIdToken(auth.currentUser) : ""
+            const token = await getToken()
             const res = await fetch(`/api/events/${id}`, {
                 method: "PUT",
                 headers: {

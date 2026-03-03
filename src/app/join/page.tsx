@@ -118,8 +118,9 @@ export default function JoinPage() {
                                 <label className="text-xs md:text-sm font-bold text-slate-700 uppercase tracking-wider">Full Name</label>
                                 <Input
                                     name="name"
-                                    placeholder="Ashish Amin"
+                                    placeholder="John Doe"
                                     className={`pl-5 text-base h-12 md:h-14 rounded-2xl bg-slate-50 border-slate-200 focus:border-secondary focus:ring-secondary/20 transition-colors ${errors.name ? 'border-red-500 bg-red-50/50' : ''}`}
+                                    onChange={handleChange}
                                     value={formData.name}
                                 />
                                 {errors.name && <p className="text-red-500 text-xs font-medium mt-1.5">{errors.name}</p>}
