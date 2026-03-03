@@ -72,26 +72,23 @@ const modules = [
 ]
 
 export default function DashboardPage() {
-    const { user } = useAuth()
+    const { user, getToken } = useAuth()
     const [members, setMembers] = useState<any[]>([])
     const [loadingMembers, setLoadingMembers] = useState(true)
 
     useEffect(() => {
         const fetchMembers = async () => {
             try {
-                const res = await fetch('/api/members?limit=6') // Fetch limited or default
+                const token = await getToken()
+                const res = await fetch('/api/members?limit=6', {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                })
                 if (res.ok) {
                     const data = await res.json()
-                    // If API returns array directly or { members: [] }
-                    // Based on previous Member Directory impl, API returns array?
-                    // Let's assume array for now based on typical listing APIs
-                    // Actually, let's double check api/members/route.ts if possible, but safe to assume standard structure or handle both.
-                    if (Array.isArray(data)) {
-                        setMembers(data.slice(0, 6))
-                    } else if (data.members && Array.isArray(data.members)) {
+                    if (data.members && Array.isArray(data.members)) {
                         setMembers(data.members.slice(0, 6))
-                    } else {
-                        setMembers(data.slice(0, 6)) // Fallback
+                    } else if (Array.isArray(data)) {
+                        setMembers(data.slice(0, 6))
                     }
                 }
             } catch (error) {
@@ -101,7 +98,7 @@ export default function DashboardPage() {
             }
         }
         fetchMembers()
-    }, [])
+    }, [getToken])
 
     return (
         <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
@@ -121,11 +118,11 @@ export default function DashboardPage() {
                             <User className="h-10 w-10 md:h-12 md:w-12 text-slate-900 relative z-10 group-hover:scale-110 transition-transform duration-500" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Internal Protocol</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Member Portal</p>
                             <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-none">
                                 Namaskaram, <span className="text-secondary">{user?.name || "Member"}</span>
                             </h1>
-                            <p className="text-slate-500 font-bold mt-4 max-w-md">Access your community control panel and managed services.</p>
+                            <p className="text-slate-500 font-bold mt-4 max-w-md">Access your personal dashboard and community services.</p>
                         </div>
                     </div>
 
@@ -146,7 +143,7 @@ export default function DashboardPage() {
                             {user?.status !== 'approved' && (
                                 <p className="text-[10px] font-black text-amber-400 uppercase tracking-widest flex items-center gap-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                                    Limited Protocol Access
+                                    Limited Account Access
                                 </p>
                             )}
                         </div>
@@ -173,7 +170,7 @@ export default function DashboardPage() {
                                         {module.description}
                                     </p>
                                     <div className="mt-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-secondary transition-colors flex items-center gap-2">
-                                        Enter Protocol <span className="group-hover:translate-x-1 transition-transform">→</span>
+                                        Open Module <span className="group-hover:translate-x-1 transition-transform">→</span>
                                     </div>
                                 </CardContent>
                             </Card>

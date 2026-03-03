@@ -131,48 +131,52 @@ export default function AdminCollaborationPage() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
+        <div className="space-y-8 animate-in fade-in duration-700">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl md:text-5xl font-serif font-bold text-maroon mb-1 flex items-center gap-3">
-                        <Handshake className="h-10 w-10 text-gold" />
-                        Collaboration Moderation
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase flex items-center gap-3">
+                        <Handshake className="h-10 w-10 md:h-12 md:w-12 text-slate-900" strokeWidth={2.5} />
+                        Collaboration <span className="text-slate-400">Hub</span>
                     </h1>
-                    <p className="text-base md:text-xl text-muted-foreground">Verify and manage business collaboration posts.</p>
+                    <p className="text-slate-500 font-medium mt-1">Review and verify partnership requests from the community.</p>
                 </div>
             </div>
 
             {/* Filters and Search */}
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 md:gap-6 border-b border-gold/20 pb-2">
-                <div className="flex gap-4 md:gap-10 overflow-x-auto custom-scrollbar w-full lg:w-auto pb-2 whitespace-nowrap">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white/50 backdrop-blur-sm p-2 rounded-2xl border border-slate-200/60 shadow-sm">
+                <div className="flex gap-1 overflow-x-auto custom-scrollbar w-full lg:w-auto p-1 whitespace-nowrap">
                     {[
-                        { id: 'pending' as const, label: 'Pending Verification' },
-                        { id: 'approved' as const, label: 'Active Posts' },
+                        { id: 'pending' as const, label: 'Pending Review' },
+                        { id: 'approved' as const, label: 'Approved' },
                         { id: 'rejected' as const, label: 'Rejected' },
-                    ].map(tab => (
+                    ].map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => {
                                 setStatusFilter(tab.id)
                                 setCurrentPage(1)
                             }}
-                            className={`pb-2 md:pb-4 text-sm md:text-lg shrink-0 font-bold transition-all border-b-2 ${statusFilter === tab.id
-                                ? "text-maroon border-maroon"
-                                : "text-gray-500 border-transparent hover:text-maroon/70"}`}
+                            className={cn(
+                                "px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-200",
+                                statusFilter === tab.id
+                                    ? "bg-slate-900 text-white shadow-lg shadow-slate-200 scale-[1.02]"
+                                    : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
+                            )}
                         >
                             {tab.label}
                         </button>
                     ))}
                 </div>
 
-                <div className="flex gap-4 w-full lg:w-auto mb-2">
-                    <div className="relative w-full sm:w-64">
-                        <Search className="absolute left-3 top-2.5 md:top-3 h-4 w-4 md:h-5 md:w-5 text-maroon/50" />
+                <div className="flex gap-3 w-full lg:w-auto pr-2">
+                    <div className="relative w-full sm:w-72 group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-slate-900 transition-colors" />
                         <Input
-                            placeholder="Search opportunities..."
+                            placeholder="Search collaborations..."
+                            className="pl-11 h-11 bg-white border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-900/10 transition-all text-sm font-medium"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-9 md:pl-10 h-10 md:h-12 border-gold/30 focus-visible:ring-gold/40 text-sm md:text-lg"
                         />
                     </div>
                 </div>
@@ -180,102 +184,118 @@ export default function AdminCollaborationPage() {
 
             {/* Bulk Action Bar */}
             {selectedIds.length > 0 && (
-                <div className="bg-maroon text-gold px-6 py-4 rounded-xl shadow-2xl flex items-center justify-between sticky top-4 z-50 border border-gold/30 animate-in fade-in slide-in-from-top-4 duration-300">
-                    <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-full bg-gold/20 flex items-center justify-center font-serif text-2xl font-bold">
+                <div className="bg-slate-900 text-white px-8 py-5 rounded-3xl shadow-2xl flex flex-col sm:flex-row items-center justify-between sticky top-6 z-50 border border-white/10 backdrop-blur-md animate-in fade-in slide-in-from-top-8 duration-500">
+                    <div className="flex items-center gap-6 mb-4 sm:mb-0">
+                        <div className="h-14 w-14 rounded-2xl bg-white/10 flex items-center justify-center font-black text-2xl border border-white/10">
                             {selectedIds.length}
                         </div>
                         <div>
-                            <p className="font-bold text-xl leading-none">Posts Selected</p>
-                            <p className="text-gold/70 text-base">Perform bulk actions</p>
+                            <p className="font-black text-xl uppercase tracking-tighter leading-none">Selection Active</p>
+                            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Execute systemic batch operations</p>
                         </div>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 w-full sm:w-auto">
                         <Button
-                            variant="outline"
-                            className="bg-transparent border-gold/40 text-gold hover:bg-gold/10 hover:text-gold font-bold px-6"
+                            variant="ghost"
+                            className="flex-1 sm:flex-none text-white hover:bg-white/10 font-bold uppercase tracking-widest px-6 h-12 rounded-xl"
                             onClick={() => setSelectedIds([])}
                         >
-                            Cancel
+                            Dismiss
                         </Button>
                         <Button
-                            variant="destructive"
-                            className="bg-red-600/20 text-red-200 border border-red-500/30 hover:bg-red-600/40 font-bold px-6"
+                            className="flex-1 sm:flex-none bg-rose-500 hover:bg-rose-600 text-white font-black uppercase tracking-widest px-8 h-12 rounded-xl shadow-lg shadow-rose-500/20"
                             onClick={() => handleAction(selectedIds, 'rejected')}
                         >
-                            Reject All
+                            Batch Reject
                         </Button>
                         <Button
-                            className="bg-gold text-maroon hover:bg-gold/90 font-bold px-8 shadow-lg"
+                            className="flex-1 sm:flex-none bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest px-8 h-12 rounded-xl shadow-lg shadow-emerald-500/20"
                             onClick={() => handleAction(selectedIds, 'approved')}
                         >
-                            Approve All
+                            Bulk Approve
                         </Button>
                     </div>
                 </div>
             )}
 
-            <div className="bg-white rounded-lg border border-gold/20 shadow-sm overflow-hidden">
+            {/* List Section */}
+            <div className="bg-white rounded-[2.5rem] border border-slate-200/60 shadow-xl shadow-slate-200/40 overflow-hidden">
                 {loading ? (
-                    <div className="flex justify-center py-12">
-                        <Loader2 className="h-8 w-8 animate-spin text-maroon" />
+                    <div className="flex flex-col items-center justify-center py-24 gap-4">
+                        <div className="relative">
+                            <div className="h-16 w-16 rounded-full border-4 border-slate-100 border-t-slate-900 animate-spin" />
+                            <Handshake className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-slate-900/20" />
+                        </div>
+                        <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Loading list...</p>
                     </div>
                 ) : collaborations.length === 0 ? (
-                    <div className="text-center py-12 bg-white/80">
-                        <Handshake className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-maroon">No posts found</h3>
-                        <p className="text-muted-foreground">There are no collaboration opportunities in this category.</p>
+                    <div className="text-center py-24 bg-slate-50/50">
+                        <div className="h-20 w-20 bg-slate-100 rounded-[2rem] flex items-center justify-center mx-auto mb-6 transform -rotate-12">
+                            <Handshake className="h-10 w-10 text-slate-300" />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">List Empty</h3>
+                        <p className="text-slate-500 font-medium mt-2">No items found in this category.</p>
                     </div>
                 ) : (
-                    <div className="max-h-[600px] overflow-auto custom-scrollbar">
-                        <table className="w-full text-sm text-left border-collapse">
-                            <thead className="bg-[#FAF3E0] text-maroon border-b border-gold/10 sticky top-0 z-10 shadow-sm">
-                                <tr>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 w-10 shrink-0">
+                    <div className="overflow-x-auto custom-scrollbar">
+                        <table className="w-full text-left border-separate border-spacing-0">
+                            <thead>
+                                <tr className="bg-slate-50/80 backdrop-blur-sm">
+                                    <th className="pl-8 pr-4 py-6 w-12">
                                         <Checkbox
                                             checked={selectedIds.length === collaborations.length && collaborations.length > 0}
                                             onCheckedChange={toggleSelectAll}
+                                            className="border-slate-300 data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
                                         />
                                     </th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Title</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Type</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-base">Author</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold text-right whitespace-nowrap text-sm md:text-base">Actions</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Collaboration Details</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Type</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Posted By</th>
+                                    <th className="pl-6 pr-8 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gold/10">
-                                {collaborations.map((collab: any) => (
-                                    <tr key={collab.id} className={cn(
-                                        "transition-colors",
-                                        selectedIds.includes(collab.id) ? "bg-maroon/5" : "hover:bg-[#FAF3E0]/20"
-                                    )}>
-                                        <td className="px-3 md:px-6 py-4 md:py-5">
+                            <tbody className="divide-y divide-slate-100">
+                                {collaborations.map((collab: any, index: number) => (
+                                    <tr
+                                        key={collab.id}
+                                        className={cn(
+                                            "group transition-all duration-300",
+                                            selectedIds.includes(collab.id) ? "bg-slate-50" : "hover:bg-slate-50/50"
+                                        )}
+                                        style={{ animationDelay: `${index * 50}ms` }}
+                                    >
+                                        <td className="pl-8 pr-4 py-6">
                                             <Checkbox
                                                 checked={selectedIds.includes(collab.id)}
                                                 onCheckedChange={() => toggleSelect(collab.id)}
+                                                className="border-slate-300 data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
                                             />
                                         </td>
-                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-900 text-sm md:text-base">
-                                            <div className="font-bold text-maroon line-clamp-2 max-w-xs">{collab.title}</div>
-                                            <div className="text-xs text-muted-foreground mt-1 line-clamp-1 max-w-xs">{collab.description}</div>
+                                        <td className="px-6 py-6">
+                                            <div className="flex flex-col gap-1">
+                                                <span className="font-black text-slate-900 uppercase tracking-tight text-sm leading-tight group-hover:text-slate-600 transition-colors">
+                                                    {collab.title}
+                                                </span>
+                                                <span className="text-[11px] font-medium text-slate-400 line-clamp-1 max-w-xs">{collab.description}</span>
+                                            </div>
                                         </td>
-                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 whitespace-nowrap text-sm md:text-base">
-                                            <span className="bg-gold/10 text-maroon/80 px-2 py-0.5 rounded text-xs font-bold border border-gold/20">
+                                        <td className="px-6 py-6">
+                                            <Badge variant="secondary" className="bg-slate-100 text-slate-600 font-black text-[10px] uppercase tracking-widest px-3 py-1 border-0 shadow-sm">
                                                 {collab.partnershipType}
-                                            </span>
+                                            </Badge>
                                         </td>
-                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 text-sm md:text-base">
-                                            <div className="font-bold text-gray-800">{collab.author?.name || 'Unknown'}</div>
-                                            {collab.author?.location && (
-                                                <div className="text-xs text-muted-foreground">{collab.author.location}</div>
-                                            )}
+                                        <td className="px-6 py-6">
+                                            <div className="flex flex-col">
+                                                <span className="text-sm font-bold text-slate-900">{collab.author?.name || "Independent"}</span>
+                                                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 mt-0.5">{collab.author?.location || "Remote"}</span>
+                                            </div>
                                         </td>
-                                        <td className="px-3 md:px-6 py-3 md:py-4 text-right">
-                                            <div className="flex justify-end gap-1 md:gap-2">
+                                        <td className="pl-6 pr-8 py-6 text-right">
+                                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                 <Link
                                                     href={`/business/collaboration/${collab.id}`}
                                                     target="_blank"
-                                                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-8 w-8 p-0 text-muted-foreground hover:text-maroon hover:bg-gold/10"
+                                                    className="h-10 w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-900 hover:shadow-lg hover:shadow-slate-200 transition-all"
                                                 >
                                                     <Eye className="h-4 w-4" />
                                                     <span className="sr-only">View</span>
@@ -290,13 +310,16 @@ export default function AdminCollaborationPage() {
                 )}
             </div>
 
+            {/* Pagination Section */}
             {totalPages > 1 && (
-                <div className="py-4">
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={setCurrentPage}
-                    />
+                <div className="flex justify-center pt-4">
+                    <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-lg shadow-slate-200/50">
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                        />
+                    </div>
                 </div>
             )}
         </div>

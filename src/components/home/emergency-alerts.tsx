@@ -8,6 +8,7 @@ import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
 import { ScrollAnimation } from "@/components/ui/scroll-animation"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface EmergencyRequest {
     id: string
@@ -86,93 +87,79 @@ function RequestCard({ req, variant = "full", currentUserId, onMarkReceived }: {
     }
 
     return (
-        <Card className="overflow-hidden border border-slate-100 shadow-[0_20px_60px_-15px_rgba(59,130,246,0.1)] rounded-[2.5rem] bg-white">
+        <Card className="overflow-hidden border border-slate-100 shadow-[0_15px_40px_-10px_rgba(59,130,246,0.08)] rounded-[2rem] bg-white max-w-2xl mx-auto">
             <CardContent className="p-0">
-                <div className="bg-gradient-to-r from-red-600 to-red-500 text-white px-6 md:px-8 py-3.5 md:py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <AlertCircle className="h-5 w-5 animate-pulse shrink-0" strokeWidth={2.5} />
-                        <span className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] truncate">Emergency Assistance Required</span>
+                <div className="bg-gradient-to-r from-red-600 to-red-500 text-white px-5 py-2.5 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4 animate-pulse shrink-0" strokeWidth={2.5} />
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] truncate">Emergency Bulletin</span>
                     </div>
-                    <span className="text-[10px] md:text-xs font-bold opacity-90 shrink-0 ml-2 tracking-wider">{timeAgo(req.createdAt)}</span>
+                    <span className="text-[9px] font-bold opacity-90 shrink-0 ml-2 tracking-wider">{timeAgo(req.createdAt)}</span>
                 </div>
 
-                <div className="p-8 md:p-12">
-                    <div className="flex flex-col md:flex-row md:items-start gap-8 md:gap-12">
-                        <div className="flex-1 space-y-6">
+                <div className="p-6 md:p-8">
+                    <div className="flex flex-col gap-5">
+                        <div className="space-y-4">
                             <div>
-                                <h3 className="text-3xl md:text-4xl lg:text-5xl font-sans font-black text-slate-900 mb-6 md:mb-8 leading-[1.1] tracking-tight">{req.title}</h3>
-                                <div className="flex flex-col sm:flex-row gap-4 md:gap-6 items-start sm:items-center w-full">
-                                    <div className="flex items-center gap-4 bg-slate-50 p-4 md:p-5 rounded-2xl border border-slate-100 shadow-sm w-full sm:w-auto hover:border-gold-200 transition-colors group">
-                                        <div className="h-12 w-12 md:h-14 md:w-14 rounded-xl bg-white flex items-center justify-center shrink-0 border border-slate-100 group-hover:bg-gold-50 transition-colors">
-                                            <MapPin className="h-6 w-6 text-secondary" />
-                                        </div>
-                                        <div className="min-w-0">
-                                            <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-500 mb-1">Location</p>
-                                            <p className="font-sans font-bold text-lg md:text-xl text-slate-900 truncate">{req.user.location}</p>
-                                        </div>
+                                <h3 className="text-xl md:text-2xl font-sans font-black text-slate-900 mb-3 leading-tight tracking-tight">{req.title}</h3>
+                                <div className="flex flex-wrap gap-3 items-center">
+                                    <div className="flex items-center gap-2.5 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100 shadow-sm transition-colors group">
+                                        <MapPin className="h-4 w-4 text-secondary" />
+                                        <span className="font-sans font-bold text-xs text-slate-900">{req.user.location}</span>
                                     </div>
 
-                                    <div className="flex items-center gap-4 bg-slate-50 p-4 md:p-5 rounded-2xl border border-slate-100 shadow-sm w-full sm:w-auto hover:border-red-200 transition-colors group">
-                                        <div className="h-12 w-12 md:h-14 md:w-14 rounded-xl bg-white flex items-center justify-center shrink-0 border border-slate-100 group-hover:bg-red-50 transition-colors">
-                                            <Phone className="h-6 w-6 text-red-500" />
-                                        </div>
-                                        <div className="min-w-0">
-                                            <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-500 mb-1">Urgent Contact</p>
-                                            <p className="font-sans font-bold text-lg md:text-xl text-slate-900 truncate">{req.contact}</p>
-                                        </div>
+                                    <div className="flex items-center gap-2.5 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100 shadow-sm transition-colors group">
+                                        <Phone className="h-4 w-4 text-red-500" />
+                                        <span className="font-sans font-bold text-xs text-slate-900">{req.contact}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <p className="text-slate-600 font-medium text-lg md:text-2xl border-l-4 border-gold-200 pl-4 md:pl-6 py-2 leading-relaxed">
-                                {req.description}
+                            <p className="text-slate-600 font-medium text-sm md:text-base border-l-2 border-red-200 pl-4 py-1 leading-relaxed line-clamp-2 italic">
+                                "{req.description}"
                             </p>
 
-                            <div className="flex flex-wrap gap-3 md:gap-4 pt-6">
-                                <a href={`tel:${req.contact}`} className="w-full sm:w-auto">
-                                    <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-red-600 to-red-500 hover:opacity-90 text-white font-bold px-6 md:px-8 h-14 rounded-xl shadow-lg shadow-red-500/30 hover:shadow-red-500/50 transition-all border-0 text-base">
-                                        <Phone className="h-5 w-5 mr-2.5" />
-                                        Call Emergency Contact
-                                    </Button>
-                                </a>
-                                {isOwner && onMarkReceived && (
-                                    <Button
-                                        variant="outline"
-                                        disabled={marking}
-                                        onClick={async () => {
-                                            setMarking(true)
-                                            try {
-                                                const res = await fetch(`/api/help/${req.id}`, { method: 'PATCH' })
-                                                if (res.ok) {
-                                                    onMarkReceived(req.id)
+                            <div className="flex items-center justify-between pt-2">
+                                <div className="flex items-center gap-2">
+                                    <div className="h-8 w-8 rounded-lg bg-red-50 flex items-center justify-center text-red-600 text-[10px] font-black uppercase border border-red-100">
+                                        {req.user.name[0]}
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-slate-900 font-bold text-[11px] leading-none">{req.user.name}</span>
+                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Community Member</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <a href={`tel:${req.contact}`}>
+                                        <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white font-bold h-9 px-4 rounded-lg shadow-md shadow-red-500/20 text-[11px] uppercase tracking-wider">
+                                            Contact
+                                        </Button>
+                                    </a>
+                                    {isOwner && onMarkReceived && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            disabled={marking}
+                                            onClick={async () => {
+                                                setMarking(true)
+                                                try {
+                                                    const res = await fetch(`/api/help/${req.id}`, { method: 'PATCH' })
+                                                    if (res.ok) {
+                                                        onMarkReceived(req.id)
+                                                    }
+                                                } catch (e) {
+                                                    console.error(e)
+                                                } finally {
+                                                    setMarking(false)
                                                 }
-                                            } catch (e) {
-                                                console.error(e)
-                                            } finally {
-                                                setMarking(false)
-                                            }
-                                        }}
-                                        className="w-full sm:w-auto border-green-600 text-green-700 hover:bg-green-50"
-                                    >
-                                        {marking ? (
-                                            <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Updating...</>
-                                        ) : (
-                                            <><CheckCircle2 className="h-4 w-4 mr-2" />Received Help ✓</>
-                                        )}
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="hidden md:block w-px bg-slate-100 self-stretch my-2" />
-
-                        <div className="flex flex-row md:flex-col items-center md:items-center justify-start md:justify-center md:w-56 pt-6 md:pt-0 gap-4 md:gap-3 border-t md:border-t-0 border-slate-100 mt-4 md:mt-0 w-full bg-slate-50 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none">
-                            <div className="h-14 w-14 md:h-20 md:w-20 rounded-[1.25rem] md:rounded-full bg-white md:bg-gold-50 flex items-center justify-center text-gold-600 text-xl md:text-3xl font-black shrink-0 border border-slate-100 md:border-gold-100 shadow-sm">
-                                {req.user.name[0]}
-                            </div>
-                            <div className="flex flex-col md:items-center">
-                                <p className="text-slate-900 font-sans text-base md:text-lg font-bold md:text-center line-clamp-1">{req.user.name}</p>
-                                <p className="text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-widest md:text-center mt-1">Community Member</p>
+                                            }}
+                                            className="border-green-600 text-green-700 hover:bg-green-50 h-9 text-[11px]"
+                                        >
+                                            {marking ? <Loader2 className="h-3 w-3 animate-spin" /> : "Resolved"}
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -211,7 +198,7 @@ export function EmergencyAlerts() {
 
     useEffect(() => {
         if (requests.length <= 1 || isPaused) return
-        const timer = setInterval(next, 8000) // Slower auto-play
+        const timer = setInterval(next, 2000) // Much faster sliding as requested
         return () => clearInterval(timer)
     }, [requests.length, isPaused, next])
 
@@ -227,85 +214,109 @@ export function EmergencyAlerts() {
 
     if (loading || requests.length === 0) return null
 
-    const currentReq = requests[current]
+    const prevIdx = (current - 1 + requests.length) % requests.length
     const nextIdx = (current + 1) % requests.length
-    const nextReq = requests[nextIdx]
+
     const hasMultiple = requests.length > 1
 
     return (
         <section
-            className="bg-[#FAF9F6] py-16 md:py-24 scroll-mt-20 border-y border-slate-100"
+            className="bg-[#FAF9F6] py-12 md:py-16 scroll-mt-20 border-y border-slate-100 overflow-hidden"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >
             <div className="container mx-auto px-4 max-w-7xl">
                 <ScrollAnimation animation="fade-right">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8 mb-10 md:mb-14">
-                        <div className="space-y-4">
-                            <div className="inline-flex items-center gap-2.5 text-red-600 font-bold text-[11px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] bg-red-50 border border-red-100 px-4 py-2 rounded-full shadow-sm">
-                                <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
-                                Urgent Community Bulletin
-                            </div>
-                            <h2 className="font-sans text-4xl md:text-5xl lg:text-5xl font-black text-slate-900 tracking-tight">Active Community Requests</h2>
+                    <div className="flex flex-col items-center text-center gap-4 mb-10">
+                        <div className="inline-flex items-center gap-2.5 text-red-600 font-bold text-[10px] uppercase tracking-[0.2em] bg-red-50 border border-red-100 px-4 py-1.5 rounded-full shadow-sm">
+                            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+                            Emergency Bulletins
                         </div>
+                        <h2 className="font-sans text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Active Help Requests</h2>
                     </div>
                 </ScrollAnimation>
 
-                <div className="flex items-center gap-4 hidden sm:flex">
-                    <div className="flex gap-2">
-                        <Button
-                            variant="outline"
-                            onClick={prev}
-                            disabled={!hasMultiple}
-                            className="rounded-xl border-slate-200 bg-white text-slate-600 hover:border-gold-200 hover:bg-gold-50 hover:text-gold-600 w-12 h-12 md:w-14 md:h-14 p-0 transition-all duration-300 shadow-sm"
-                        >
-                            <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            onClick={next}
-                            disabled={!hasMultiple}
-                            className="rounded-xl border-slate-200 bg-white text-slate-600 hover:border-gold-200 hover:bg-gold-50 hover:text-gold-600 w-12 h-12 md:w-14 md:h-14 p-0 transition-all duration-300 shadow-sm"
-                        >
-                            <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-            <ScrollAnimation animation="fade-up" delay={0.2}>
-                <div className="flex flex-col lg:flex-row gap-6 items-stretch">
-                    <div className={cn("transition-all duration-700 ease-in-out", hasMultiple ? 'w-full lg:w-[68%]' : 'w-full')}>
-                        <RequestCard req={currentReq} variant="full" currentUserId={user?.id} onMarkReceived={handleMarkReceived} />
-                    </div>
-
+                <div className="relative flex items-center justify-center group/carousel">
+                    {/* Navigation Buttons */}
                     {hasMultiple && (
-                        <div
-                            className="hidden lg:block w-[32%] cursor-pointer transition-all duration-500 hover:scale-[1.02]"
-                            onClick={next}
-                        >
-                            <RequestCard req={nextReq} variant="simple" />
-                        </div>
+                        <>
+                            <Button
+                                variant="outline"
+                                onClick={(e) => { e.stopPropagation(); prev(); }}
+                                className="absolute left-4 z-20 rounded-full w-12 h-12 border-slate-200 bg-white/80 backdrop-blur-sm text-slate-600 hover:bg-white hover:text-red-600 hover:border-red-200 shadow-lg opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hidden md:flex items-center justify-center p-0"
+                            >
+                                <ChevronLeft className="h-6 w-6" />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                onClick={(e) => { e.stopPropagation(); next(); }}
+                                className="absolute right-4 z-20 rounded-full w-12 h-12 border-slate-200 bg-white/80 backdrop-blur-sm text-slate-600 hover:bg-white hover:text-red-600 hover:border-red-200 shadow-lg opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hidden md:flex items-center justify-center p-0"
+                            >
+                                <ChevronRight className="h-6 w-6" />
+                            </Button>
+                        </>
                     )}
-                </div>
-            </ScrollAnimation>
 
-            {hasMultiple && (
-                <ScrollAnimation animation="fade-in" delay={0.4}>
-                    <div className="mt-8 flex justify-center gap-3">
+                    <div className="flex items-center justify-center gap-4 md:gap-12 w-full max-w-6xl">
+                        <AnimatePresence mode="popLayout" initial={false}>
+                            {/* Previous Card Preview */}
+                            {hasMultiple && (
+                                <motion.div
+                                    key={`prev-${requests[prevIdx].id}`}
+                                    initial={{ opacity: 0, x: -100, scale: 0.8 }}
+                                    animate={{ opacity: 0.3, x: 0, scale: 0.85 }}
+                                    exit={{ opacity: 0, x: -200, scale: 0.7 }}
+                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                    className="hidden lg:block w-1/4 shrink-0 filter blur-[1px] pointer-events-none"
+                                >
+                                    <RequestCard req={requests[prevIdx]} variant="full" />
+                                </motion.div>
+                            )}
+
+                            {/* Current Focused Card */}
+                            <motion.div
+                                key={`curr-${requests[current].id}`}
+                                initial={{ opacity: 0, scale: 0.9, x: 0 }}
+                                animate={{ opacity: 1, scale: 1, x: 0 }}
+                                exit={{ opacity: 0, scale: 0.9, x: 0 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                                className="w-full md:max-w-2xl shrink-0 z-10"
+                            >
+                                <RequestCard req={requests[current]} variant="full" currentUserId={user?.id} onMarkReceived={handleMarkReceived} />
+                            </motion.div>
+
+                            {/* Next Card Preview */}
+                            {hasMultiple && (
+                                <motion.div
+                                    key={`next-${requests[nextIdx].id}`}
+                                    initial={{ opacity: 0, x: 100, scale: 0.8 }}
+                                    animate={{ opacity: 0.3, x: 0, scale: 0.85 }}
+                                    exit={{ opacity: 0, x: 200, scale: 0.7 }}
+                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                    className="hidden lg:block w-1/4 shrink-0 filter blur-[1px] pointer-events-none"
+                                >
+                                    <RequestCard req={requests[nextIdx]} variant="full" />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </div>
+
+                {hasMultiple && (
+                    <div className="mt-10 flex justify-center gap-2.5">
                         {requests.map((_, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => setCurrent(idx)}
                                 className={cn(
-                                    "h-2 rounded-full transition-all duration-500",
-                                    current === idx ? "w-12 bg-secondary" : "w-2 bg-slate-200 hover:bg-slate-300"
+                                    "h-1.5 rounded-full transition-all duration-300",
+                                    current === idx ? "w-10 bg-red-600 shadow-sm" : "w-1.5 bg-slate-200 hover:bg-slate-300"
                                 )}
                             />
                         ))}
                     </div>
-                </ScrollAnimation>
-            )}
+                )}
+            </div>
         </section>
     )
 }

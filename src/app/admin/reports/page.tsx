@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import {
     Flag, AlertTriangle, CheckCircle, XCircle, Loader2,
@@ -235,33 +236,40 @@ export default function AdminReportsPage() {
     }
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
-            {/* Header */}
-            <div className="flex items-center gap-4">
-                <div className="p-4 rounded-2xl bg-slate-900 shadow-xl shadow-slate-900/10">
-                    <Shield className="h-8 w-8 text-secondary" />
-                </div>
-                <div>
-                    <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-1 tracking-tight uppercase">Resolution Center</h1>
-                    <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Review flagged content and maintain community standards</p>
+        <div className="space-y-8 animate-in fade-in duration-700">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div className="flex items-center gap-6">
+                    <div className="hidden sm:flex h-20 w-20 rounded-[2rem] bg-slate-900 items-center justify-center shadow-2xl shadow-slate-900/20 group hover:rotate-6 transition-transform duration-500">
+                        <Shield className="h-10 w-10 text-white" strokeWidth={2.5} />
+                    </div>
+                    <div>
+                        <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
+                            Reports <span className="text-slate-400">& Inbox</span>
+                        </h1>
+                        <p className="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[11px] font-black">Manage reports and community flags</p>
+                    </div>
                 </div>
             </div>
 
-            {/* Filter Tabs */}
-            <div className="flex flex-col lg:flex-row gap-8 justify-between items-start lg:items-end border-b border-slate-100 pb-4">
-                <div className="flex gap-10 overflow-x-auto custom-scrollbar w-full lg:w-auto pb-2 whitespace-nowrap">
+            {/* Filters and Selection */}
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white/50 backdrop-blur-sm p-2 rounded-2xl border border-slate-200/60 shadow-sm">
+                <div className="flex gap-1 overflow-x-auto custom-scrollbar w-full lg:w-auto p-1 whitespace-nowrap">
                     {([
-                        { value: 'all', label: 'All Protocols', icon: Flag },
-                        { value: 'open', label: 'Priority Case', icon: AlertTriangle },
-                        { value: 'reviewed', label: 'Resolved', icon: CheckCircle },
-                        { value: 'dismissed', label: 'Archived', icon: XCircle },
-                    ] as const).map(tab => (
+                        { value: 'all', label: 'All Reports', icon: Flag },
+                        { value: 'open', label: 'Priority Issues', icon: AlertTriangle },
+                        { value: 'reviewed', label: 'Resolved Cases', icon: CheckCircle },
+                        { value: 'dismissed', label: 'Archived Logs', icon: XCircle },
+                    ] as const).map((tab) => (
                         <button
                             key={tab.value}
                             onClick={() => { setFilterStatus(tab.value); setCurrentPage(1); }}
-                            className={`pb-4 text-xs font-black uppercase tracking-[0.2em] transition-all border-b-2 flex items-center gap-2 shrink-0 ${filterStatus === tab.value
-                                ? "text-slate-900 border-secondary"
-                                : "text-slate-400 border-transparent hover:text-slate-600"}`}
+                            className={cn(
+                                "px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center gap-2",
+                                filterStatus === tab.value
+                                    ? "bg-slate-900 text-white shadow-lg shadow-slate-200 scale-[1.02]"
+                                    : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
+                            )}
                         >
                             <tab.icon className="h-4 w-4" />
                             {tab.label}
@@ -269,14 +277,13 @@ export default function AdminReportsPage() {
                     ))}
                 </div>
 
-                {/* Content Type Filter */}
-                <div className="mb-2 w-full lg:w-auto">
+                <div className="flex gap-3 w-full lg:w-auto pr-2">
                     <select
                         value={filterType}
                         onChange={(e) => { setFilterType(e.target.value); setCurrentPage(1); }}
-                        className="px-6 py-3 border border-slate-100 rounded-xl text-[10px] font-black uppercase tracking-widest bg-white text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/20 cursor-pointer w-full md:w-auto"
+                        className="px-6 h-11 border border-slate-200 rounded-xl text-[11px] font-black uppercase tracking-widest bg-white text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 cursor-pointer w-full md:w-auto transition-all"
                     >
-                        <option value="all">Global Content</option>
+                        <option value="all">Everywhere</option>
                         {Object.entries(TYPE_LABELS).map(([value, { label }]) => (
                             <option key={value} value={value}>{label}</option>
                         ))}
@@ -284,111 +291,115 @@ export default function AdminReportsPage() {
                 </div>
             </div>
 
-            {/* Reports List */}
-            {loading ? (
-                <div className="flex items-center justify-center py-20">
-                    <Loader2 className="h-8 w-8 animate-spin text-maroon" />
-                </div>
-            ) : reports.length === 0 ? (
-                <div className="text-center py-20">
-                    <Flag className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-lg font-semibold text-gray-500">No reports found</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        {filterStatus !== 'all' || filterType !== 'all'
-                            ? 'Try adjusting your filters'
-                            : 'No content has been flagged yet'}
-                    </p>
-                </div>
-            ) : (
-                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-2xl shadow-slate-200/50 overflow-hidden">
-                    <div className="max-h-[600px] overflow-auto custom-scrollbar">
-                        <table className="w-full text-sm text-left border-collapse">
-                            <thead className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-10">
-                                <tr>
-                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Registry Type</th>
-                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Content Subject</th>
-                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Violation Class</th>
-                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Reporting Source</th>
-                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Timestamp</th>
-                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px]">Resolution</th>
-                                    <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] text-right">Actions</th>
+            {/* Registry List */}
+            <div className="bg-white rounded-[2.5rem] border border-slate-200/60 shadow-xl shadow-slate-200/40 overflow-hidden">
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-24 gap-4">
+                        <div className="relative">
+                            <div className="h-16 w-16 rounded-full border-4 border-slate-100 border-t-slate-900 animate-spin" />
+                            <Shield className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-slate-900/20" />
+                        </div>
+                        <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Loading Reports...</p>
+                    </div>
+                ) : reports.length === 0 ? (
+                    <div className="text-center py-24 bg-slate-50/50">
+                        <div className="h-20 w-20 bg-slate-100 rounded-[2rem] flex items-center justify-center mx-auto mb-6 transform -rotate-12">
+                            <Flag className="h-10 w-10 text-slate-300" />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Inbox Clear</h3>
+                        <p className="text-slate-500 font-medium mt-2">No active reports matching current search.</p>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto custom-scrollbar">
+                        <table className="w-full text-left border-separate border-spacing-0">
+                            <thead>
+                                <tr className="bg-slate-50/80 backdrop-blur-sm">
+                                    <th className="pl-8 pr-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Type</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Subject</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Reason</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Reporter</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Date</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gold/10">
-                                {reports.map(report => {
+                            <tbody className="divide-y divide-slate-100">
+                                {reports.map((report, index) => {
                                     const reasonInfo = REASON_LABELS[report.reason] || REASON_LABELS.other
-                                    const typeInfo = TYPE_LABELS[report.contentType] || { label: report.contentType, color: 'bg-gray-100 text-gray-700' }
-                                    const isLoading = actionLoading === report.id
+                                    const typeInfo = TYPE_LABELS[report.contentType] || { label: report.contentType, color: 'bg-slate-100 text-slate-600' }
+                                    const isItemLoading = actionLoading === report.id
 
                                     return (
-                                        <tr key={report.id} className="hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                                            <td className="px-6 py-6">
-                                                <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border ${typeInfo.color.replace('bg-', 'bg-opacity-10 bg-').replace('text-', 'text-opacity-90 text-')}`}>
+                                        <tr
+                                            key={report.id}
+                                            className="group transition-all duration-300 hover:bg-slate-50/50"
+                                            style={{ animationDelay: `${index * 50}ms` }}
+                                        >
+                                            <td className="pl-8 pr-6 py-6">
+                                                <Badge variant="secondary" className={cn("text-[9px] font-black uppercase tracking-widest px-3 py-1 border-0 shadow-sm", typeInfo.color)}>
                                                     {typeInfo.label}
-                                                </span>
+                                                </Badge>
+                                            </td>
+                                            <td className="px-6 py-6">
+                                                <div className="flex flex-col gap-1 max-w-[200px]">
+                                                    <span className="font-black text-slate-900 uppercase tracking-tight text-[13px] leading-tight group-hover:text-slate-600 transition-colors truncate">
+                                                        {report.contentTitle}
+                                                    </span>
+                                                    {report.details && (
+                                                        <span className="text-[10px] text-slate-400 truncate italic font-medium uppercase tracking-tight">
+                                                            "{report.details}"
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-6">
+                                                <Badge className={cn("text-[9px] font-black uppercase tracking-widest px-3 py-1 border-0 shadow-sm", reasonInfo.color)}>
+                                                    {reasonInfo.label}
+                                                </Badge>
                                             </td>
                                             <td className="px-6 py-6 font-bold text-slate-900">
-                                                <div className="flex flex-col max-w-[250px]">
-                                                    <span className="truncate font-black text-xs uppercase tracking-tight" title={report.contentTitle}>{report.contentTitle}</span>
-                                                    {report.details && <span className="text-[10px] text-slate-400 truncate italic font-medium mt-1 uppercase tracking-widest">{report.details}</span>}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-6">
-                                                <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full ${reasonInfo.color.replace('bg-', 'bg-opacity-10 bg-').replace('text-', 'text-opacity-90 text-')} border`}>
-                                                    {reasonInfo.label}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-6">
                                                 <div className="flex flex-col">
-                                                    <span className="font-black text-slate-900 text-xs uppercase tracking-tight">{report.reporter.name || "Member"}</span>
-                                                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{report.reporter.email}</span>
+                                                    <span className="text-sm font-black uppercase tracking-tight">{report.reporter.name || "Anon"}</span>
+                                                    <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">{report.reporter.email.split('@')[0]}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-6 text-slate-600 text-xs font-black uppercase tracking-widest">
-                                                {formatDate(report.createdAt)}
-                                            </td>
                                             <td className="px-6 py-6">
-                                                <span className={`text-[10px] font-black px-4 py-1.5 rounded-full border uppercase tracking-widest ${report.status === 'open' ? 'bg-red-50 text-red-600 border-red-100'
-                                                    : report.status === 'reviewed' ? 'bg-green-50 text-green-600 border-green-100'
-                                                        : 'bg-slate-50 text-slate-600 border-slate-100'
-                                                    }`}>
-                                                    {report.status}
-                                                </span>
+                                                <div className="flex items-center text-slate-400 bg-white border border-slate-200 px-3 py-1 rounded-lg w-fit shadow-sm">
+                                                    <Calendar className="h-3 w-3 mr-1.5 text-slate-300" />
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-600">{formatDate(report.createdAt)}</span>
+                                                </div>
                                             </td>
-                                            <td className="px-6 py-6 text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    {report.status === 'open' && (
+                                            <td className="pl-6 pr-8 py-6 text-right">
+                                                <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                                                    {report.status === 'open' ? (
                                                         <>
                                                             <Button
-                                                                size="sm"
-                                                                variant="outline"
-                                                                className="h-10 text-[10px] font-black uppercase tracking-widest text-green-600 border-green-100 hover:bg-green-50 rounded-xl"
+                                                                size="icon"
+                                                                variant="ghost"
+                                                                className="h-10 w-10 rounded-xl text-emerald-600 hover:bg-emerald-50"
                                                                 onClick={() => handleUpdateStatus(report.id, 'reviewed')}
-                                                                disabled={isLoading}
+                                                                disabled={isItemLoading}
                                                             >
-                                                                {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCircle className="h-4 w-4 mr-2" />}
-                                                                Resolve
+                                                                {isItemLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
                                                             </Button>
                                                             <Button
-                                                                size="sm"
-                                                                variant="outline"
-                                                                className="h-10 text-[10px] font-black uppercase tracking-widest text-red-600 border-red-100 hover:bg-red-50 rounded-xl"
+                                                                size="icon"
+                                                                variant="ghost"
+                                                                className="h-10 w-10 rounded-xl text-rose-600 hover:bg-rose-50"
                                                                 onClick={() => handleDeleteContent(report)}
-                                                                disabled={isLoading}
+                                                                disabled={isItemLoading}
                                                             >
-                                                                <Trash2 className="h-4 w-4 mr-2" /> Expunge
+                                                                <Trash2 className="h-4 w-4" />
                                                             </Button>
                                                         </>
-                                                    )}
-                                                    {report.status !== 'open' && (
+                                                    ) : (
                                                         <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="h-10 text-[10px] font-black uppercase tracking-widest border-slate-100 text-slate-400 hover:text-slate-900 transition-all rounded-xl"
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            className="h-10 w-10 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100"
                                                             onClick={() => handleUpdateStatus(report.id, 'open')}
-                                                            disabled={isLoading}
+                                                            disabled={isItemLoading}
                                                         >
-                                                            Reopen Registry
+                                                            <Shield className="h-4 w-4" />
                                                         </Button>
                                                     )}
                                                 </div>
@@ -399,16 +410,19 @@ export default function AdminReportsPage() {
                             </tbody>
                         </table>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
+            {/* Pagination Section */}
             {totalPages > 1 && (
-                <div className="py-4">
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
+                <div className="flex justify-center pt-4">
+                    <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-lg shadow-slate-200/50">
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
                 </div>
             )}
             {/* Confirmation Modal */}

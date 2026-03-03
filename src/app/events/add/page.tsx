@@ -159,7 +159,7 @@ export default function AddEventPage() {
                         <div className="h-10 w-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all">
                             <ArrowLeft className="h-5 w-5" />
                         </div>
-                        <span className="font-black uppercase tracking-[0.2em] text-[10px]">Back to community events</span>
+                        <span className="font-black uppercase tracking-[0.2em] text-[10px]">Back to Events</span>
                     </Link>
 
                     <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-200 overflow-hidden">
@@ -171,11 +171,11 @@ export default function AddEventPage() {
                                     <span className="flex h-2 w-2 rounded-full bg-secondary mr-2 animate-pulse"></span>
                                     Event Organizer
                                 </div>
-                                <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-4 tracking-tight leading-tight">
-                                    Organize a <span className="bg-clip-text text-transparent bg-gradient-to-r from-secondary to-slate-400">Gathering</span>
+                                <h1 className="text-5xl md:text-6xl font-black text-slate-900 mb-4 tracking-tighter leading-none animate-in fade-in slide-in-from-bottom-4 duration-700">
+                                    Post an <span className="text-secondary italic">Event</span>
                                 </h1>
-                                <p className="text-slate-500 text-lg md:text-xl max-w-xl leading-relaxed font-medium">
-                                    Bring your community together. Fill in the details below to publish your event.
+                                <p className="text-xl text-slate-500 font-medium italic animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+                                    Bring your community together. Fill in the details below to post your event.
                                 </p>
                             </div>
                         </div>
@@ -269,7 +269,7 @@ export default function AddEventPage() {
                                         <div className="h-10 w-10 rounded-2xl bg-secondary/10 flex items-center justify-center shadow-sm">
                                             <Target className="h-5 w-5 text-secondary" />
                                         </div>
-                                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Organization & Visibility</h2>
+                                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Organizer Details</h2>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -427,11 +427,11 @@ export default function AddEventPage() {
                                     >
                                         {isSubmitting ? (
                                             <>
-                                                <Loader2 className="mr-4 h-7 w-7 animate-spin" /> Publishing...
+                                                <Loader2 className="mr-4 h-7 w-7 animate-spin" /> Saving...
                                             </>
                                         ) : (
                                             <>
-                                                <Save className="mr-4 h-7 w-7" /> Create Community Celebration
+                                                <Save className="mr-4 h-7 w-7" /> Post Event
                                             </>
                                         )}
                                     </Button>

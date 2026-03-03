@@ -167,7 +167,7 @@ async function main() {
                 title: `Assistance required for ${helpTypes[i % 4]}`,
                 description: `Need support regarding ${helpTypes[i % 4].toLowerCase()}. Please reach out if you can help.`,
                 contact: `98765432${i.toString().padStart(2, '0')}`,
-                status: i % 4 === 0 ? 'pending' : 'approved'
+                status: i % 7 === 0 ? 'pending' : 'approved' // More balanced status
             }
         })
     }
@@ -185,6 +185,80 @@ async function main() {
                 status: i % 5 === 0 ? 'resolved' : 'open'
             }
         })
+    }
+
+    // 11. Accommodations
+    console.log('Seeding Accommodations...')
+    const accommodationNames = ['Vasavi Student Home', 'Community PG', 'Safe Stay Hostel', 'Elite Living']
+    for (let i = 1; i <= 20; i++) {
+        await prisma.accommodation.create({
+            data: {
+                ownerId: users[i % 40].id,
+                name: `${accommodationNames[i % 4]} ${i}`,
+                type: 'Hostel',
+                gender: ['Boys', 'Girls', 'Co-ed'][i % 3],
+                location: users[i % 40].location || 'Central Area',
+                city: users[i % 40].location || 'Hyderabad',
+                amenities: ['AC', 'Wi-Fi', 'Food', 'Laundry', 'Security'].slice(0, 3 + (i % 3)),
+                pricing: `₹${5000 + (i % 4) * 1000} - ₹${8000 + (i % 4) * 1000} / month`,
+                description: `Comfortable and secure ${['Boys', 'Girls', 'Co-ed'][i % 3].toLowerCase()} hostel with all modern amenities. Ideal for students and young professionals.`,
+                contactPhone: `99001122${i.toString().padStart(2, '0')}`,
+                contactEmail: `stay${i}@example.com`,
+                status: i % 5 === 0 ? 'pending' : 'approved'
+            }
+        })
+    }
+
+    // 12. Business Collaborations
+    console.log('Seeding Business Collaborations...')
+    const collabTitles = ['Tech Platform Partnership', 'Supply Chain Alliance', 'Marketing Joint Venture', 'Retail Expansion']
+    for (let i = 1; i <= 15; i++) {
+        await prisma.businessCollaboration.create({
+            data: {
+                authorId: users[i % 40].id,
+                title: `${collabTitles[i % 4]} opportunity`,
+                description: `Seeking partners for a ${collabTitles[i % 4].toLowerCase()} in the ${users[i % 40].location} region. Highly scalable model.`,
+                partnershipType: ['Strategic Alliance', 'Joint Venture', 'Co-founder'][i % 3],
+                skillsRequired: ['Management', 'Technical', 'Marketing', 'Legal'].slice(0, 2 + (i % 2)),
+                status: i % 4 === 0 ? 'pending' : 'approved'
+            }
+        })
+    }
+
+    // 13. Social Interactions (Likes & Comments)
+    console.log('Seeding Social Interactions...')
+    const someBusinesses = await prisma.business.findMany({ take: 10, select: { id: true } })
+    const someEvents = await prisma.event.findMany({ take: 10, select: { id: true } })
+
+    for (const biz of someBusinesses) {
+        // Add likes
+        for (let i = 0; i < 5; i++) {
+            await prisma.like.upsert({
+                where: { userId_contentType_contentId: { userId: users[i].id, contentType: 'business', contentId: biz.id } },
+                update: {},
+                create: { userId: users[i].id, contentType: 'business', contentId: biz.id }
+            })
+        }
+        // Add comment
+        await prisma.comment.create({
+            data: {
+                userId: users[0].id,
+                contentType: 'business',
+                contentId: biz.id,
+                content: 'Great business! Highly recommended.'
+            }
+        })
+    }
+
+    for (const event of someEvents) {
+        // Add likes
+        for (let i = 0; i < 3; i++) {
+            await prisma.like.upsert({
+                where: { userId_contentType_contentId: { userId: users[i].id, contentType: 'event', contentId: event.id } },
+                update: {},
+                create: { userId: users[i].id, contentType: 'event', contentId: event.id }
+            })
+        }
     }
 
     console.log('Seeding completed successfully!')

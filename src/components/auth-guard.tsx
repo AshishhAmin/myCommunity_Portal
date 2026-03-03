@@ -24,9 +24,9 @@ function VerificationRequired() {
                     </div>
                 </div>
 
-                <h2 className="text-3xl font-black text-slate-900 mb-4 uppercase tracking-tight">Security Protocol</h2>
+                <h2 className="text-3xl font-black text-slate-900 mb-4 uppercase tracking-tight">Account Verification</h2>
                 <p className="text-slate-400 mb-8 leading-relaxed font-medium">
-                    Access to this feature is restricted to verified community members. Your account is currently in <span className="text-secondary font-black italic">Verification Loop</span> status.
+                    Access to this feature is restricted to verified community members. Your account is currently <span className="text-secondary font-black italic">awaiting review</span>.
                 </p>
 
                 <div className="space-y-4 text-left bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-8">
@@ -87,7 +87,7 @@ export function AuthGuard({ children, allowedRoles, requireVerified = false }: A
                     <Loader2 className="h-12 w-12 animate-spin text-secondary" />
                     <div className="absolute inset-0 h-12 w-12 border-4 border-slate-900/5 rounded-full" />
                 </div>
-                <p className="mt-8 text-slate-900 font-black tracking-[0.4em] text-[9px] uppercase">Authenticating Payload</p>
+                <p className="mt-8 text-slate-900 font-black tracking-[0.4em] text-[9px] uppercase">Checking access...</p>
             </div>
         )
     }

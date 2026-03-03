@@ -84,12 +84,12 @@ export default function PostJobPage() {
 
     return (
         <AuthGuard allowedRoles={["member", "admin"]} requireVerified={true}>
-            <div className="min-h-screen flex flex-col bg-[#FAF9F6] relative overflow-hidden">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6] font-sans selection:bg-secondary/20 relative overflow-hidden">
                 {/* Background decorative elements */}
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-3xl -mt-32 -mr-32 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-400/5 rounded-full blur-3xl -mb-32 -ml-32 pointer-events-none" />
 
-                <div className="relative z-10 flex flex-col min-h-screen">
+                <div className="relative z-10 flex flex-col min-h-screen font-sans">
                     <Navbar />
 
                     <main className="flex-1 pb-24">
@@ -123,7 +123,7 @@ export default function PostJobPage() {
 
                                         <div className="space-y-10">
                                             <div className="flex items-center gap-6 mb-10">
-                                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">Professional Details</h3>
+                                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">About the Job</h3>
                                                 <div className="h-px flex-1 bg-slate-100" />
                                             </div>
 
@@ -223,7 +223,7 @@ export default function PostJobPage() {
 
                                         <div className="space-y-10 pt-10">
                                             <div className="flex items-center gap-6 mb-10">
-                                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">Communication Channels</h3>
+                                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">Contact Information</h3>
                                                 <div className="h-px flex-1 bg-slate-100" />
                                             </div>
 
@@ -261,7 +261,7 @@ export default function PostJobPage() {
                                                 className="w-full bg-slate-900 text-white hover:bg-black h-20 rounded-[2rem] font-black text-xl shadow-2xl shadow-slate-900/10 transition-all active:scale-[0.98] group"
                                             >
                                                 {loading ? <Loader2 className="h-6 w-6 animate-spin mr-4" /> : null}
-                                                {loading ? "Establishing Protocol..." : "Publish Opportunity"}
+                                                {loading ? "Posting..." : "Post Job Opportunity"}
                                             </Button>
                                         </div>
                                     </form>

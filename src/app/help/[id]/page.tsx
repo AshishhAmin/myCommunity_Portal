@@ -18,6 +18,7 @@ interface HelpRequestDetail {
     type: string
     urgency: string
     status: string
+    contact: string
     userId: string
     createdAt: string
     user: {
@@ -42,9 +43,7 @@ export default function HelpRequestDetailsPage() {
         const fetchRequest = async () => {
             try {
                 const res = await fetch(`/api/help/${id}`)
-                if (!res.ok) {
-                    throw new Error("Help request not found")
-                }
+                if (!res.ok) throw new Error("Request not found")
                 const data = await res.json()
                 setRequest(data)
             } catch (err) {
@@ -53,34 +52,26 @@ export default function HelpRequestDetailsPage() {
                 setLoading(false)
             }
         }
-
-        if (id) {
-            fetchRequest()
-        }
+        if (id) fetchRequest()
     }, [id])
 
     const handleMarkReceived = async () => {
-        if (!confirm("Has this request been fulfilled? Marking it as 'received' will archive it from active listings.")) return
-
         setIsUpdating(true)
         try {
             const token = await getToken()
-            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-            if (token) headers['Authorization'] = `Bearer ${token}`
             const res = await fetch(`/api/help/${id}`, {
                 method: 'PATCH',
-                headers,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify({ status: 'received' })
             })
             if (res.ok) {
                 setRequest(prev => prev ? { ...prev, status: 'received' } : null)
-                alert("Request marked as fulfilled. Thank you!")
-            } else {
-                alert("Failed to update status")
             }
         } catch (e) {
             console.error(e)
-            alert("An error occurred")
         } finally {
             setIsUpdating(false)
         }
@@ -88,10 +79,10 @@ export default function HelpRequestDetailsPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
                 <div className="flex-1 flex justify-center items-center">
-                    <Loader2 className="h-10 w-10 animate-spin text-maroon" />
+                    <Loader2 className="h-10 w-10 animate-spin text-secondary" />
                 </div>
                 <Footer />
             </div>
@@ -100,16 +91,14 @@ export default function HelpRequestDetailsPage() {
 
     if (error || !request) {
         return (
-            <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
                 <Navbar />
-                <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
-                    <div className="h-20 w-20 bg-maroon/5 rounded-full flex items-center justify-center mb-6">
-                        <AlertCircle className="h-10 w-10 text-maroon/20" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-maroon font-serif">Help Request Not Found</h2>
-                    <p className="text-muted-foreground mt-2 mb-8 max-w-md">This request may have been fulfilled, removed, or the link is incorrect.</p>
-                    <Button onClick={() => router.push("/help")} variant="outline" className="border-maroon text-maroon">
-                        <ArrowLeft className="h-4 w-4 mr-2" /> Back to Support Center
+                <div className="flex-1 flex flex-col items-center justify-center p-4">
+                    <AlertCircle className="h-16 w-16 text-slate-200 mb-6" />
+                    <h2 className="text-2xl font-black text-slate-900">Request Not Found</h2>
+                    <p className="text-slate-500 mt-2 mb-8">This post might have been removed or fulfilled.</p>
+                    <Button onClick={() => router.push("/help")} variant="outline" className="rounded-xl px-8 h-12 border-slate-200">
+                        <ArrowLeft className="h-4 w-4 mr-2" /> Back to Support Hub
                     </Button>
                 </div>
                 <Footer />
@@ -117,167 +106,141 @@ export default function HelpRequestDetailsPage() {
         )
     }
 
-    const isOwner = user?.id === request.userId || user?.email === request.user?.email
+    const isOwner = user?.id === request.userId
     const isReceived = request.status === 'received'
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30">
+        <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
             <Navbar />
 
-            <main className="flex-1 pb-16">
-                {/* Status Banner */}
-                <div className={cn(
-                    "py-3 text-center text-xs font-bold uppercase tracking-widest",
-                    isReceived ? "bg-green-600 text-white" : "bg-gold text-maroon shadow-sm"
-                )}>
-                    {isReceived ? (
-                        <span className="flex items-center justify-center gap-2">
-                            <CheckCircle2 className="h-4 w-4" /> Fulfilled Community Request
-                        </span>
-                    ) : (
-                        <span className="flex items-center justify-center gap-2">
-                            <HandHelping className="h-4 w-4" /> Active Community Support Request
-                        </span>
-                    )}
-                </div>
-
-                <div className="container mx-auto px-4 py-8">
+            <main className="flex-1 py-12 md:py-20 lg:py-24">
+                <div className="container mx-auto px-4 max-w-4xl">
                     <Link
                         href="/help"
-                        className="inline-flex items-center text-maroon/60 hover:text-maroon mb-8 transition-colors text-base font-bold uppercase tracking-wider"
+                        className="inline-flex items-center text-slate-400 hover:text-slate-900 mb-8 md:mb-12 transition-all font-bold text-xs uppercase tracking-[0.2em] group"
                     >
-                        <ArrowLeft className="h-5 w-5 mr-2" /> All Support Requests
+                        <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+                        Support Hub
                     </Link>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {/* Main Content */}
-                        <div className="lg:col-span-2 space-y-8">
-                            <Card className="border-gold/20 shadow-xl overflow-hidden rounded-2xl bg-white">
-                                <CardHeader className="p-8 md:p-10 border-b border-gold/10">
-                                    <div className="flex flex-wrap items-center gap-3 mb-6">
-                                        <span className={cn(
-                                            "text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-sm",
-                                            request.type === 'financial' ? "bg-maroon text-gold" : "bg-gold text-maroon"
-                                        )}>
-                                            {request.type} aid
-                                        </span>
-                                        <span className={cn(
-                                            "text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border",
-                                            request.urgency === 'immediate' ? "bg-red-50 text-red-600 border-red-100" : "bg-blue-50 text-blue-600 border-blue-100"
-                                        )}>
-                                            {request.urgency} urgency
-                                        </span>
-                                        <div className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium ml-auto">
-                                            <Calendar className="h-3.5 w-3.5" />
-                                            Posted on {new Date(request.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
-                                        </div>
-                                    </div>
+                    <div className="space-y-8 md:space-y-12">
+                        {/* Header Section */}
+                        <div className="space-y-4 md:space-y-6">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <span className={cn(
+                                    "text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest border shadow-sm",
+                                    request.type.toLowerCase().includes('emergency')
+                                        ? "bg-red-50 text-red-600 border-red-100"
+                                        : "bg-secondary/10 text-secondary border-secondary/20"
+                                )}>
+                                    {request.type}
+                                </span>
+                                {isReceived && (
+                                    <span className="bg-green-50 text-green-600 border border-green-100 text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
+                                        Fulfilled ✓
+                                    </span>
+                                )}
+                            </div>
 
-                                    <CardTitle className="text-5xl md:text-6xl font-serif font-bold text-maroon leading-tight">
-                                        {request.title}
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-8 md:p-10">
-                                    <div className="text-gray-700 leading-relaxed text-xl whitespace-pre-line space-y-6 break-all">
-                                        <h3 className="text-2xl font-serif font-bold text-maroon flex items-center gap-3">
-                                            <AlertCircle className="h-6 w-6 text-gold" />
-                                            Request Details
-                                        </h3>
-                                        {request.description}
-                                    </div>
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.1] tracking-tight">
+                                {request.title}
+                            </h1>
 
-                                    {isOwner && !isReceived && (
-                                        <div className="mt-12 pt-8 border-t border-gold/10">
-                                            <Button
-                                                onClick={handleMarkReceived}
-                                                className="bg-green-600 text-white hover:bg-green-700 font-bold px-8 h-12 shadow-lg"
-                                                disabled={isUpdating}
-                                            >
-                                                {isUpdating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CheckCircle2 className="h-5 w-5 mr-2" />}
-                                                Mark as Received / Help Got
-                                            </Button>
-                                            <p className="text-xs text-muted-foreground mt-3 italic">
-                                                Publicly acknowledge that you have received support and help others who need it.
-                                            </p>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
+                            <div className="flex items-center gap-4 text-slate-500 font-bold text-sm">
+                                <span className="flex items-center gap-2">
+                                    <Calendar className="h-4 w-4" />
+                                    {new Date(request.createdAt).toLocaleDateString()}
+                                </span>
+                                <span className="w-1.5 h-1.5 rounded-full bg-slate-200" />
+                                <span className="flex items-center gap-2">
+                                    <HandHelping className="h-4 w-4" />
+                                    Community Support
+                                </span>
+                            </div>
                         </div>
 
-                        {/* Sidebar */}
-                        <div className="space-y-6">
-                            <Card className="border-gold/20 shadow-lg bg-maroon text-white overflow-hidden relative group">
-                                <div className="absolute inset-0 bg-gold/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <CardContent className="p-8 relative">
-                                    <h3 className="text-2xl font-serif font-bold text-gold mb-6 border-b border-gold/20 pb-4 flex items-center gap-3">
-                                        <Heart className="h-6 w-6" /> Want to Help?
-                                    </h3>
-                                    <p className="text-white/80 text-sm mb-8 leading-relaxed italic">
-                                        &quot;Kindness in words creates confidence. Kindness in thinking creates profoundness. Kindness in giving creates love.&quot;
+                        {/* Description */}
+                        <Card className="rounded-[2.5rem] border-slate-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] bg-white overflow-hidden">
+                            <CardContent className="p-8 md:p-12 space-y-8 md:space-y-12">
+                                <div className="space-y-6">
+                                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Request Details</h3>
+                                    <p className="text-lg md:text-xl text-slate-700 leading-relaxed font-medium">
+                                        {request.description}
                                     </p>
+                                </div>
 
-                                    {isReceived ? (
-                                        <div className="text-center p-6 bg-white/10 rounded-xl border border-white/20">
-                                            <CheckCircle2 className="h-10 w-10 text-gold mx-auto mb-3" />
-                                            <p className="font-bold text-gold">This Request is Fulfilled</p>
-                                            <p className="text-xs text-white/70 mt-1">Thank you to the community for the overwhelming support!</p>
-                                        </div>
-                                    ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 pt-8 md:pt-12 border-t border-slate-50">
+                                    <div className="space-y-4">
+                                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Contact Information</h3>
                                         <div className="space-y-4">
-                                            <Button
-                                                className="w-full bg-gold text-maroon hover:bg-gold/90 font-bold h-12 shadow-lg border-2 border-white/20"
-                                                onClick={() => {
-                                                    const to = request.user.email || '';
-                                                    const subject = encodeURIComponent(`Supporting your request: ${request.title}`);
-                                                    window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(to)}&su=${subject}`, '_blank');
-                                                }}
-                                            >
-                                                Offer Support
-                                            </Button>
-                                            <p className="text-[10px] text-center text-white/50">
-                                                Directly contact the requested member to coordinate help.
-                                            </p>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-
-                            <Card className="border-gold/10 shadow-md">
-                                <CardContent className="p-6">
-                                    <h4 className="font-bold text-maroon mb-6 flex items-center gap-2 border-b border-gold/5 pb-2">
-                                        <User className="h-4 w-4 text-gold" /> Member Profile
-                                    </h4>
-                                    <Link href={`/members/${request.userId}`}>
-                                        <div className="flex items-center gap-4 mb-6 hover:bg-gold/5 p-3 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-gold/10">
-                                            <div className="h-14 w-14 rounded-full bg-cream border-2 border-gold flex items-center justify-center text-maroon font-bold text-xl overflow-hidden relative shrink-0">
-                                                {request.user.profileImage ? (
-                                                    <img src={request.user.profileImage} alt={request.user.name || "User"} className="h-full w-full object-cover" />
-                                                ) : (
-                                                    request.user.name?.charAt(0).toUpperCase() || "U"
-                                                )}
-                                            </div>
-                                            <div className="min-w-0">
-                                                <p className="font-bold text-gray-800 truncate">{request.user.name || "Community Member"}</p>
-                                                <p className="text-xs text-muted-foreground">Registered Member</p>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                    <div className="space-y-3 text-sm">
-                                        <div className="flex items-center gap-2 text-muted-foreground">
-                                            <Mail className="h-4 w-4 text-gold" />
-                                            <span>{request.user.email}</span>
-                                        </div>
-                                        {/* Security Note */}
-                                        <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
-                                            <p className="text-[10px] text-gray-400 uppercase font-bold mb-1 tracking-tight">Security Note</p>
-                                            <p className="text-[11px] text-gray-500 leading-snug">
-                                                Always verify credentials through community channels before initiating financial transfers.
-                                            </p>
+                                            <a href={`tel:${request.contact}`} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-secondary/30 transition-all group">
+                                                <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-secondary border border-slate-100 group-hover:bg-secondary group-hover:text-white transition-all">
+                                                    <Phone className="h-5 w-5" />
+                                                </div>
+                                                <span className="font-bold text-slate-900">{request.contact}</span>
+                                            </a>
+                                            <a href={`mailto:${request.user.email}`} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-secondary/30 transition-all group">
+                                                <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-secondary border border-slate-100 group-hover:bg-secondary group-hover:text-white transition-all">
+                                                    <Mail className="h-5 w-5" />
+                                                </div>
+                                                <span className="font-bold text-slate-900 truncate">{request.user.email}</span>
+                                            </a>
                                         </div>
                                     </div>
-                                </CardContent>
-                            </Card>
+
+                                    <div className="space-y-4">
+                                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Posted By</h3>
+                                        <div className="flex items-center gap-5 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                                            <div className="h-14 w-14 rounded-full bg-white border border-slate-100 flex items-center justify-center text-secondary text-xl font-black shadow-sm overflow-hidden">
+                                                {request.user.profileImage ? (
+                                                    <img src={request.user.profileImage} alt="" className="h-full w-full object-cover" />
+                                                ) : (
+                                                    request.user.name?.[0] || 'U'
+                                                )}
+                                            </div>
+                                            <div>
+                                                <p className="font-black text-slate-900 text-lg">{request.user.name}</p>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Community Member</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Action Bar */}
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8">
+                            {!isReceived ? (
+                                <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                                    <a href={`tel:${request.contact}`}>
+                                        <Button className="rounded-2xl h-14 px-8 bg-slate-900 hover:bg-slate-800 text-white font-black text-base shadow-xl shadow-slate-900/10 tracking-tight">
+                                            Provide Assistance
+                                        </Button>
+                                    </a>
+                                    {isOwner && (
+                                        <Button
+                                            variant="outline"
+                                            onClick={handleMarkReceived}
+                                            disabled={isUpdating}
+                                            className="rounded-2xl h-14 px-8 border-slate-200 font-bold text-slate-600 hover:bg-slate-50"
+                                        >
+                                            {isUpdating ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <CheckCircle2 className="h-5 w-5 mr-2" />}
+                                            I've Received Help
+                                        </Button>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="w-full text-center p-8 rounded-[2rem] bg-green-50 border border-green-100">
+                                    <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                                    <h3 className="text-2xl font-black text-green-900">Request Fulfilled</h3>
+                                    <p className="text-green-700 font-medium mt-2">The community has successfully provided support for this request. Thank you!</p>
+                                </div>
+                            )}
+
+                            <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                                <AlertCircle className="h-3 w-3" />
+                                Always verify before helping
+                            </div>
                         </div>
                     </div>
                 </div>

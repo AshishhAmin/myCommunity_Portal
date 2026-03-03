@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
 import { Search, Loader2, CheckCircle, XCircle, Briefcase, GraduationCap, UserCheck, Trash2, Eye } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
@@ -225,15 +226,21 @@ export default function AdminCareerPage() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="mb-6 md:mb-8">
-                <h2 className="text-3xl md:text-5xl font-serif font-bold text-maroon mb-1">Career Moderation</h2>
-                <p className="text-base md:text-xl text-muted-foreground">Review and approve career-related submissions including jobs, scholarships and mentors.</p>
+        <div className="space-y-8 animate-in fade-in duration-700">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
+                        Career <span className="text-slate-400">Hub</span>
+                    </h1>
+                    <p className="text-slate-500 font-medium mt-1">Review and manage career-related postings from the community.</p>
+                </div>
             </div>
 
-            {/* Type & Status Filters */}
-            <div className="space-y-4 md:space-y-6 border-b border-gold/20 pb-2">
-                <div className="flex gap-4 md:gap-10 overflow-x-auto custom-scrollbar w-full pb-2 whitespace-nowrap">
+            {/* Two-Tier Filters and Navigation */}
+            <div className="space-y-6">
+                {/* Primary Tier: activeType */}
+                <div className="flex gap-2 overflow-x-auto custom-scrollbar p-1 pb-2 whitespace-nowrap">
                     {typeTabs.map(tab => (
                         <button
                             key={tab.id}
@@ -244,29 +251,30 @@ export default function AdminCareerPage() {
                                 if (tab.id === 'scholarships') setStatusFilter('approved');
                             }}
                             className={cn(
-                                "pb-2 md:pb-4 text-sm md:text-lg font-bold transition-all border-b-2 flex items-center gap-1 md:gap-2 shrink-0",
+                                "flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all duration-300",
                                 activeType === tab.id
-                                    ? "text-maroon border-maroon"
-                                    : "text-gray-500 border-transparent hover:text-maroon/70"
+                                    ? "bg-slate-900 text-white shadow-xl shadow-slate-200 scale-105"
+                                    : "bg-white text-slate-400 hover:text-slate-900 hover:bg-slate-50 border border-slate-100 shadow-sm"
                             )}
                         >
-                            <tab.icon className="h-5 w-5" />
+                            <tab.icon className={cn("h-4 w-4", activeType === tab.id ? "text-slate-400" : "text-slate-300")} />
                             {tab.label}
                         </button>
                     ))}
                 </div>
 
-                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 md:gap-6">
-                    <div className="flex gap-4 md:gap-8 overflow-x-auto custom-scrollbar w-full lg:w-auto pb-2 whitespace-nowrap">
+                {/* Secondary Tier: statusFilter and Search */}
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white/50 backdrop-blur-sm p-3 rounded-[2rem] border border-slate-200/60 shadow-sm">
+                    <div className="flex gap-2 p-1 overflow-x-auto custom-scrollbar w-full lg:w-auto whitespace-nowrap">
                         {((activeType === 'scholarships' ? ["approved", "deleted"] : ["pending", "approved", "deleted"]) as StatusFilter[]).map(s => (
                             <button
                                 key={s}
                                 onClick={() => { setStatusFilter(s); setCurrentPage(1); }}
                                 className={cn(
-                                    "pb-1 md:pb-2 text-xs md:text-base shrink-0 font-bold uppercase tracking-wider transition-all border-b-2 capitalize",
+                                    "px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200",
                                     statusFilter === s
-                                        ? "text-maroon border-maroon"
-                                        : "text-gray-400 border-transparent hover:text-maroon/60"
+                                        ? "bg-slate-100 text-slate-900 shadow-inner"
+                                        : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
                                 )}
                             >
                                 {s} requests
@@ -274,11 +282,11 @@ export default function AdminCareerPage() {
                         ))}
                     </div>
 
-                    <div className="relative w-full sm:w-80">
-                        <Search className="absolute left-3 top-2.5 md:top-3 h-4 w-4 md:h-5 md:w-5 text-maroon/50" />
+                    <div className="relative w-full sm:w-80 group pr-2">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-slate-900 transition-colors" />
                         <Input
                             placeholder={`Search ${activeType}...`}
-                            className="pl-9 md:pl-10 h-10 md:h-12 border-gold/30 focus-visible:ring-gold/40 text-sm md:text-lg"
+                            className="pl-11 h-11 bg-white border-slate-200 rounded-2xl focus:ring-2 focus:ring-slate-900/10 transition-all text-sm font-medium"
                             value={searchTerm}
                             onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                         />
@@ -288,157 +296,165 @@ export default function AdminCareerPage() {
 
             {/* Bulk Action Bar */}
             {selectedIds.length > 0 && (
-                <div className="bg-maroon text-gold px-6 py-4 rounded-xl shadow-2xl flex items-center justify-between sticky top-4 z-50 border border-gold/30 animate-in fade-in slide-in-from-top-4 duration-300">
-                    <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-full bg-gold/20 flex items-center justify-center font-serif text-2xl font-bold">
+                <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 backdrop-blur-xl text-white px-8 py-4 rounded-[2rem] shadow-2xl flex items-center gap-8 z-50 border border-white/10 animate-in slide-in-from-bottom-8 duration-500">
+                    <div className="flex items-center gap-4 border-r border-white/10 pr-8">
+                        <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-lg">
                             {selectedIds.length}
                         </div>
-                        <div>
-                            <p className="font-bold text-xl leading-none">{activeType.charAt(0).toUpperCase() + activeType.slice(1)} Selected</p>
-                            <p className="text-gold/70 text-base">Perform bulk actions on these items</p>
+                        <div className="whitespace-nowrap">
+                            <p className="font-bold text-sm">{activeType.charAt(0).toUpperCase() + activeType.slice(1, -1)}s Selected</p>
+                            <p className="text-white/50 text-xs">Bulk Operations Available</p>
                         </div>
                     </div>
+
                     <div className="flex gap-3">
                         <Button
-                            variant="outline"
-                            className="bg-transparent border-gold/40 text-gold hover:bg-gold/10 hover:text-gold font-bold px-6"
+                            variant="ghost"
+                            className="text-white/70 hover:text-white hover:bg-white/10 font-bold px-6 rounded-xl"
                             onClick={() => setSelectedIds([])}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="destructive"
-                            className="bg-red-600/20 text-red-200 border border-red-500/30 hover:bg-red-600/40 font-bold px-6"
+                            className="bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 font-bold px-6 rounded-xl"
                             onClick={() => handleAction(selectedIds, 'rejected')}
                             disabled={actionLoading === 'bulk'}
                         >
-                            Reject All
+                            Reject Selection
                         </Button>
                         <Button
-                            className="bg-gold text-maroon hover:bg-gold/90 font-bold px-8 shadow-lg"
+                            className="bg-white text-slate-900 hover:bg-slate-100 font-bold px-8 rounded-xl shadow-lg transition-transform active:scale-95"
                             onClick={() => handleAction(selectedIds, 'approved')}
                             disabled={actionLoading === 'bulk'}
                         >
                             {actionLoading === 'bulk' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                            Approve All
+                            Approve Selection
                         </Button>
                     </div>
                 </div>
             )}
 
             {/* Items List */}
-            {loading ? (
-                <div className="flex justify-center py-16">
-                    <Loader2 className="h-8 w-8 animate-spin text-maroon" />
-                </div>
-            ) : items.length === 0 ? (
-                <Card className="bg-gray-50 border-gold/20">
-                    <CardContent className="py-12 text-center text-muted-foreground">
-                        No {statusFilter} {activeType} found.
-                    </CardContent>
-                </Card>
-            ) : (
-                <div className="bg-white rounded-lg border border-gold/20 shadow-sm overflow-hidden">
-                    <div className="max-h-[600px] overflow-auto custom-scrollbar">
-                        <table className="w-full text-sm text-left border-collapse">
-                            <thead className="bg-[#FAF3E0] text-maroon border-b border-gold/10 sticky top-0 z-10 shadow-sm">
-                                <tr>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 w-10 shrink-0">
+            <div className="bg-white rounded-[2.5rem] border border-slate-200/60 shadow-xl shadow-slate-200/40 overflow-hidden">
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-24 gap-4">
+                        <div className="relative">
+                            <div className="h-16 w-16 rounded-full border-4 border-slate-100 border-t-slate-900 animate-spin" />
+                            <Briefcase className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-slate-900/20" />
+                        </div>
+                        <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Loading list...</p>
+                    </div>
+                ) : items.length === 0 ? (
+                    <div className="text-center py-24 bg-slate-50/50">
+                        <div className="h-20 w-20 bg-slate-100 rounded-[2rem] flex items-center justify-center mx-auto mb-6 transform -rotate-12">
+                            <Briefcase className="h-10 w-10 text-slate-300" />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">List Empty</h3>
+                        <p className="text-slate-500 font-medium mt-2">No items found in this section.</p>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto custom-scrollbar">
+                        <table className="w-full text-left border-separate border-spacing-0">
+                            <thead>
+                                <tr className="bg-slate-50/80 backdrop-blur-sm">
+                                    <th className="pl-8 pr-4 py-6 w-16">
                                         <Checkbox
                                             checked={selectedIds.length === items.length && items.length > 0}
                                             onCheckedChange={toggleSelectAll}
+                                            className="border-slate-300 data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
                                         />
                                     </th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Details</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">
-                                        {activeType === "jobs" ? "Company" : activeType === "scholarships" ? "Amount/Eligibility" : "Mentor Info"}
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Core Details</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">
+                                        {activeType === "jobs" ? "Organization" : activeType === "scholarships" ? "Grant/Criteria" : "Expertise"}
                                     </th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Submitted By</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Date</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Status</th>
-                                    <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold text-right whitespace-nowrap text-sm md:text-lg">Actions</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Contributor</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Timeline</th>
+                                    <th className="px-6 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400">Status</th>
+                                    <th className="pl-6 pr-8 py-6 font-black uppercase tracking-wider text-[11px] text-slate-400 text-right">Operations</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gold/10">
-                                {items.map(item => (
-                                    <tr key={item.id} className={cn(
-                                        "transition-colors",
-                                        selectedIds.includes(item.id) ? "bg-maroon/5" : "hover:bg-[#FAF3E0]/20"
-                                    )}>
-                                        <td className="px-3 md:px-6 py-4 md:py-5">
+                            <tbody className="divide-y divide-slate-100">
+                                {items.map((item, index) => (
+                                    <tr
+                                        key={item.id}
+                                        className={cn(
+                                            "group transition-all duration-300",
+                                            selectedIds.includes(item.id) ? "bg-slate-900/[0.02]" : "hover:bg-slate-50/50"
+                                        )}
+                                        style={{ animationDelay: `${index * 50}ms` }}
+                                    >
+                                        <td className="pl-8 pr-4 py-6">
                                             <Checkbox
                                                 checked={selectedIds.includes(item.id)}
                                                 onCheckedChange={() => toggleSelect(item.id)}
+                                                className="border-slate-300 data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
                                             />
                                         </td>
-                                        <td className="px-3 md:px-6 py-4 md:py-5 font-medium text-gray-900 text-sm md:text-base">
-                                            <div className="flex flex-col max-w-[200px] md:max-w-[300px]">
-                                                <span className="font-bold text-maroon truncate">{getItemLabel(item)}</span>
+                                        <td className="px-6 py-6 font-bold text-slate-900">
+                                            <div className="flex flex-col max-w-[250px]">
+                                                <span className="truncate group-hover:text-slate-600 transition-colors uppercase tracking-tight text-sm font-black">
+                                                    {getItemLabel(item)}
+                                                </span>
                                             </div>
                                         </td>
-                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-600 whitespace-nowrap text-sm md:text-base">
-                                            {getItemDetails(item)}
+                                        <td className="px-6 py-6">
+                                            <div className="bg-white border border-slate-200 text-slate-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide w-fit shadow-sm">
+                                                {getItemDetails(item)}
+                                            </div>
                                         </td>
-                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-600 whitespace-nowrap text-sm md:text-base">
+                                        <td className="px-6 py-6">
                                             <div className="flex flex-col">
-                                                <span className="font-medium text-gray-800">{item.poster?.name || item.mentor?.name || 'Unknown'}</span>
-                                                <span className="text-[10px] md:text-xs text-muted-foreground">{getPoster(item)}</span>
+                                                <span className="text-sm font-bold text-slate-900">{item.poster?.name || item.mentor?.name || 'Anonymous User'}</span>
+                                                <span className="text-[11px] font-medium text-slate-400">{getPoster(item)}</span>
                                             </div>
                                         </td>
-                                        <td className="px-3 md:px-6 py-4 md:py-5 text-gray-600 whitespace-nowrap text-sm md:text-base">
+                                        <td className="px-6 py-6 text-xs font-bold text-slate-500">
                                             {formatDate(item.createdAt)}
                                         </td>
-                                        <td className="px-3 md:px-6 py-3 md:py-4">
-                                            <span className={cn(
-                                                "px-2 py-0.5 md:px-[10px] md:py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-wider border",
-                                                item.status === "pending" ? "bg-amber-100 text-amber-800 border-amber-200"
-                                                    : item.status === "approved" ? "bg-green-100 text-green-800 border-green-200"
-                                                        : "bg-red-100 text-red-800 border-red-200"
-                                            )}>
+                                        <td className="px-6 py-6">
+                                            <Badge
+                                                className={cn(
+                                                    "text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-widest border-0 shadow-sm",
+                                                    item.status === 'approved' ? 'bg-emerald-50 text-emerald-600' :
+                                                        item.status === 'rejected' ? 'bg-rose-50 text-rose-600' :
+                                                            'bg-amber-50 text-amber-600'
+                                                )}
+                                            >
                                                 {item.status}
-                                            </span>
+                                            </Badge>
                                         </td>
-                                        <td className="px-3 md:px-6 py-3 md:py-4 text-right">
-
-                                            <div className="flex justify-end gap-1 md:gap-2">
+                                        <td className="pl-6 pr-8 py-6 text-right">
+                                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                                                 {statusFilter === "pending" && activeType !== 'scholarships' && (
-                                                    <div className="flex gap-1 md:gap-2">
+                                                    <>
                                                         <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="h-7 md:h-8 text-[10px] md:text-xs px-2 md:px-3 text-green-700 border-green-300 hover:bg-green-50"
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            className="h-10 w-10 rounded-xl text-emerald-600 hover:bg-emerald-50 transition-all"
                                                             disabled={!!actionLoading}
                                                             onClick={() => handleAction(item.id, "approved")}
                                                         >
                                                             {actionLoading === item.id ? (
-                                                                <Loader2 className="h-3 w-3 animate-spin" />
+                                                                <Loader2 className="h-4 w-4 animate-spin" />
                                                             ) : (
-                                                                <>
-                                                                    <CheckCircle className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1 md:mr-1.5" /> Approve
-                                                                </>
+                                                                <CheckCircle className="h-4 w-4" />
                                                             )}
+                                                            <span className="sr-only">Approve</span>
                                                         </Button>
                                                         <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="h-7 md:h-8 text-[10px] md:text-xs px-2 md:px-3 text-red-600 border-red-200 hover:bg-red-50"
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            className="h-10 w-10 rounded-xl text-amber-600 hover:bg-amber-50 transition-all"
                                                             disabled={!!actionLoading}
                                                             onClick={() => handleAction(item.id, "rejected")}
                                                         >
-                                                            <XCircle className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1 md:mr-1.5" /> Reject
+                                                            <XCircle className="h-4 w-4" />
+                                                            <span className="sr-only">Reject</span>
                                                         </Button>
-                                                    </div>
+                                                    </>
                                                 )}
-                                                <Button
-                                                    size="sm"
-                                                    variant="ghost"
-                                                    className="h-7 w-7 md:h-8 md:w-8 p-0 text-muted-foreground hover:text-red-500"
-                                                    onClick={() => handleDeleteClick(item.id)}
-                                                    disabled={!!actionLoading}
-                                                >
-                                                    <Trash2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                                                    <span className="sr-only">Delete</span>
-                                                </Button>
                                                 <Link
                                                     href={
                                                         activeType === 'jobs' ? `/career/jobs/${item.id}` :
@@ -446,11 +462,21 @@ export default function AdminCareerPage() {
                                                                 `/career/mentorship/${item.id}`
                                                     }
                                                     target="_blank"
-                                                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-8 w-8 p-0 text-muted-foreground hover:text-maroon hover:bg-gold/10"
+                                                    className="h-10 w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-900 hover:shadow-lg hover:shadow-slate-200 transition-all"
                                                 >
                                                     <Eye className="h-4 w-4" />
-                                                    <span className="sr-only">View</span>
+                                                    <span className="sr-only">Audit Record</span>
                                                 </Link>
+                                                <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    className="h-10 w-10 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all"
+                                                    onClick={() => handleDeleteClick(item.id)}
+                                                    disabled={!!actionLoading}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                    <span className="sr-only">Purge</span>
+                                                </Button>
                                             </div>
                                         </td>
                                     </tr>
@@ -458,18 +484,22 @@ export default function AdminCareerPage() {
                             </tbody>
                         </table>
                     </div>
+                )}
+            </div>
+
+            {/* Pagination Section */}
+            {totalPages > 1 && (
+                <div className="flex justify-center pt-4">
+                    <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-lg shadow-slate-200/50">
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
                 </div>
             )}
 
-            {totalPages > 1 && (
-                <div className="py-4">
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
-                </div>
-            )}
             {/* Confirmation Modal */}
             <ConfirmModal
                 isOpen={confirmProps.isOpen}
@@ -478,7 +508,7 @@ export default function AdminCareerPage() {
                 title={confirmProps.title}
                 description={confirmProps.description}
                 variant="destructive"
-                confirmText="Delete"
+                confirmText="Purge Record"
             />
         </div>
     )

@@ -89,8 +89,8 @@ function FinancialGuidanceWizard({ onBack, onSubmitRequest }: { onBack: () => vo
                             <Wallet className="h-7 w-7 text-slate-900" />
                         </div>
                         <div>
-                            <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tight">Financial Protocol</CardTitle>
-                            <CardDescription className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-1">Tier 1 Community Asset Allocation</CardDescription>
+                            <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tight">Financial Help Center</CardTitle>
+                            <CardDescription className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-1">Community Support & Resource Matching</CardDescription>
                         </div>
                     </div>
                 </CardHeader>
@@ -846,12 +846,12 @@ function HelpContent() {
                                             {loading ? (
                                                 <>
                                                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                                    Encrypting Payload...
+                                                    Sending...
                                                 </>
                                             ) : (
                                                 <>
                                                     <Send className="h-4 w-4 mr-2" />
-                                                    Dispatch Request
+                                                    Send Message
                                                 </>
                                             )}
                                         </Button>
@@ -894,7 +894,7 @@ function HelpContent() {
                                                     : "bg-white border-slate-200 text-slate-400 hover:text-slate-900 font-black uppercase tracking-widest text-[9px] h-10 px-6 rounded-xl border transition-all"}
                                                 size="sm"
                                             >
-                                                Active Operations
+                                                Active Requests
                                                 <span className={`ml-3 text-[9px] px-2 py-0.5 rounded-full font-black ${browseTab === "active" ? 'bg-white/20 text-white' : 'bg-slate-50 text-slate-400'}`}>
                                                     {activeTotalCount}
                                                 </span>
@@ -908,7 +908,7 @@ function HelpContent() {
                                                 size="sm"
                                             >
                                                 <CheckCircle2 className="h-3 w-3 mr-2" />
-                                                Archived Results
+                                                Past Requests
                                                 <span className={`ml-3 text-[9px] px-2 py-0.5 rounded-full font-black ${browseTab === "received" ? 'bg-slate-900/10 text-slate-900' : 'bg-slate-50 text-slate-400'}`}>
                                                     {receivedTotalCount}
                                                 </span>
@@ -972,12 +972,12 @@ function HelpContent() {
                                                                         </div>
                                                                         <div className="text-[9px]">
                                                                             <p className="font-black text-slate-900 uppercase tracking-widest">{req.user?.name || 'User'}</p>
-                                                                            <p className="text-secondary font-black uppercase tracking-[0.2em] mt-0.5">Resolved Protocol</p>
+                                                                            <p className="text-secondary font-black uppercase tracking-[0.2em] mt-0.5">Resolved</p>
                                                                         </div>
                                                                     </div>
                                                                     <Link href={`/help/${req.id}`}>
                                                                         <Button size="sm" variant="outline" className="h-10 px-6 rounded-xl border-slate-200 text-slate-400 hover:text-slate-900 hover:bg-slate-50 font-black uppercase tracking-widest text-[9px]">
-                                                                            Analysis
+                                                                            View Details
                                                                         </Button>
                                                                     </Link>
                                                                 </div>
@@ -1020,7 +1020,7 @@ function HelpContent() {
                                                                     <div className="flex items-center gap-2">
                                                                         {req.status === 'pending' && (
                                                                             <span className="bg-secondary/10 text-secondary text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-[0.2em] border border-secondary/20">
-                                                                                Evaluating
+                                                                                Reviewing
                                                                             </span>
                                                                         )}
                                                                         <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest ml-2">
@@ -1046,7 +1046,7 @@ function HelpContent() {
                                                                     </div>
                                                                     <div className="text-[9px]">
                                                                         <p className="font-black text-slate-900 uppercase tracking-widest">{req.user?.name || 'User'}</p>
-                                                                        <p className="text-slate-400 font-black uppercase tracking-[0.2em] mt-0.5">Asset Beneficiary</p>
+                                                                        <p className="text-slate-400 font-black uppercase tracking-[0.2em] mt-0.5">Request Owner</p>
                                                                     </div>
                                                                 </div>
                                                                 <div className="flex items-center gap-3">
@@ -1072,18 +1072,18 @@ function HelpContent() {
                                                                             className="h-10 px-5 rounded-xl border-secondary/20 bg-secondary/5 text-secondary hover:bg-secondary hover:text-slate-900 font-black uppercase tracking-widest text-[9px] transition-all"
                                                                         >
                                                                             <CheckCircle2 className="h-3.5 w-3.5 mr-2" />
-                                                                            Seal Archive
+                                                                            Mark as Received
                                                                         </Button>
                                                                     )}
                                                                     <Link href={`/help/${req.id}`}>
                                                                         <Button size="sm" variant="outline" className="h-10 px-5 rounded-xl border-slate-200 text-slate-400 hover:text-slate-900 hover:bg-slate-50 font-black uppercase tracking-widest text-[9px]">
-                                                                            Log
+                                                                            Details
                                                                         </Button>
                                                                     </Link>
                                                                     <a href={`tel:${req.contact}`}>
                                                                         <Button size="sm" className="h-10 px-6 rounded-xl bg-slate-900 text-white hover:bg-secondary hover:text-slate-900 font-black uppercase tracking-widest text-[9px] shadow-lg shadow-slate-900/10">
                                                                             <Phone className="h-3.5 w-3.5 mr-2" />
-                                                                            Uplink
+                                                                            Call
                                                                         </Button>
                                                                     </a>
                                                                     <ShareButton
@@ -1145,7 +1145,7 @@ function HelpContent() {
                                             className="w-full border-slate-200 text-slate-400 hover:text-slate-900 hover:bg-slate-50 flex items-center justify-center gap-2 h-14 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] transition-all"
                                         >
                                             <Users className="h-4 w-4" />
-                                            Active Protocols
+                                            Browse Requests
                                         </Button>
                                     </CardFooter>
                                 </Card>
@@ -1162,9 +1162,9 @@ function HelpContent() {
                             <div className="h-16 w-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
                                 <Lock className="h-7 w-7 text-secondary" />
                             </div>
-                            <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] mb-3">Privacy Guarantee</h3>
+                            <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] mb-3">Privacy Note</h3>
                             <p className="text-sm text-slate-400 font-bold leading-relaxed max-w-md mx-auto italic">
-                                "All requests are handled with absolute dignity and strict confidentiality. Identifiers are restricted to authorized verification units only."
+                                "All requests are handled with absolute dignity and strict confidentiality. Contact details are restricted to authorized team members only."
                             </p>
                         </div>
                     </div>

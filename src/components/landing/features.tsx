@@ -12,52 +12,52 @@ import { ScrollAnimation } from "@/components/ui/scroll-animation"
 
 const features = [
     {
-        title: "Smart Networking",
-        description: "Connect with like-minded professionals and neighbors through our AI-powered community matching.",
+        title: "Social Feed",
+        description: "Engage with real-time community updates, news, and professional networking in our unified social ecosystem.",
         icon: Users,
         color: "text-secondary group-hover:text-slate-900",
         bgHover: "group-hover:bg-secondary group-hover:border-secondary",
-        href: "/business"
+        href: "/social"
     },
     {
-        title: "Career Support",
-        description: "Access job opportunities, mentorship programs, and scholarships tailored for community members.",
+        title: "Career Growth",
+        description: "Scale your professional journey with exclusive job listings, scholarships, and expert mentorship programs.",
         icon: Briefcase,
         color: "text-red-500 group-hover:text-white",
         bgHover: "group-hover:bg-red-500 group-hover:border-red-500",
         href: "/career"
     },
     {
-        title: "Community Help",
-        description: "A dedicated support system for medical emergencies, blood requirements, and financial guidance.",
-        icon: HandHeart,
+        title: "Business Hub",
+        description: "Access our verified directory for B2B collaborations and promote your services within the community.",
+        icon: Building2,
         color: "text-secondary group-hover:text-slate-900",
         bgHover: "group-hover:bg-secondary group-hover:border-secondary",
-        href: "/help" // Placeholder, maybe create page later or link to contact
+        href: "/business"
     },
     {
-        title: "Achievements",
-        description: "Celebrating the success stories and milestones of our community members across the globe.",
+        title: "Emergency Support",
+        description: "Rapid response system for medical emergencies, blood requirements, and community-driven financial aid.",
+        icon: HandHeart,
+        color: "text-red-500 group-hover:text-white",
+        bgHover: "group-hover:bg-red-500 group-hover:border-red-500",
+        href: "/help"
+    },
+    {
+        title: "Verified Hostels",
+        description: "Locate trusted, safe, and community-verified accommodations for students and professionals across cities.",
+        icon: Building2,
+        color: "text-secondary group-hover:text-slate-900",
+        bgHover: "group-hover:bg-secondary group-hover:border-secondary",
+        href: "/accommodations"
+    },
+    {
+        title: "Success Stories",
+        description: "Celebrating the milestones and global achievements of our members to inspire the next generation.",
         icon: Trophy,
         color: "text-red-500 group-hover:text-white",
         bgHover: "group-hover:bg-red-500 group-hover:border-red-500",
         href: "/achievements"
-    },
-    {
-        title: "Crisis Response",
-        description: "Real-time emergency alerts and community-driven mutual aid during critical situations.",
-        icon: Zap,
-        color: "text-secondary group-hover:text-slate-900",
-        bgHover: "group-hover:bg-secondary group-hover:border-secondary",
-        href: "/events"
-    },
-    {
-        title: "Member Directory",
-        description: "Connect with verified community members. Build meaningful relationships within a trusted network.",
-        icon: Users,
-        color: "text-red-500 group-hover:text-white",
-        bgHover: "group-hover:bg-red-500 group-hover:border-red-500",
-        href: "/members"
     }
 ]
 

@@ -290,7 +290,7 @@ export function CommentSection({ postId, postType, onCommentAdded }: CommentSect
                 </div>
             ) : (
                 <div className="text-center py-2 border-t border-gray-100">
-                    <p className="text-sm text-muted-foreground">Please log in to leave a comment.</p>
+                    <p className="text-sm text-muted-foreground">Please sign in to leave a comment.</p>
                 </div>
             )}
             {error && <p className="text-xs text-red-500 text-center">{error}</p>}

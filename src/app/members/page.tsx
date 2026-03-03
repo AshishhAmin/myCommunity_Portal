@@ -33,7 +33,7 @@ export default function MembersPage() {
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const [followLoading, setFollowLoading] = useState<string | null>(null)
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, getToken } = useAuth()
 
     useEffect(() => {
         const fetchMembers = async () => {
@@ -41,7 +41,12 @@ export default function MembersPage() {
             try {
                 const params = new URLSearchParams({ page: String(page) })
                 if (search) params.append('search', search)
-                const res = await fetch(`/api/members?${params.toString()}`)
+
+                const token = await getToken()
+                const res = await fetch(`/api/members?${params.toString()}`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                })
+
                 if (res.ok) {
                     const data = await res.json()
                     setMembers(data.members)
@@ -56,13 +61,15 @@ export default function MembersPage() {
 
         const timeout = setTimeout(fetchMembers, 300)
         return () => clearTimeout(timeout)
-    }, [search, page])
+    }, [search, page, getToken])
 
     const toggleFollow = async (memberId: string, isFollowing: boolean) => {
         setFollowLoading(memberId)
         try {
+            const token = await getToken()
             const res = await fetch(`/api/members/${memberId}/follow`, {
                 method: isFollowing ? 'DELETE' : 'POST',
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
             })
             if (res.ok) {
                 setMembers(prev => prev.map(m =>

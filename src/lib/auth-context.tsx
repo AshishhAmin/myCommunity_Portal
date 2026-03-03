@@ -94,13 +94,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(true)
         try {
             // Check for dummy accounts first
-            const isDummy = (email === 'admin@community.com' || email === 'member@community.com') && (password === 'password123')
+            const isDummy = (email === 'admin@communet.com' || email === 'member@community.com') && (password === 'password123')
 
             if (isDummy) {
                 const res = await fetch("/api/auth/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ identifier: email, password })
                 })
 
                 if (res.ok) {

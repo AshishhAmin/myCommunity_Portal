@@ -312,42 +312,44 @@ export default function ModerationCenter() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                <div>
-                    <h2 className="text-3xl md:text-5xl font-serif font-bold text-maroon mb-1">Moderation Center</h2>
-                    <p className="text-base md:text-xl text-muted-foreground">Unified dashboard for content review and reports.</p>
+        <div className="space-y-10 md:space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
+                <div className="space-y-2">
+                    <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">
+                        Moderation <span className="text-secondary">Hub</span>
+                    </h2>
+                    <p className="text-slate-500 font-medium text-lg md:text-xl uppercase tracking-widest text-[10px] md:text-xs">Review and verify pending community content</p>
                 </div>
-                <div className="flex gap-3">
-                    <Link href="/posts/create">
-                        <Button className="bg-maroon text-gold hover:bg-maroon/90 font-bold">
+                <div className="flex gap-3 w-full lg:w-auto">
+                    <Link href="/posts/create" className="flex-1 lg:flex-none">
+                        <Button className="w-full bg-slate-900 text-secondary hover:bg-slate-800 font-black uppercase tracking-widest text-[10px] py-6 px-8 rounded-2xl shadow-lg shadow-slate-900/20">
                             <PlusCircle className="mr-2 h-4 w-4" /> Create Post
                         </Button>
                     </Link>
-                    <Button variant="outline" onClick={() => { fetchItems(); fetchCounts(); }} className="border-gold/40 text-maroon font-semibold">
-                        Refresh
+                    <Button variant="outline" onClick={() => { fetchItems(); fetchCounts(); }} className="border-slate-200 text-slate-900 font-black uppercase tracking-widest text-[10px] py-6 px-8 rounded-2xl hover:bg-slate-50">
+                        Refresh Data
                     </Button>
                 </div>
             </div>
 
             <Tabs value={activeTab} onValueChange={(val) => { setActiveTab(val as VerificationTab); setCurrentPage(1); }} className="w-full">
-                <TabsList className="bg-transparent border-b border-gold/20 w-full justify-start h-auto p-0 rounded-none gap-8 overflow-x-auto">
+                <TabsList className="bg-white/50 backdrop-blur-xl border border-slate-100 w-full justify-start h-auto p-1.5 rounded-[2rem] gap-2 overflow-x-auto shadow-xl shadow-slate-200/40">
                     {[
-                        { id: 'users', label: 'Users', icon: Users },
-                        { id: 'jobs', label: 'Jobs', icon: Briefcase },
-                        { id: 'accommodations', label: 'Accommodations', icon: Home },
-                        { id: 'help', label: 'Help', icon: HandHeart },
-                        { id: 'support', label: 'Support', icon: Mail },
-                        { id: 'reports', label: 'Reports', icon: ShieldAlert }
+                        { id: 'users', label: 'Members', icon: Users },
+                        { id: 'jobs', label: 'Careers', icon: Briefcase },
+                        { id: 'accommodations', label: 'Housing', icon: Home },
+                        { id: 'help', label: 'Crisis aid', icon: HandHeart },
+                        { id: 'support', label: 'Tickets', icon: Mail },
+                        { id: 'reports', label: 'Shield', icon: ShieldAlert }
                     ].map(tab => (
                         <TabsTrigger
                             key={tab.id}
                             value={tab.id}
-                            className="bg-transparent border-b-2 border-transparent data-[state=active]:border-maroon data-[state=active]:text-maroon rounded-none px-0 py-3 text-lg font-bold transition-all duration-300 hover:text-maroon shadow-none whitespace-nowrap"
+                            className="data-[state=active]:bg-slate-900 data-[state=active]:text-secondary data-[state=active]:shadow-lg rounded-2xl px-6 py-3.5 text-[10px] font-black uppercase tracking-widest transition-all duration-500 hover:bg-slate-50 shadow-none whitespace-nowrap"
                         >
-                            <tab.icon className="h-5 w-5 mr-2" />
+                            <tab.icon className="h-4 w-4 mr-2" strokeWidth={2.5} />
                             {tab.label}
-                            <span className={cn("ml-2 text-xs px-2 py-0.5 rounded-full", activeTab === tab.id ? "bg-maroon text-gold" : "bg-gold/20 text-maroon")}>
+                            <span className={cn("ml-2.5 text-[9px] px-2 py-0.5 rounded-full font-black", activeTab === tab.id ? "bg-secondary text-slate-900" : "bg-slate-100 text-slate-500")}>
                                 {counts[tab.id as VerificationTab]}
                             </span>
                         </TabsTrigger>
@@ -356,78 +358,85 @@ export default function ModerationCenter() {
 
                 {/* Bulk Action Bar */}
                 {selectedIds.length > 0 && (
-                    <div className="bg-maroon text-gold px-6 py-4 rounded-xl shadow-2xl flex items-center justify-between sticky top-4 z-50 border border-gold/30 mt-8 animate-in fade-in slide-in-from-top-4 duration-300">
-                        <div className="flex items-center gap-4">
-                            <div className="h-12 w-12 rounded-full bg-gold/20 flex items-center justify-center font-serif text-2xl font-bold">{selectedIds.length}</div>
-                            <div><p className="font-bold text-xl leading-none">Items Selected</p><p className="text-gold/70 text-base">Bulk actions for {activeTab}</p></div>
+                    <div className="bg-slate-900 text-white px-8 py-6 rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(15,23,42,0.3)] flex flex-col md:flex-row items-center justify-between sticky top-24 z-50 border border-slate-800 mt-10 animate-in fade-in slide-in-from-top-6 duration-500 lg:mx-4">
+                        <div className="flex items-center gap-6 mb-4 md:mb-0">
+                            <div className="h-14 w-14 rounded-2xl bg-secondary flex items-center justify-center text-slate-900 text-2xl font-black shadow-xl shadow-secondary/10">{selectedIds.length}</div>
+                            <div>
+                                <p className="font-black text-xl uppercase tracking-tight leading-none">Bulk <span className="text-secondary">Actions</span></p>
+                                <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.2em] mt-1.5">Updating multiple items at once</p>
+                            </div>
                         </div>
-                        <div className="flex gap-3">
-                            <Button variant="outline" className="bg-transparent border-gold/40 text-gold hover:bg-gold/10 hover:text-gold font-bold px-6" onClick={() => setSelectedIds([])}>Cancel</Button>
+                        <div className="flex flex-wrap justify-center gap-3">
+                            <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5 font-black uppercase tracking-widest text-[10px] px-8 py-6 rounded-2xl" onClick={() => setSelectedIds([])}>Abort</Button>
 
-                            {/* Conditional Buttons based on Tab */}
                             {activeTab !== 'reports' && (
-                                <Button variant="destructive" className="bg-red-600/20 text-red-200 border border-red-500/30 hover:bg-red-600/40 font-bold px-6" onClick={() => handleAction(selectedIds, 'rejected')}>Reject All</Button>
+                                <Button variant="destructive" className="bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white font-black uppercase tracking-widest text-[10px] px-8 py-6 rounded-2xl transition-all duration-300" onClick={() => handleAction(selectedIds, 'rejected')}>Reject Selected</Button>
                             )}
 
                             {activeTab === 'reports' ? (
-                                <Button className="bg-gold text-maroon hover:bg-gold/90 font-bold px-8 shadow-lg" onClick={() => handleAction(selectedIds, 'resolved')}>Dismiss All</Button>
+                                <Button className="bg-secondary text-slate-900 hover:bg-white font-black uppercase tracking-widest text-[10px] px-10 py-6 rounded-2xl shadow-xl shadow-secondary/20 transition-all duration-300" onClick={() => handleAction(selectedIds, 'resolved')}>Dismiss Selection</Button>
                             ) : (
-                                <Button className="bg-gold text-maroon hover:bg-gold/90 font-bold px-8 shadow-lg" onClick={() => handleAction(selectedIds, 'approved')}>Approve All</Button>
+                                <Button className="bg-secondary text-slate-900 hover:bg-white font-black uppercase tracking-widest text-[10px] px-10 py-6 rounded-2xl shadow-xl shadow-secondary/20 transition-all duration-300" onClick={() => handleAction(selectedIds, 'approved')}>Authorize All</Button>
                             )}
                         </div>
                     </div>
                 )}
 
-                <div className="mt-8">
-                    <div className="bg-white rounded-lg border border-gold/20 shadow-sm overflow-hidden">
-                        <div className="max-h-[600px] overflow-auto custom-scrollbar">
+                <div className="mt-12">
+                    <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.05)] overflow-hidden">
+                        <div className="max-h-[700px] overflow-auto custom-scrollbar">
                             <table className="w-full text-sm text-left border-collapse">
-                                <thead className="bg-[#FAF3E0] text-maroon border-b border-gold/10 sticky top-0 z-10 shadow-sm">
+                                <thead className="bg-slate-50/50 backdrop-blur-md text-slate-400 border-b border-slate-100 sticky top-0 z-10">
                                     <tr>
-                                        <th className="px-3 md:px-6 py-3 md:py-4 w-10 shrink-0"><Checkbox checked={selectedIds.length === items.length && items.length > 0} onCheckedChange={toggleSelectAll} /></th>
-                                        <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Title / Subject</th>
-                                        <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">{activeTab === 'reports' ? 'Reporter' : 'Submitted By'}</th>
-                                        <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold whitespace-nowrap text-sm md:text-lg">Description</th>
-                                        <th className="px-3 md:px-6 py-3 md:py-4 font-serif font-bold text-right whitespace-nowrap text-sm md:text-lg">Actions</th>
+                                        <th className="px-6 md:px-8 py-6 w-10 shrink-0"><Checkbox checked={selectedIds.length === items.length && items.length > 0} onCheckedChange={toggleSelectAll} className="rounded-md" /></th>
+                                        <th className="px-6 md:px-8 py-6 font-black uppercase tracking-[0.2em] text-[10px] whitespace-nowrap">Item Details</th>
+                                        <th className="px-6 md:px-8 py-6 font-black uppercase tracking-[0.2em] text-[10px] whitespace-nowrap">{activeTab === 'reports' ? 'Reporter' : 'Posted By'}</th>
+                                        <th className="px-6 md:px-8 py-6 font-black uppercase tracking-[0.2em] text-[10px] whitespace-nowrap">Subject / Reason</th>
+                                        <th className="px-6 md:px-8 py-6 font-black uppercase tracking-[0.2em] text-[10px] text-right whitespace-nowrap">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gold/10">
+                                <tbody className="divide-y divide-slate-50">
                                     {loading ? (
-                                        <tr><td colSpan={5} className="px-6 py-12 text-center"><div className="flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-maroon" /></div></td></tr>
+                                        <tr><td colSpan={5} className="px-6 py-24 text-center"><div className="flex flex-col items-center gap-4"><Loader2 className="h-10 w-10 animate-spin text-secondary/40" /><p className="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse">Loading list...</p></div></td></tr>
                                     ) : items.length > 0 ? (
                                         items.map((item: any) => {
                                             const { title, owner, ownerEmail, description } = getItemDisplay(item)
                                             return (
-                                                <tr key={item.id} className={cn("transition-colors", selectedIds.includes(item.id) ? "bg-maroon/5" : "hover:bg-[#FAF3E0]/20")}>
-                                                    <td className="px-3 md:px-6 py-4 md:py-5"><Checkbox checked={selectedIds.includes(item.id)} onCheckedChange={() => toggleSelect(item.id)} /></td>
-                                                    <td className="px-3 md:px-6 py-4 md:py-5 font-bold text-gray-900 whitespace-nowrap text-sm md:text-base">{title}</td>
-                                                    <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 whitespace-nowrap text-sm md:text-base">
-                                                        <div className="flex flex-col"><span className="font-bold text-maroon">{owner}</span>{ownerEmail && <span className="text-[10px] md:text-xs text-muted-foreground font-medium">{ownerEmail}</span>}</div>
+                                                <tr key={item.id} className={cn("transition-all duration-300 group", selectedIds.includes(item.id) ? "bg-secondary/5" : "hover:bg-slate-50/50")}>
+                                                    <td className="px-6 md:px-8 py-6"><Checkbox checked={selectedIds.includes(item.id)} onCheckedChange={() => toggleSelect(item.id)} className="rounded-md" /></td>
+                                                    <td className="px-6 md:px-8 py-6">
+                                                        <span className="font-black text-slate-900 uppercase tracking-tight text-sm md:text-base group-hover:text-secondary transition-colors">{title}</span>
                                                     </td>
-                                                    <td className="px-3 md:px-6 py-4 md:py-5 text-gray-700 min-w-[250px] md:min-w-[300px] max-w-[400px] text-sm md:text-base">
-                                                        <p className="line-clamp-2 italic leading-relaxed break-words">{description}</p>
+                                                    <td className="px-6 md:px-8 py-6">
+                                                        <div className="flex flex-col">
+                                                            <span className="font-black text-slate-900 uppercase tracking-widest text-[10px] md:text-xs">{owner}</span>
+                                                            {ownerEmail && <span className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-tight mt-0.5">{ownerEmail}</span>}
+                                                        </div>
                                                     </td>
-                                                    <td className="px-3 md:px-6 py-3 md:py-4 text-right">
-                                                        <div className="flex justify-end gap-2">
+                                                    <td className="px-6 md:px-8 py-6 text-slate-600 min-w-[250px] md:min-w-[300px] max-w-[400px]">
+                                                        <p className="line-clamp-2 text-xs md:text-sm font-medium italic leading-relaxed break-words opacity-70 group-hover:opacity-100 transition-opacity">"{description}"</p>
+                                                    </td>
+                                                    <td className="px-6 md:px-8 py-6 text-right">
+                                                        <div className="flex justify-end gap-3 translate-x-2 group-hover:translate-x-0 transition-transform duration-300">
                                                             {activeTab === 'reports' ? (
                                                                 <>
-                                                                    <Button variant="outline" size="sm" className="h-8 text-xs border-green-200 text-green-600 hover:bg-green-50" onClick={() => handleAction(item.id, 'resolved')}><CheckCircle className="h-3 w-3 mr-1" /> Dismiss</Button>
-                                                                    <Button variant="outline" size="sm" className="h-8 text-xs border-red-200 text-red-600 hover:bg-red-50" onClick={() => handleAction(item.id, 'deleted')}><Trash2 className="h-3 w-3 mr-1" /> Delete Content</Button>
+                                                                    <Button variant="ghost" size="sm" className="h-9 px-4 text-[9px] font-black uppercase tracking-widest text-emerald-600 hover:bg-emerald-50 rounded-xl" onClick={() => handleAction(item.id, 'resolved')}><CheckCircle className="h-3.5 w-3.5 mr-2" /> Dismiss</Button>
+                                                                    <Button variant="ghost" size="sm" className="h-9 px-4 text-[9px] font-black uppercase tracking-widest text-red-500 hover:bg-red-50 rounded-xl" onClick={() => handleAction(item.id, 'deleted')}><Trash2 className="h-3.5 w-3.5 mr-2" /> Purge</Button>
                                                                 </>
                                                             ) : (
                                                                 <>
-                                                                    <Button variant="outline" size="sm" className="h-8 text-xs border-green-200 text-green-600 hover:bg-green-50" onClick={() => handleAction(item.id, 'approved')}><CheckCircle className="h-3 w-3 mr-1" /> {activeTab === 'support' ? 'Resolve' : 'Approve'}</Button>
-                                                                    <Button variant="outline" size="sm" className="h-8 text-xs border-red-200 text-red-600 hover:bg-red-50" onClick={() => handleAction(item.id, 'rejected')}><XCircle className="h-3 w-3 mr-1" /> {activeTab === 'support' ? 'Close' : 'Reject'}</Button>
+                                                                    <Button variant="ghost" size="sm" className="h-9 px-4 text-[9px] font-black uppercase tracking-widest text-emerald-600 hover:bg-emerald-50 rounded-xl" onClick={() => handleAction(item.id, 'approved')}><CheckCircle className="h-3.5 w-3.5 mr-2" /> Approve</Button>
+                                                                    <Button variant="ghost" size="sm" className="h-9 px-4 text-[9px] font-black uppercase tracking-widest text-red-500 hover:bg-red-50 rounded-xl" onClick={() => handleAction(item.id, 'rejected')}><XCircle className="h-3.5 w-3.5 mr-2" /> Reject</Button>
                                                                 </>
                                                             )}
                                                         </div>
                                                         {activeTab !== 'support' && activeTab !== 'reports' && activeTab !== 'users' && (
-                                                            <div className="flex justify-end mt-2">
+                                                            <div className="flex justify-end mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                                 <Link href={
                                                                     activeTab === 'jobs' ? `/career/jobs/${item.id}` :
                                                                         activeTab === 'accommodations' ? `/accommodations/${item.id}` :
                                                                             activeTab === 'help' ? `/help/${item.id}` : '#'
-                                                                } target="_blank" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-[10px] font-medium transition-colors h-6 px-2 py-1 text-muted-foreground hover:text-maroon hover:bg-gold/10 gap-1"><Eye className="h-3 w-3" /> View Public Page</Link>
+                                                                } target="_blank" className="inline-flex items-center justify-center whitespace-nowrap rounded-xl text-[9px] font-black uppercase tracking-widest transition-all h-7 px-3 text-slate-400 hover:text-secondary hover:bg-slate-900 gap-2"><Eye className="h-3 w-3" /> View Details</Link>
                                                             </div>
                                                         )}
                                                     </td>
@@ -461,10 +470,12 @@ export default function ModerationCenter() {
 
 function NoPending() {
     return (
-        <div className="col-span-full py-20 flex flex-col items-center justify-center border-2 border-dashed border-gold/10 rounded-2xl bg-white/30">
-            <CheckCircle2 className="h-12 w-12 text-gold/30 mb-4" />
-            <h3 className="font-serif text-xl font-bold text-maroon/40">Clean Slate!</h3>
-            <p className="text-muted-foreground/60">No items in this queue.</p>
+        <div className="col-span-full py-32 flex flex-col items-center justify-center border-2 border-dashed border-slate-100 rounded-[3rem] bg-white/50 backdrop-blur-sm">
+            <div className="h-20 w-20 rounded-full bg-slate-50 flex items-center justify-center mb-6 shadow-inner">
+                <CheckCircle2 className="h-10 w-10 text-emerald-400 opacity-40" />
+            </div>
+            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Everything Is Clear</h3>
+            <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">No pending items in this category</p>
         </div>
     )
 }

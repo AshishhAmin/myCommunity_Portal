@@ -73,7 +73,7 @@ export default function LoginPage() {
                 <Card className="bg-white border-transparent shadow-[0_20px_60px_-15px_rgba(59,130,246,0.05)] rounded-[2.5rem] overflow-hidden">
                     <CardHeader className="text-center border-b border-slate-100 pb-6 pt-8 bg-slate-50/50">
                         <CardTitle className="text-xl md:text-2xl font-black text-slate-900">
-                            Member Login
+                            Member Sign In
                         </CardTitle>
                         <CardDescription className="text-sm md:text-base text-slate-500 font-medium mt-1.5">
                             Enter your credentials to access the portal
@@ -120,11 +120,11 @@ export default function LoginPage() {
                             <Button type="submit" className="w-full text-lg h-14 bg-slate-900 hover:bg-secondary hover:text-slate-900 text-white font-bold rounded-2xl shadow-lg shadow-slate-200 transition-all hover:-translate-y-0.5" disabled={isLoading}>
                                 {isLoading ? (
                                     <>
-                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Logging in...
+                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Signing in...
                                     </>
                                 ) : (
                                     <>
-                                        Login <ArrowRight className="ml-2 h-5 w-5" />
+                                        Sign In <ArrowRight className="ml-2 h-5 w-5" />
                                     </>
                                 )}
                             </Button>

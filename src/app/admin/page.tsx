@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import {
     Users, AlertTriangle, TrendingUp, Briefcase, Calendar,
     GraduationCap, Building2, HeartHandshake, Heart, IndianRupee,
-    Loader2, ToggleLeft, ToggleRight
+    Loader2, ToggleLeft, ToggleRight, ShieldCheck
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, Cell } from 'recharts'
 import Link from 'next/link'
@@ -121,34 +121,39 @@ export default function AdminDashboard() {
     const selectedMetric = growthMetrics.find(m => m.id === activeGrowthMetric) || growthMetrics[0]
 
     return (
-        <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-10 md:space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h1 className="text-3xl md:text-5xl font-bold text-slate-900 font-serif">Admin Dashboard</h1>
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 md:gap-8">
+                <div className="space-y-2">
+                    <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">
+                        Admin <span className="text-secondary">Dashboard</span>
+                    </h1>
+                    <p className="text-slate-500 font-medium text-lg md:text-xl">Overview of community activity and pending reviews.</p>
+                </div>
 
                 {/* Total / Pending Toggle */}
-                <div className="flex items-center gap-1 md:gap-2 bg-background border border-secondary/20 rounded-lg p-1 shadow-sm backdrop-blur-sm self-stretch sm:self-auto">
+                <div className="flex items-center gap-1.5 bg-white border border-slate-100 rounded-2xl p-1.5 shadow-xl shadow-slate-200/50 backdrop-blur-xl self-stretch lg:self-auto">
                     <button
                         onClick={() => setStatsView('total')}
-                        className={`flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-md text-sm md:text-base font-bold transition-all ${statsView === 'total'
-                            ? 'bg-slate-900 text-secondary shadow-sm'
-                            : 'text-muted-foreground hover:text-slate-900 hover:bg-secondary/10'
+                        className={`flex-1 lg:flex-none flex justify-center items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${statsView === 'total'
+                            ? 'bg-slate-900 text-secondary shadow-lg shadow-slate-900/20'
+                            : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50'
                             }`}
                     >
-                        <TrendingUp className="h-4 w-4 shrink-0" />
-                        Total
+                        <TrendingUp className="h-4 w-4" />
+                        Analytics
                     </button>
                     <button
                         onClick={() => setStatsView('pending')}
-                        className={`flex-1 sm:flex-none flex justify-center items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-md text-sm md:text-base font-bold transition-all ${statsView === 'pending'
-                            ? 'bg-secondary text-slate-900 shadow-sm'
-                            : 'text-muted-foreground hover:text-secondary hover:bg-secondary/10'
+                        className={`flex-1 lg:flex-none flex justify-center items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${statsView === 'pending'
+                            ? 'bg-secondary text-slate-900 shadow-lg shadow-secondary/20'
+                            : 'text-slate-400 hover:text-secondary hover:bg-secondary/5'
                             }`}
                     >
                         <AlertTriangle className="h-4 w-4" />
                         Pending
                         {(stats?.stats?.totalPending || 0) > 0 && (
-                            <span className={`text-[11px] px-2 py-0.5 rounded-full font-black ${statsView === 'pending'
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ml-1 ${statsView === 'pending'
                                 ? 'bg-slate-900/10 text-slate-900'
                                 : 'bg-secondary/20 text-secondary'
                                 }`}>
@@ -160,22 +165,22 @@ export default function AdminDashboard() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
                 {activeCards.map((card, i) => (
-                    <Link key={`${statsView}-${i}`} href={card.link}>
-                        <Card className={`border-secondary/20 shadow-sm border-l-4 ${card.accent} hover:shadow-md transition-all cursor-pointer h-full`}>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                    <Link key={`${statsView}-${i}`} href={card.link} className="group">
+                        <Card className={`border-slate-100 shadow-[0_20px_60px_-15px_rgba(59,130,246,0.05)] hover:shadow-[0_20px_60px_-15px_rgba(59,130,246,0.12)] transition-all duration-500 cursor-pointer h-full border-l-[6px] ${card.accent} bg-white rounded-[2.5rem] overflow-hidden group-hover:-translate-y-2`}>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 p-8 pb-4">
+                                <CardTitle className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
                                     {card.label}
                                 </CardTitle>
-                                <div className={`p-2 rounded-md ${card.bg}`}>
-                                    <card.icon className={`h-4 w-4 md:h-5 md:w-5 ${card.color}`} />
+                                <div className={`h-12 w-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-500 group-hover:scale-110 ${card.bg} border border-slate-100/50 shadow-sm`}>
+                                    <card.icon className={`h-6 w-6 ${card.color}`} strokeWidth={2.5} />
                                 </div>
                             </CardHeader>
-                            <CardContent>
-                                <div className={`text-2xl md:text-3xl font-bold ${card.color}`}>{card.value}</div>
+                            <CardContent className="p-8 pt-0">
+                                <div className={`text-4xl font-black tracking-tight ${card.color}`}>{card.value}</div>
                                 {card.subtitle && (
-                                    <p className="text-xs text-muted-foreground mt-1 font-medium">{card.subtitle}</p>
+                                    <p className="text-[10px] text-slate-500 mt-2 font-black uppercase tracking-widest opacity-70">{card.subtitle}</p>
                                 )}
                             </CardContent>
                         </Card>
@@ -184,28 +189,31 @@ export default function AdminDashboard() {
             </div>
 
             {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10">
                 {/* User Growth Chart */}
-                <Card className="border-secondary/20 shadow-sm col-span-1 lg:col-span-2">
-                    <CardHeader className="pb-4">
-                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
-                            <div className="space-y-1">
-                                <CardTitle className="text-xl md:text-2xl font-serif text-slate-900 flex items-center gap-2">
-                                    <selectedMetric.icon className="h-5 w-5 md:h-6 md:w-6" /> {selectedMetric.label} Growth Hub
+                <Card className="border-slate-100 shadow-[0_20px_60px_-15px_rgba(59,130,246,0.05)] col-span-1 lg:col-span-3 bg-white rounded-[3rem] overflow-hidden">
+                    <CardHeader className="p-8 md:p-10 pb-4">
+                        <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-8">
+                            <div className="space-y-2">
+                                <CardTitle className="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-4">
+                                    <div className={`h-12 w-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-900 shadow-sm`}>
+                                        <selectedMetric.icon className="h-6 w-6" strokeWidth={2.5} />
+                                    </div>
+                                    <span>{selectedMetric.label} <span className="text-secondary">Growth Analysis</span></span>
                                 </CardTitle>
-                                <p className="text-sm text-muted-foreground">Historical trends for community participation</p>
+                                <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] ml-16">Tracking community growth and engagement</p>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+                            <div className="flex flex-wrap items-center gap-6 w-full xl:w-auto ml-auto">
                                 {/* Metric Selector */}
-                                <div className="flex flex-wrap gap-1 bg-slate-100 p-1 rounded-lg border border-secondary/10">
+                                <div className="flex flex-wrap gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-100 shadow-inner">
                                     {growthMetrics.map(m => (
                                         <button
                                             key={m.id}
                                             onClick={() => setActiveGrowthMetric(m.id)}
-                                            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${activeGrowthMetric === m.id
-                                                ? 'bg-white text-slate-900 shadow-sm border border-secondary/20'
-                                                : 'text-muted-foreground hover:text-slate-900'
+                                            className={`px-4 py-2.5 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all duration-300 ${activeGrowthMetric === m.id
+                                                ? 'bg-white text-slate-900 shadow-md border border-slate-100'
+                                                : 'text-slate-400 hover:text-slate-900'
                                                 }`}
                                         >
                                             {m.label}
@@ -213,18 +221,16 @@ export default function AdminDashboard() {
                                     ))}
                                 </div>
 
-                                <div className="h-8 w-px bg-gold/20 hidden md:block"></div>
-
                                 {/* Range Selector */}
-                                <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-0.5">
+                                <div className="flex items-center gap-1.5 bg-slate-900/5 rounded-2xl p-1.5 border border-slate-100">
                                     {timeRanges.map(r => (
                                         <button
                                             key={r.value}
                                             onClick={() => handleRangeChange(r.value)}
                                             disabled={chartLoading}
-                                            className={`px-2 py-1 md:px-3 text-[10px] md:text-xs font-semibold rounded-md transition-all ${timeRange === r.value
-                                                ? 'bg-slate-900 text-secondary shadow-sm'
-                                                : 'text-muted-foreground hover:text-slate-900 hover:bg-white'
+                                            className={`px-3 py-2 text-[9px] font-black rounded-xl transition-all duration-300 ${timeRange === r.value
+                                                ? 'bg-slate-900 text-secondary shadow-lg shadow-slate-900/20'
+                                                : 'text-slate-400 hover:text-slate-900 hover:bg-white'
                                                 }`}
                                         >
                                             {r.label}
@@ -234,42 +240,48 @@ export default function AdminDashboard() {
                             </div>
                         </div>
                     </CardHeader>
-                    <CardContent className="h-[250px] md:h-[350px]">
+                    <CardContent className="px-6 md:px-10 pb-10 h-[300px] md:h-[450px]">
                         {chartLoading ? (
-                            <div className="flex items-center justify-center h-full">
-                                <Loader2 className="h-6 w-6 animate-spin text-secondary" />
+                            <div className="flex flex-col items-center justify-center h-full space-y-4">
+                                <Loader2 className="h-12 w-12 animate-spin text-secondary/30" />
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse">Loading Data...</p>
                             </div>
                         ) : (
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={stats?.graphs?.[activeGrowthMetric] || []}>
+                                <AreaChart data={stats?.graphs?.[activeGrowthMetric] || []} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="growthGrad" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor={selectedMetric.color} stopOpacity={0.3} />
+                                            <stop offset="5%" stopColor={selectedMetric.color} stopOpacity={0.2} />
                                             <stop offset="95%" stopColor={selectedMetric.color} stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                                    <CartesianGrid strokeDasharray="6 6" vertical={false} stroke="#E2E8F0" />
                                     <XAxis
                                         dataKey="name"
-                                        stroke="#888888"
-                                        fontSize={11}
+                                        stroke="#94A3B8"
+                                        fontSize={10}
+                                        fontWeight={700}
                                         tickLine={false}
                                         axisLine={false}
+                                        dy={15}
                                         interval={timeRange === '30d' ? 4 : timeRange === '7d' ? 0 : 'preserveStartEnd'}
                                     />
-                                    <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} allowDecimals={false} />
+                                    <YAxis stroke="#94A3B8" fontSize={10} fontWeight={700} tickLine={false} axisLine={false} allowDecimals={false} dx={-10} />
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: '#fff', borderRadius: '10px', border: '1px solid #e5e7eb', fontSize: '13px' }}
-                                        cursor={{ stroke: '#ddd' }}
+                                        contentStyle={{ backgroundColor: '#fff', borderRadius: '20px', border: '1px solid #E2E8F0', padding: '15px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.05)' }}
+                                        labelStyle={{ fontWeight: 900, textTransform: 'uppercase', fontSize: '10px', color: '#64748B', marginBottom: '5px' }}
+                                        itemStyle={{ fontWeight: 900, color: selectedMetric.color, fontSize: '14px' }}
+                                        cursor={{ stroke: '#E2E8F0', strokeWidth: 2 }}
                                     />
                                     <Area
                                         type="monotone"
                                         dataKey="count"
                                         stroke={selectedMetric.color}
-                                        strokeWidth={2.5}
+                                        strokeWidth={4}
                                         fill="url(#growthGrad)"
-                                        dot={{ r: 3, fill: selectedMetric.color }}
-                                        activeDot={{ r: 5 }}
+                                        dot={{ r: 4, fill: '#fff', stroke: selectedMetric.color, strokeWidth: 3 }}
+                                        activeDot={{ r: 8, fill: selectedMetric.color, stroke: '#fff', strokeWidth: 4 }}
+                                        animationDuration={1500}
                                     />
                                 </AreaChart>
                             </ResponsiveContainer>
@@ -278,29 +290,33 @@ export default function AdminDashboard() {
                 </Card>
 
                 {/* Breakdown Bar Chart */}
-                <Card className="border-secondary/20 shadow-sm col-span-1">
-                    <CardHeader>
+                <Card className="border-slate-100 shadow-[0_20px_60px_-15px_rgba(59,130,246,0.05)] col-span-1 lg:col-span-3 bg-white rounded-[3rem] overflow-hidden">
+                    <CardHeader className="p-8 md:p-10 pb-4">
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-lg font-serif text-slate-900">
-                                {statsView === 'pending' ? 'Pending Items' : 'Total Items'} Breakdown
-                            </CardTitle>
-                            <span className={`text-xs font-bold px-2 py-1 rounded-full ${statsView === 'pending' ? 'bg-secondary/20 text-secondary' : 'bg-slate-900/10 text-slate-900'
+                            <div className="space-y-2">
+                                <CardTitle className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                                    Resource <span className="text-secondary">Breakdown</span>
+                                </CardTitle>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Resource breakdown across platform sectors</p>
+                            </div>
+                            <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border border-slate-100 ${statsView === 'pending' ? 'bg-secondary/10 text-secondary' : 'bg-slate-900/5 text-slate-900'
                                 }`}>
-                                {statsView === 'pending' ? 'Pending' : 'All'}
-                            </span>
+                                {statsView === 'pending' ? 'Verification List' : 'Platform Content'}
+                            </div>
                         </div>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="px-6 md:px-10 pb-10 h-[350px]">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={barChartData}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                                <XAxis dataKey="name" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} allowDecimals={false} />
+                            <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
+                                <CartesianGrid strokeDasharray="6 6" vertical={false} stroke="#E2E8F0" />
+                                <XAxis dataKey="name" stroke="#94A3B8" fontSize={10} fontWeight={700} tickLine={false} axisLine={false} dy={15} />
+                                <YAxis stroke="#94A3B8" fontSize={10} fontWeight={700} tickLine={false} axisLine={false} allowDecimals={false} dx={-10} />
                                 <Tooltip
-                                    cursor={{ fill: 'rgba(0,0,0,0.04)' }}
-                                    contentStyle={{ borderRadius: '10px', border: '1px solid #e5e7eb', fontSize: '13px' }}
+                                    cursor={{ fill: 'rgba(0,0,0,0.02)' }}
+                                    contentStyle={{ borderRadius: '20px', border: '1px solid #E2E8F0', padding: '15px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.05)' }}
+                                    labelStyle={{ fontWeight: 900, textTransform: 'uppercase', fontSize: '10px', color: '#64748B', marginBottom: '5px' }}
                                 />
-                                <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={36}>
+                                <Bar dataKey="value" radius={[12, 12, 0, 0]} barSize={40} animationDuration={1500}>
                                     {barChartData.map((entry, index) => (
                                         <Cell key={index} fill={entry.fill} />
                                     ))}
@@ -312,14 +328,19 @@ export default function AdminDashboard() {
             </div>
 
             {/* Activity Link */}
-            <div className="bg-slate-50 rounded-lg border border-secondary/20 shadow-sm p-6 flex justify-between items-center group hover:bg-secondary/5 transition-colors">
-                <div>
-                    <h3 className="font-semibold text-lg text-slate-900">Detailed Verification Requests</h3>
-                    <p className="text-muted-foreground text-sm">Review full list of pending users and content.</p>
+            <div className="bg-slate-900 rounded-[2.5rem] border border-slate-800 shadow-2xl p-8 md:p-12 flex flex-col md:flex-row justify-between items-center gap-8 group hover:bg-slate-950 transition-all duration-500 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl -mt-32 -mr-32" />
+                <div className="relative z-10 space-y-4 text-center md:text-left">
+                    <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20">
+                        <ShieldCheck className="h-4 w-4 text-secondary" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-secondary">Verified Community Access</span>
+                    </div>
+                    <h3 className="font-black text-3xl md:text-4xl text-white tracking-tight uppercase">Verification <span className="text-secondary/50">Center</span></h3>
+                    <p className="text-slate-400 font-medium text-lg max-w-xl">Review and approve pending members, business listings, and professional profiles.</p>
                 </div>
-                <a href="/admin/users" className="bg-slate-900 text-secondary px-4 py-2 rounded-md hover:bg-slate-800 transition-colors text-sm font-medium">
-                    Manage Verifications
-                </a>
+                <Link href="/admin/verification" className="relative z-10 bg-secondary text-slate-900 px-10 py-5 rounded-2xl hover:bg-white transition-all duration-300 text-[11px] font-black uppercase tracking-[0.2em] shadow-xl shadow-secondary/20 active:scale-95 whitespace-nowrap">
+                    Go to Verification Center
+                </Link>
             </div>
 
         </div>

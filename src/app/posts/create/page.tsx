@@ -52,30 +52,30 @@ export default function CreatePostPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#FAF3E0]/30 font-sans">
+        <div className="min-h-screen flex flex-col bg-[#FAF9F6] font-sans selection:bg-secondary/20">
             <Navbar />
 
-            <main className="flex-1 container mx-auto px-4 py-12">
-                <div className="max-w-4xl mx-auto">
+            <main className="flex-1 container mx-auto px-4 py-24">
+                <div className="max-w-5xl mx-auto">
                     <Button
                         variant="ghost"
                         onClick={() => router.back()}
-                        className="mb-8 hover:bg-maroon/10 text-maroon font-semibold"
+                        className="mb-12 hover:bg-slate-100 text-slate-400 hover:text-slate-900 font-black uppercase tracking-[0.2em] text-[10px] transition-all group"
                     >
-                        <ArrowLeft className="h-4 w-4 mr-2" />
-                        Back Home
+                        <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+                        Back to Home
                     </Button>
 
-                    <div className="mb-12 text-center">
-                        <h1 className="font-serif text-4xl md:text-5xl font-bold text-maroon mb-4">
-                            What would you like to post?
+                    <div className="mb-20">
+                        <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tighter leading-none animate-in fade-in slide-in-from-bottom-4 duration-700">
+                            Create a <span className="text-secondary italic">Contribution</span>.
                         </h1>
-                        <p className="text-muted-foreground text-lg italic">
-                            Select a category to get started with your community contribution.
+                        <p className="text-xl text-slate-500 font-medium max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+                            Select a category below to share your story, opportunity, or business with the community.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-slide-up">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {categories
                             .filter(cat => {
                                 if (['scholarship', 'event'].includes(cat.id)) {
@@ -84,25 +84,35 @@ export default function CreatePostPage() {
                                 return true
                             })
                             .map((cat, index) => (
-                                <div key={cat.id} className="animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
+                                <div
+                                    key={cat.id}
+                                    className="animate-in fade-in slide-in-from-bottom-8 duration-700"
+                                    style={{ animationDelay: `${index * 100}ms` }}
+                                >
                                     <Card
-                                        className="border-gold/20 transition-all duration-500 group h-full cursor-pointer shadow-md hover:shadow-2xl"
+                                        className="group relative h-full cursor-pointer overflow-hidden border-slate-100 bg-white/50 backdrop-blur-sm transition-all duration-500 hover:border-secondary/20 hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.08)] hover:-translate-y-2 rounded-[2.5rem]"
                                         onClick={() => handleCategorySelect(cat)}
                                     >
-                                        <CardContent className="p-8">
-                                            <div className={`
-                        mb-6 h-16 w-16 rounded-2xl flex items-center justify-center
-                        bg-white border border-gold/20 group-hover:bg-maroon group-hover:border-maroon transition-all duration-500 shadow-sm
-                        ${cat.color} group-hover:text-gold
-                        `}>
-                                                <cat.icon className="h-8 w-8 transition-transform duration-500 group-hover:scale-110" />
+                                        <CardContent className="p-10 flex flex-col h-full">
+                                            <div className="mb-8 h-16 w-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:bg-slate-900 transition-all duration-500 shadow-sm relative z-10 group-hover:scale-110">
+                                                <cat.icon className={`h-8 w-8 transition-colors duration-500 ${cat.color} group-hover:text-white`} />
                                             </div>
-                                            <h3 className="font-serif text-2xl font-bold text-maroon mb-4">
-                                                {cat.label}
-                                            </h3>
-                                            <p className="text-lg text-muted-foreground leading-relaxed">
-                                                {cat.description}
-                                            </p>
+
+                                            <div className="relative z-10">
+                                                <h3 className="text-2xl font-black text-slate-900 mb-4 group-hover:text-secondary transition-colors tracking-tight">
+                                                    {cat.label}
+                                                </h3>
+                                                <p className="text-slate-500 font-medium leading-relaxed mb-8">
+                                                    {cat.description}
+                                                </p>
+                                            </div>
+
+                                            <div className="mt-auto flex items-center text-[10px] font-black uppercase tracking-[0.25em] text-slate-400 group-hover:text-slate-900 transition-colors">
+                                                Get Started <ArrowLeft className="h-3 w-3 ml-2 rotate-180 transition-transform group-hover:translate-x-1" />
+                                            </div>
+
+                                            {/* Decorative background element on hover */}
+                                            <div className="absolute -right-4 -bottom-4 h-32 w-32 bg-secondary/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                                         </CardContent>
                                     </Card>
                                 </div>

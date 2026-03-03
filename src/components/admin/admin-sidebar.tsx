@@ -11,9 +11,9 @@ export function AdminSidebar() {
     const menuItems = [
         { name: "Dashboard", icon: CheckCircle, href: "/admin" },
         { name: "Moderation Hub", icon: ShieldCheck, href: "/admin/verification" },
-        { name: "User Verification", icon: Users, href: "/admin/users" },
+        { name: "User Directory", icon: Users, href: "/admin/users" },
         { name: "Business Moderation", icon: Building2, href: "/admin/business" },
-        { name: "Collab Moderation", icon: Handshake, href: "/admin/collaboration" },
+        { name: "Collaboration Requests", icon: Handshake, href: "/admin/collaboration" },
         { name: "Career Moderation", icon: Briefcase, href: "/admin/career" },
         { name: "Events Management", icon: Calendar, href: "/admin/events" },
         { name: "Accommodations", icon: Building2, href: "/admin/accommodations" },
@@ -22,18 +22,18 @@ export function AdminSidebar() {
     ]
 
     return (
-        <aside className="w-72 bg-slate-900 text-white flex flex-col shrink-0 border-r border-slate-800 shadow-2xl h-screen sticky top-0 z-50">
-            <div className="px-8 py-10 border-b border-slate-800 flex items-center gap-4">
-                <div className="h-12 w-12 rounded-2xl bg-secondary flex items-center justify-center shadow-2xl shadow-secondary/20">
-                    <ShieldCheck className="h-7 w-7 text-slate-900" />
+        <aside className="w-64 md:w-72 bg-slate-900 text-white flex flex-col shrink-0 border-r border-slate-800 shadow-2xl h-screen sticky top-0 z-50">
+            <div className="px-6 md:px-8 py-8 md:py-10 border-b border-slate-800 flex items-center gap-4">
+                <div className="h-10 w-10 md:h-12 md:w-12 rounded-2xl bg-secondary flex items-center justify-center shadow-xl shadow-secondary/10 group hover:rotate-6 transition-transform">
+                    <ShieldCheck className="h-6 w-6 md:h-7 md:w-7 text-slate-900" />
                 </div>
                 <div>
-                    <h1 className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Protocol</h1>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-secondary mt-1">Control Unit</p>
+                    <h1 className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.4em] text-white">Panel</h1>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-secondary mt-1">Unified Control</p>
                 </div>
             </div>
 
-            <nav className="flex-1 py-6 px-4 space-y-2 overflow-y-auto">
+            <nav className="flex-1 py-6 px-3 md:px-4 space-y-1.5 overflow-y-auto custom-scrollbar">
                 {menuItems.map((item) => {
                     const isActive = pathname === item.href
                     return (
@@ -41,34 +41,33 @@ export function AdminSidebar() {
                             key={item.name}
                             href={item.href}
                             className={cn(
-                                "flex items-center gap-4 px-8 py-4 w-full transition-all duration-300 group relative",
+                                "flex items-center gap-4 px-6 md:px-8 py-3.5 md:py-4 w-full transition-all duration-300 group relative rounded-xl",
                                 isActive
-                                    ? "bg-secondary text-slate-900 font-black"
+                                    ? "bg-secondary text-slate-900 font-black shadow-lg shadow-secondary/10"
                                     : "text-slate-400 hover:bg-white/5 hover:text-white font-bold"
                             )}
                         >
-                            {isActive && <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-slate-900" />}
-                            <item.icon className={cn("h-5 w-5 transition-transform duration-300 group-hover:scale-110", isActive ? "text-slate-900" : "text-slate-500 group-hover:text-secondary")} />
-                            <span className="text-[10px] uppercase tracking-[0.2em]">{item.name}</span>
+                            <item.icon className={cn("h-4 w-4 md:h-5 md:w-5 transition-transform duration-300 group-hover:scale-110", isActive ? "text-slate-900" : "text-slate-500 group-hover:text-secondary")} strokeWidth={isActive ? 2.5 : 2} />
+                            <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em]">{item.name}</span>
                         </Link>
                     )
                 })}
             </nav>
 
-            <div className="p-4 border-t border-gold/20 space-y-2">
+            <div className="p-4 border-t border-slate-800 space-y-2">
                 <Link
-                    href="/dashboard"
-                    className="flex items-center gap-4 px-8 py-4 w-full hover:bg-white/5 text-slate-500 hover:text-white transition-all duration-300 group"
+                    href="/"
+                    className="flex items-center gap-4 px-6 md:px-8 py-4 w-full rounded-xl hover:bg-slate-800 text-slate-500 hover:text-white transition-all duration-300 group border border-transparent hover:border-slate-700"
                 >
-                    <Building2 className="h-5 w-5 transition-transform group-hover:-translate-y-0.5" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Return to Base</span>
+                    <Building2 className="h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:-translate-y-0.5" />
+                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Exit to Portal</span>
                 </Link>
                 <button
                     onClick={() => { window.location.href = '/' }}
-                    className="flex items-center gap-4 px-8 py-4 w-full hover:bg-red-500/10 text-slate-500 hover:text-red-500 transition-all duration-300 group"
+                    className="flex items-center gap-4 px-6 md:px-8 py-4 w-full rounded-xl hover:bg-red-500/10 text-slate-500 hover:text-red-500 transition-all duration-300 group border border-transparent hover:border-red-500/20"
                 >
-                    <LogOut className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Terminate Session</span>
+                    <LogOut className="h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
+                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Logout</span>
                 </button>
             </div>
         </aside>

@@ -154,42 +154,38 @@ export default function AddBusinessPage() {
 
     return (
         <AuthGuard allowedRoles={["member", "admin"]} requireVerified={true}>
-            <div className="min-h-screen flex flex-col bg-[#FDFBF7]">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6] relative overflow-hidden">
+                {/* Background decorative elements */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-3xl -mt-32 -mr-32 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-400/5 rounded-full blur-3xl -mb-32 -ml-32 pointer-events-none" />
+
                 <Navbar />
 
-                <main className="flex-1 container mx-auto px-4 py-12 max-w-4xl">
+                <main className="flex-1 container mx-auto px-4 py-16 max-w-4xl relative z-10">
                     {/* Header */}
-                    <div className="mb-10 text-center">
-                        <Link href="/business" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-maroon transition-colors mb-6">
-                            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Directory
+                    <div className="mb-14 px-4">
+                        <Link href="/business" className="inline-flex items-center text-slate-400 hover:text-slate-900 mb-10 transition-all text-[11px] font-black uppercase tracking-[0.2em] group">
+                            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Directory
                         </Link>
-                        <div className="flex justify-center mb-4">
-                            <Badge variant="outline" className="border-maroon/20 text-maroon bg-white px-4 py-1 rounded-full uppercase tracking-widest text-[10px] font-bold">
-                                Post an Enterprise
-                            </Badge>
-                        </div>
-                        <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">Add Your Business</h1>
-                        <p className="text-gray-600 max-w-xl mx-auto">
-                            Share your business with the community. Verified listings help build trust and grow your network.
+                        <h1 className="text-5xl md:text-6xl font-black text-slate-900 mb-4 tracking-tight leading-none animate-in fade-in slide-in-from-bottom-4 duration-700">Add Your <span className="text-secondary italic">Business</span></h1>
+                        <p className="text-xl text-slate-500 font-medium italic animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+                            Share your business with the community. Verified listings help build trust.
                         </p>
                     </div>
 
-                    <Card className="rounded-3xl border-gold/20 shadow-xl shadow-gold/5 bg-white overflow-hidden">
-                        <div className="h-2 bg-maroon w-full" />
-                        <CardContent className="p-8 md:p-12">
-                            <form onSubmit={handleSubmit} className="space-y-8">
+                    <Card className="border-transparent shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] bg-white rounded-[3rem] overflow-hidden border border-slate-50">
+                        <CardContent className="p-10 md:p-16">
+                            <form onSubmit={handleSubmit} className="space-y-12">
                                 {/* Basic Info Section */}
-                                <div className="space-y-6">
-                                    <div className="flex items-center gap-2 text-maroon mb-2">
-                                        <div className="h-8 w-8 rounded-lg bg-maroon/5 flex items-center justify-center">
-                                            <Briefcase className="h-4 w-4" />
-                                        </div>
-                                        <h2 className="font-bold text-lg">Business Details</h2>
+                                <div className="space-y-10">
+                                    <div className="flex items-center gap-6 mb-10">
+                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">Business Details</h3>
+                                        <div className="h-px flex-1 bg-slate-100" />
                                     </div>
 
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="name" className="text-sm font-semibold text-gray-700">Business Name *</Label>
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="space-y-3">
+                                            <Label htmlFor="name" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Business Name *</Label>
                                             <Input
                                                 id="name"
                                                 name="name"
@@ -197,31 +193,31 @@ export default function AddBusinessPage() {
                                                 required
                                                 value={formData.name}
                                                 onChange={handleChange}
-                                                className={`h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-gold focus:ring-gold/20 ${errors.name ? 'border-red-500' : ''}`}
+                                                className={`h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700 placeholder:text-slate-300 ${errors.name ? 'border-rose-300 ring-rose-300' : ''}`}
                                             />
-                                            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                                            {errors.name && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest pl-4">{errors.name}</p>}
                                         </div>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="category" className="text-sm font-semibold text-gray-700">Category</Label>
+                                        <div className="space-y-3">
+                                            <Label htmlFor="category" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Category</Label>
                                             <Select
                                                 value={formData.category}
                                                 onValueChange={(val) => setFormData(prev => ({ ...prev, category: val }))}
                                             >
-                                                <SelectTrigger className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-gold">
+                                                <SelectTrigger className="h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700">
                                                     <SelectValue placeholder="Select Category" />
                                                 </SelectTrigger>
-                                                <SelectContent className="rounded-xl border-gold/20">
+                                                <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2 bg-white">
                                                     {categories.map(cat => (
-                                                        <SelectItem key={cat} value={cat} className="rounded-lg">{cat}</SelectItem>
+                                                        <SelectItem key={cat} value={cat} className="rounded-xl font-bold py-3">{cat}</SelectItem>
                                                     ))}
                                                 </SelectContent>
                                             </Select>
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <Label htmlFor="description" className="text-sm font-semibold text-gray-700">Description *</Label>
+                                    <div className="space-y-3">
+                                        <Label htmlFor="description" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Description *</Label>
                                         <Textarea
                                             id="description"
                                             name="description"
@@ -230,26 +226,24 @@ export default function AddBusinessPage() {
                                             rows={5}
                                             value={formData.description}
                                             onChange={handleChange}
-                                            className={`rounded-xl bg-gray-50 border-gray-200 focus:border-gold focus:ring-gold/20 resize-none p-4 ${errors.description ? 'border-red-500' : ''}`}
+                                            className={`w-full rounded-[2rem] border ${errors.description ? 'border-rose-300 ring-rose-300' : 'border-slate-100'} bg-slate-50/50 px-8 py-6 text-sm focus:bg-white focus:ring-2 focus:ring-secondary/20 focus:border-secondary focus:outline-none transition-all font-bold text-slate-600 leading-relaxed placeholder:text-slate-300`}
                                         />
-                                        {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
+                                        {errors.description && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest pl-4">{errors.description}</p>}
                                     </div>
                                 </div>
 
-                                <Separator className="bg-gold/10" />
+                                <Separator className="bg-slate-100" />
 
                                 {/* Contact Info Section */}
-                                <div className="space-y-6">
-                                    <div className="flex items-center gap-2 text-maroon mb-2">
-                                        <div className="h-8 w-8 rounded-lg bg-maroon/5 flex items-center justify-center">
-                                            <Info className="h-4 w-4" />
-                                        </div>
-                                        <h2 className="font-bold text-lg">Contact & Location</h2>
+                                <div className="space-y-10">
+                                    <div className="flex items-center gap-6 mb-10">
+                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">Contact & Location</h3>
+                                        <div className="h-px flex-1 bg-slate-100" />
                                     </div>
 
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="city" className="text-sm font-semibold text-gray-700">City *</Label>
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="space-y-3">
+                                            <Label htmlFor="city" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">City *</Label>
                                             <Input
                                                 id="city"
                                                 name="city"
@@ -257,71 +251,69 @@ export default function AddBusinessPage() {
                                                 required
                                                 value={formData.city}
                                                 onChange={handleChange}
-                                                className={`h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-gold focus:ring-gold/20 ${errors.city ? 'border-red-500' : ''}`}
+                                                className={`h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700 placeholder:text-slate-300 ${errors.city ? 'border-rose-300 ring-rose-300' : ''}`}
                                             />
-                                            {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
+                                            {errors.city && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest pl-4">{errors.city}</p>}
                                         </div>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="contact" className="text-sm font-semibold text-gray-700">Contact Number / Email *</Label>
+                                        <div className="space-y-3">
+                                            <Label htmlFor="contact" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Contact Number / Email *</Label>
                                             <Input
                                                 id="contact"
                                                 name="contact"
-                                                placeholder="e.g. 9988776655 or email@example.com"
+                                                placeholder="e.g. 9988776655"
                                                 required
                                                 value={formData.contact}
                                                 onChange={handleChange}
-                                                className={`h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-gold focus:ring-gold/20 ${errors.contact ? 'border-red-500' : ''}`}
+                                                className={`h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700 placeholder:text-slate-300 ${errors.contact ? 'border-rose-300 ring-rose-300' : ''}`}
                                             />
-                                            {errors.contact && <p className="text-red-500 text-xs mt-1">{errors.contact}</p>}
+                                            {errors.contact && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest pl-4">{errors.contact}</p>}
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <Label htmlFor="address" className="text-sm font-semibold text-gray-700">Detailed Address (Optional)</Label>
+                                    <div className="space-y-3">
+                                        <Label htmlFor="address" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-4">Detailed Address</Label>
                                         <Input
                                             id="address"
                                             name="address"
                                             placeholder="Full address of your shop/office"
                                             value={formData.address}
                                             onChange={handleChange}
-                                            className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-gold focus:ring-gold/20"
+                                            className="h-16 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-secondary/20 focus:border-secondary transition-all px-8 font-bold text-slate-700 placeholder:text-slate-300"
                                         />
                                     </div>
                                 </div>
 
-                                <Separator className="bg-gold/10" />
+                                <Separator className="bg-slate-100" />
 
                                 {/* Images Section */}
-                                <div className="space-y-6">
-                                    <div className="flex items-center gap-2 text-maroon mb-2">
-                                        <div className="h-8 w-8 rounded-lg bg-maroon/5 flex items-center justify-center">
-                                            <UploadCloud className="h-4 w-4" />
-                                        </div>
-                                        <h2 className="font-bold text-lg">Business Images</h2>
+                                <div className="space-y-10">
+                                    <div className="flex items-center gap-6 mb-10">
+                                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">Business Images</h3>
+                                        <div className="h-px flex-1 bg-slate-100" />
                                     </div>
 
-                                    <div className="space-y-4">
-                                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                    <div className="space-y-6">
+                                        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                                             {formData.images.map((url, idx) => (
-                                                <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group bg-gray-50 shadow-sm transition-all hover:shadow-md">
+                                                <div key={idx} className="relative aspect-square rounded-[2rem] overflow-hidden border border-slate-100 group bg-slate-50 shadow-sm transition-all hover:shadow-xl">
                                                     <Image src={url} alt={`Preview ${idx + 1}`} fill className="object-cover" />
                                                     <button
                                                         type="button"
                                                         onClick={() => removeImage(idx)}
-                                                        className="absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                                                        className="absolute top-3 right-3 h-8 w-8 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-500 flex items-center justify-center backdrop-blur-sm"
                                                     >
-                                                        <X className="h-3 w-3" />
+                                                        <X className="h-4 w-4" />
                                                     </button>
                                                 </div>
                                             ))}
 
                                             {formData.images.length < 5 && (
-                                                <label className="relative aspect-square rounded-2xl border-2 border-dashed border-gold/30 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gold/5 hover:border-gold/50 transition-all bg-white group">
-                                                    <div className="h-10 w-10 rounded-full bg-gold/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                        <Plus className="h-5 w-5 text-maroon" />
+                                                <label className="relative aspect-square rounded-[2rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-slate-50 hover:border-secondary transition-all bg-white group shadow-inner">
+                                                    <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-all shadow-sm">
+                                                        <Plus className="h-6 w-6 text-slate-400 group-hover:text-secondary" />
                                                     </div>
-                                                    <span className="text-[10px] font-bold text-maroon uppercase tracking-wider">Add Photo</span>
+                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-secondary">Add Photo</span>
                                                     <Input
                                                         type="file"
                                                         accept="image/*"
@@ -333,38 +325,43 @@ export default function AddBusinessPage() {
                                                 </label>
                                             )}
                                         </div>
-                                        <p className="text-xs text-gray-500 flex items-center gap-1.5 leading-relaxed">
-                                            <Info className="h-3.5 w-3.5 text-gold" />
-                                            Upload clear, high-quality images. Recommended: Shop front, interior, or products.
-                                        </p>
+                                        <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
+                                            <p className="text-[11px] text-slate-500 font-black uppercase tracking-widest flex items-center gap-3">
+                                                <Info className="h-4 w-4 text-secondary" />
+                                                Recommended: Shop front, interior, or products.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {error && (
-                                    <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium flex items-center gap-2">
-                                        <Info className="h-4 w-4" /> {error}
+                                    <div className="bg-rose-50 border border-rose-100 text-rose-600 p-8 rounded-[2.5rem] flex items-center gap-6 shadow-sm">
+                                        <div className="h-12 w-12 rounded-2xl bg-white flex items-center justify-center shrink-0 shadow-lg shadow-rose-500/10">
+                                            <Info className="h-6 w-6" />
+                                        </div>
+                                        <p className="font-black text-lg">{error}</p>
                                     </div>
                                 )}
 
-                                <div className="pt-6">
+                                <div className="pt-12">
                                     <Button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full h-14 bg-maroon text-gold hover:bg-maroon/90 text-lg font-bold rounded-2xl shadow-xl shadow-maroon/10 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                                        className="w-full bg-slate-900 text-white hover:bg-black h-20 rounded-[2rem] font-black text-xl shadow-2xl shadow-slate-900/10 transition-all active:scale-[0.98] group"
                                     >
                                         {isSubmitting ? (
                                             <>
-                                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                                Publishing Listing...
+                                                <Loader2 className="h-6 w-6 animate-spin mr-4" />
+                                                Saving...
                                             </>
                                         ) : (
                                             <>
-                                                <Save className="mr-2 h-4 w-4" /> Submit Listing
+                                                <Save className="h-6 w-6 mr-4" /> Add Business
                                             </>
                                         )}
                                     </Button>
-                                    <p className="text-center text-gray-400 text-xs mt-6 px-10">
-                                        By posting, you agree to our community guidelines. Every listing is reviewed for quality and authenticity.
+                                    <p className="text-center text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mt-10 px-10 opacity-60">
+                                        By posting, you agree to our community standards and verify that the information is accurate.
                                     </p>
                                 </div>
                             </form>

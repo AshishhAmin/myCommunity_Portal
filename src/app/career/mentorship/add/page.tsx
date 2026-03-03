@@ -58,7 +58,7 @@ export default function AddMentorshipPage() {
 
     return (
         <AuthGuard allowedRoles={["member", "admin"]}>
-            <div className="min-h-screen flex flex-col bg-[#FAF9F6] relative overflow-hidden">
+            <div className="min-h-screen flex flex-col bg-[#FAF9F6] font-sans selection:bg-secondary/20 relative overflow-hidden">
                 {/* Background decorative elements */}
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-3xl -mt-32 -mr-32 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-400/5 rounded-full blur-3xl -mb-32 -ml-32 pointer-events-none" />
@@ -75,7 +75,7 @@ export default function AddMentorshipPage() {
                                 <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Career Hub
                             </Link>
                             <div>
-                                <h1 className="text-5xl md:text-6xl font-sans font-black text-slate-900 mb-4 leading-none tracking-tight">Become a Steward</h1>
+                                <h1 className="text-5xl md:text-6xl font-sans font-black text-slate-900 mb-4 leading-none tracking-tight">Become a Mentor</h1>
                                 <p className="text-xl text-slate-500 font-medium italic">
                                     Share your expertise or look for guidance within the community.
                                 </p>
@@ -97,7 +97,7 @@ export default function AddMentorshipPage() {
 
                                         <div className="space-y-10">
                                             <div className="flex items-center gap-6 mb-10">
-                                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">Professional Profile</h3>
+                                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary whitespace-nowrap">Mentorship Details</h3>
                                                 <div className="h-px flex-1 bg-slate-100" />
                                             </div>
 
@@ -159,7 +159,7 @@ export default function AddMentorshipPage() {
                                                 className="w-full bg-slate-900 text-white hover:bg-black h-20 rounded-[2rem] font-black text-xl shadow-2xl shadow-slate-900/10 transition-all active:scale-[0.98] group"
                                             >
                                                 {loading ? <Loader2 className="h-6 w-6 animate-spin mr-4" /> : null}
-                                                {loading ? "Establishing Presence..." : "Submit Profile"}
+                                                {loading ? "Saving..." : "Become a Mentor"}
                                             </Button>
                                         </div>
                                     </form>
