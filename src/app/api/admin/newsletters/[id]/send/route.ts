@@ -4,13 +4,13 @@ import { getAuthUser } from '@/lib/auth';
 import { sendNewsletterEmail } from '@/lib/email';
 
 // POST /api/admin/newsletters/[id]/send
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, context: { params: Promise<{ id: string }> }) {
     try {
         const user = await getAuthUser(req);
         if (!user || user.role !== 'admin') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
-        const { id } = await params;
+        const { id } = await context.params;
 
         const newsletter = await prisma.newsletter.findUnique({
             where: { id }
