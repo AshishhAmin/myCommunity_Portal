@@ -11,7 +11,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, User, PlusCircle, Briefcase, GraduationCap, Building2, Calendar, Trophy, Users, Menu, ChevronDown, X, Network, Activity, ShieldCheck } from "lucide-react"
+import { LogOut, User, PlusCircle, Briefcase, GraduationCap, Building2, Calendar, Trophy, Users, Menu, ChevronDown, X, Network, Activity, ShieldCheck, Newspaper } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
 import { NotificationBell } from "@/components/notifications/notification-bell"
@@ -102,7 +102,7 @@ export function Navbar() {
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild className="cursor-pointer focus:bg-secondary/10 focus:text-secondary rounded-xl transition-colors py-2.5">
-                                        <Link href="/social" className="w-full px-3 text-sm font-bold text-slate-600 transition-colors hover:text-secondary">
+                                        <Link href="/newsletters" className="w-full px-3 text-sm font-bold text-slate-600 transition-colors hover:text-secondary">
                                             Newsletters
                                         </Link>
                                     </DropdownMenuItem>
@@ -174,12 +174,38 @@ export function Navbar() {
                     {showAuth ? (
                         isAuthenticated ? (
                             <div className="flex items-center gap-4">
-                                <Link href="/posts/create" className="hidden md:flex">
-                                    <Button variant="ghost" className="text-slate-600 hover:text-secondary hover:bg-secondary/10 rounded-xl gap-2 px-4 font-bold" suppressHydrationWarning>
-                                        <PlusCircle className="h-4 w-4" />
-                                        <span>Create Post</span>
-                                    </Button>
-                                </Link>
+                                {user?.role === 'admin' ? (
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" className="hidden md:flex text-slate-600 hover:text-secondary hover:bg-secondary/10 rounded-xl gap-2 px-4 font-bold" suppressHydrationWarning>
+                                                <PlusCircle className="h-4 w-4" />
+                                                <span>Create</span>
+                                                <ChevronDown className="h-3 w-3 opacity-50" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end" className="w-56 p-2 bg-white/95 backdrop-blur-xl border border-slate-100 shadow-xl rounded-2xl">
+                                            <DropdownMenuItem asChild className="cursor-pointer focus:bg-secondary/10 focus:text-secondary rounded-xl transition-colors py-2.5">
+                                                <Link href="/posts/create" className="flex items-center gap-2 px-3 text-sm font-bold text-slate-600">
+                                                    <PlusCircle className="h-4 w-4" />
+                                                    Create Social Post
+                                                </Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem asChild className="cursor-pointer focus:bg-secondary/10 focus:text-secondary rounded-xl transition-colors py-2.5">
+                                                <Link href="/admin/newsletters/create" className="flex items-center gap-2 px-3 text-sm font-bold text-slate-600">
+                                                    <Newspaper className="h-4 w-4" />
+                                                    Draft Newsletter
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                ) : (
+                                    <Link href="/posts/create" className="hidden md:flex">
+                                        <Button variant="ghost" className="text-slate-600 hover:text-secondary hover:bg-secondary/10 rounded-xl gap-2 px-4 font-bold" suppressHydrationWarning>
+                                            <PlusCircle className="h-4 w-4" />
+                                            <span>Create Post</span>
+                                        </Button>
+                                    </Link>
+                                )}
 
                                 <Link href="/profile" className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all duration-300 group">
                                     <div className="h-9 w-9 rounded-full border-2 border-slate-200 overflow-hidden relative shadow-sm group-hover:border-secondary transition-all duration-300">
@@ -283,6 +309,10 @@ export function Navbar() {
                                     <Link href="/business" className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-slate-100 text-slate-600 transition-all active:scale-[0.98]">
                                         <Building2 className="h-5 w-5 mb-2 text-secondary" />
                                         <span className="text-[9px] font-black uppercase tracking-widest">Business</span>
+                                    </Link>
+                                    <Link href="/newsletters" className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-slate-100 text-slate-600 transition-all active:scale-[0.98]">
+                                        <Newspaper className="h-5 w-5 mb-2 text-secondary" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Newsletters</span>
                                     </Link>
                                 </div>
                             </div>

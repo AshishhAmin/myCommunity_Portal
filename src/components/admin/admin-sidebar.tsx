@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Users, Building2, Briefcase, Calendar, HandHeart, Flag, ShieldCheck, LogOut, CheckCircle, Handshake, X } from "lucide-react"
+import { Users, Building2, Briefcase, Calendar, HandHeart, Flag, ShieldCheck, LogOut, CheckCircle, Handshake, X, Newspaper } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface AdminSidebarProps {
@@ -22,6 +22,7 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         { name: "Career Moderation", icon: Briefcase, href: "/admin/career" },
         { name: "Events Management", icon: Calendar, href: "/admin/events" },
         { name: "Accommodations", icon: Building2, href: "/admin/accommodations" },
+        { name: "Newsletters", icon: Newspaper, href: "/admin/newsletters" },
         { name: "Donations", icon: HandHeart, href: "/admin/donations" },
         // { name: "Reports & Flags", icon: Flag, href: "/admin/reports" },
     ]

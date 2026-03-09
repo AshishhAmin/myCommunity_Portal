@@ -57,11 +57,11 @@ export async function POST(req: Request) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _p, ...userWithoutPassword } = user
 
+        console.log('[Login] Successful, setting auth_token cookie for user:', user.id);
         const response = NextResponse.json(
             { message: 'Login successful', user: userWithoutPassword },
             { status: 200 }
         )
-
         // Set HTTP-only cookie
         response.cookies.set({
             name: 'auth_token',

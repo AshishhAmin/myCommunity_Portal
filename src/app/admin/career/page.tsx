@@ -80,11 +80,13 @@ export default function AdminCareerPage() {
             const res = await fetch(`/api/admin/career?${params.toString()}`, {
                 headers: token ? { 'Authorization': `Bearer ${token}` } : {}
             })
-            if (res.ok) {
-                const data = await res.json()
-                setItems(data.data)
-                setTotalPages(data.pagination.pages)
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({ message: res.statusText }));
+                throw new Error(`Failed to fetch career items: ${res.status} ${errorData.message || res.statusText}`)
             }
+            const data = await res.json()
+            setItems(data.data)
+            setTotalPages(data.pagination.pages)
         } catch (error) {
             console.error("Failed to fetch career items", error)
             setItems([])

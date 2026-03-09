@@ -73,16 +73,28 @@ export async function getAuthUser(req: Request): Promise<{ id: string; role: str
         const cookieStore = await cookies()
         const token = cookieStore.get('auth_token')?.value
         if (token) {
+            console.log('[Auth] Found auth_token cookie');
             const payload = await verifyJWT(token)
             if (payload?.sub) {
                 const user = await prisma.user.findFirst({
                     where: { id: payload.sub as string },
                     select: { id: true, role: true, name: true, status: true }
                 })
-                if (user) return user as any
+                if (user) {
+                    console.log('[Auth] Cookie verification successful for user:', user.id);
+                    return user as any
+                } else {
+                    console.warn('[Auth] User not found in DB for sub:', payload.sub);
+                }
+            } else {
+                console.warn('[Auth] JWT payload missing sub:', payload);
             }
+        } else {
+            console.log('[Auth] No auth_token cookie found');
         }
-    } catch (_) { /* fall through */ }
+    } catch (err) {
+        console.error('[Auth] Error during legacy auth fallback:', err);
+    }
 
     return null
 }

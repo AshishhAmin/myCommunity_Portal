@@ -43,6 +43,21 @@ model User {
   accommodations     Accommodation[]     @relation("UserAccommodations")
   accommodationApps  AccommodationApplication[]
   businessCollabs    BusinessCollaboration[]
+  newsletters        Newsletter[]        @relation("UserNewsletters")
+  unsubscribed       Boolean             @default(false)
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @db.Text
+  status    String   @default("draft") // 'draft', 'sent'
+  sentAt    DateTime?
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author    User     @relation("UserNewsletters", fields: [authorId], references: [id])
 }
 
 model Business {

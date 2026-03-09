@@ -16,7 +16,7 @@ export async function GET(req: Request) {
 
         const whereClause = status ? { status } : {}
 
-        const accommodations = await (prisma as any).accommodation.findMany({
+        const accommodations = await prisma.accommodation.findMany({
             where: whereClause,
             include: {
                 owner: {
@@ -56,7 +56,7 @@ export async function PATCH(req: Request) {
             return NextResponse.json({ message: 'Invalid status' }, { status: 400 })
         }
 
-        const updatedAccommodation = await (prisma as any).accommodation.update({
+        const updatedAccommodation = await prisma.accommodation.update({
             where: { id },
             data: { status }
         })
@@ -106,7 +106,7 @@ export async function DELETE(req: Request) {
         const id = searchParams.get('id')
         if (!id) return NextResponse.json({ message: 'Accommodation ID is required' }, { status: 400 })
 
-        await (prisma as any).accommodation.delete({
+        await prisma.accommodation.delete({
             where: { id }
         })
 

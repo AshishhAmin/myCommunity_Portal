@@ -13,7 +13,8 @@ import {
     HeartHandshake,
     User,
     BadgeCheck,
-    Loader2
+    Loader2,
+    Newspaper
 } from "lucide-react"
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -69,6 +70,13 @@ const modules = [
         icon: Building2,
         href: "/accommodations",
         color: "text-slate-900",
+    },
+    {
+        title: "Newsletters",
+        description: "Official community broadcasts and archived updates.",
+        icon: Newspaper,
+        href: "/newsletters",
+        color: "text-secondary",
     },
 ]
 

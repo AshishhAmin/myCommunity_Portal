@@ -5,6 +5,7 @@ import { getAuthUser } from '@/lib/auth'
 export async function GET(req: Request) {
     try {
         const user = await getAuthUser(req)
+        console.log('[API/Admin/Users] Authenticated user:', user);
         if (!user || user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
@@ -44,7 +45,7 @@ export async function GET(req: Request) {
         })
 
     } catch (error) {
-        console.error('Error fetching users:', error)
+        console.error('[API/Admin/Users] Error fetching users:', error)
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
     }
 }

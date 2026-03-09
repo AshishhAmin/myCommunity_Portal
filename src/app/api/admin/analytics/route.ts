@@ -5,6 +5,7 @@ import { getAuthUser } from '@/lib/auth'
 export async function GET(req: Request) {
     try {
         const user = await getAuthUser(req)
+        console.log('[API/Admin/Analytics] Authenticated user:', user);
         if (!user || user.role !== 'admin') {
             return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
         }
@@ -24,7 +25,8 @@ export async function GET(req: Request) {
         const totalMentorships = await prisma.mentorship.count()
         const totalHelpRequests = await prisma.helpRequest.count()
         const totalDonations = await prisma.donation.count()
-        const totalAccommodations = await (prisma as any).accommodation.count()
+        const totalAccommodations = await prisma.accommodation.count()
+        const totalNewsletters = await prisma.newsletter.count()
 
         // 3. Pending Counts
         const pendingEvents = await prisma.event.count({ where: { status: 'pending' } })
@@ -33,7 +35,7 @@ export async function GET(req: Request) {
         const pendingScholarships = await prisma.scholarship.count({ where: { status: 'pending' } })
         const pendingMentorships = await prisma.mentorship.count({ where: { status: 'pending' } })
         const pendingHelpRequests = await prisma.helpRequest.count({ where: { status: 'pending' } })
-        const pendingAccommodations = await (prisma as any).accommodation.count({ where: { status: 'pending' } })
+        const pendingAccommodations = await prisma.accommodation.count({ where: { status: 'pending' } })
         const totalPending = pendingEvents + pendingBusinesses + pendingJobs + pendingScholarships + pendingMentorships + pendingHelpRequests + pendingAccommodations
 
         // 4. Time Range Setup
@@ -111,7 +113,7 @@ export async function GET(req: Request) {
         const scholarshipGrowth = await getGrowthData(prisma.scholarship)
         const mentorshipGrowth = await getGrowthData(prisma.mentorship)
         const helpGrowth = await getGrowthData(prisma.helpRequest)
-        const accommodationGrowth = await getGrowthData((prisma as any).accommodation)
+        const accommodationGrowth = await getGrowthData(prisma.accommodation)
 
         // 5. Donation stats
         const donationAgg = await prisma.donation.aggregate({ _sum: { amount: true } })
@@ -132,6 +134,7 @@ export async function GET(req: Request) {
                     donations: totalDonations,
                     donationAmount: totalDonationAmount,
                     accommodations: totalAccommodations,
+                    newsletters: totalNewsletters,
                 },
                 breakdown: {
                     pendingEvents,

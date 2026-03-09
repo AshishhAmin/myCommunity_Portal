@@ -115,7 +115,10 @@ export default function ModerationCenter() {
             const fetchHeaders: Record<string, string> = {}
             if (token) fetchHeaders['Authorization'] = `Bearer ${token}`
             const res = await fetch(url, { headers: fetchHeaders })
-            if (!res.ok) throw new Error("Failed to fetch items")
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({ message: res.statusText }));
+                throw new Error(`Failed to fetch items: ${res.status} ${errorData.message || res.statusText}`)
+            }
 
             const data = await res.json()
 

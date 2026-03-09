@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import {
     Users, AlertTriangle, TrendingUp, Briefcase, Calendar,
     GraduationCap, Building2, HeartHandshake, Heart, IndianRupee,
-    Loader2, ToggleLeft, ToggleRight, ShieldCheck
+    Loader2, ToggleLeft, ToggleRight, ShieldCheck, Newspaper
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, Cell } from 'recharts'
 import Link from 'next/link'
@@ -68,6 +68,7 @@ export default function AdminDashboard() {
         { label: "Help Requests", value: totals.helpRequests || 0, icon: Heart, color: "text-red-600", bg: "bg-red-50", accent: "border-l-red-500", link: "/admin/verification?tab=help" },
         { label: "Donations", value: totals.donations || 0, icon: IndianRupee, color: "text-amber-600", bg: "bg-amber-50", accent: "border-l-amber-500", link: "/admin/donations", subtitle: `₹${(totals.donationAmount || 0).toLocaleString('en-IN')} total` },
         { label: "Hostels", value: totals.accommodations || 0, icon: Building2, color: "text-secondary", bg: "bg-secondary/10", accent: "border-l-secondary", link: "/admin/accommodations" },
+        { label: "Newsletters", value: totals.newsletters || 0, icon: Newspaper, color: "text-slate-900", bg: "bg-slate-100", accent: "border-l-slate-900", link: "/admin/newsletters" },
     ]
 
     const pendingCards = [
