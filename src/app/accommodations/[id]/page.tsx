@@ -56,6 +56,11 @@ type AccommodationApp = {
         mobile: string
         profileImage: string | null
     }
+    familyMember?: {
+        id: string
+        name: string
+        relationship: string
+    } | null
 }
 
 const AMENITY_ICONS: Record<string, any> = {
@@ -77,7 +82,7 @@ export default function AccommodationDetailsPage() {
     const [applications, setApplications] = useState<AccommodationApp[]>([])
     const [isApplyOpen, setIsApplyOpen] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [applyForm, setApplyForm] = useState({ name: '', age: '', occupation: '', message: '' })
+    const [applyForm, setApplyForm] = useState({ name: '', age: '', occupation: '', message: '', familyMemberId: '' })
 
 
     useEffect(() => {
@@ -176,7 +181,7 @@ export default function AccommodationDetailsPage() {
                 toast.success("Application submitted successfully!")
                 setIsApplyOpen(false)
                 setApplications(prev => [{ ...data, user }, ...prev])
-                setApplyForm({ name: '', age: '', occupation: '', message: '' })
+                setApplyForm({ name: '', age: '', occupation: '', message: '', familyMemberId: '' })
             } else {
                 toast.error(data.error || "Failed to submit application")
             }
@@ -394,8 +399,15 @@ export default function AccommodationDetailsPage() {
                                                                 )}
                                                             </div>
                                                             <div className="space-y-1">
-                                                                <div className="flex items-center gap-3">
-                                                                    <p className="font-black text-slate-900 text-lg">{app.name || app.user?.name || 'Applicant'}</p>
+                                                                <div className="flex items-center gap-3 flex-wrap">
+                                                                    <p className="font-black text-slate-900 text-lg">
+                                                                        {app.familyMember ? app.familyMember.name : (app.name || app.user?.name || 'Applicant')}
+                                                                    </p>
+                                                                    {app.familyMember && (
+                                                                        <Badge className="bg-slate-100 text-slate-500 border-none font-black text-[10px] uppercase tracking-widest px-3 py-1 rounded-lg">
+                                                                            Family ({app.familyMember.relationship})
+                                                                        </Badge>
+                                                                    )}
                                                                     <Badge className={
                                                                         app.status === 'approved' ? 'bg-green-500 text-white border-none font-bold' :
                                                                             app.status === 'rejected' ? 'bg-red-500 text-white border-none font-bold' :
@@ -404,6 +416,11 @@ export default function AccommodationDetailsPage() {
                                                                         {app.status}
                                                                     </Badge>
                                                                 </div>
+                                                                {app.familyMember && (
+                                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                                                                        Applied by: <span className="text-slate-600">{app.user?.name || 'User'}</span>
+                                                                    </p>
+                                                                )}
                                                                 <p className="text-sm text-slate-500 font-bold">Age: <span className="text-slate-900">{app.age}</span> • Occupation: <span className="text-slate-900">{app.occupation}</span></p>
                                                                 <div className="flex gap-4 pt-2">
                                                                     <span className="flex items-center text-xs font-bold text-slate-400"><Mail className="h-3 w-3 mr-1" /> {app.user.email}</span>
@@ -526,6 +543,77 @@ export default function AccommodationDetailsPage() {
                                                                     <p className="text-slate-500 font-bold pt-2">Send your application to <span className="text-secondary">{acc.name}</span></p>
                                                                 </DialogHeader>
                                                                 <form onSubmit={handleApply} className="space-y-6">
+                                                                    {/* Application Type Selector */}
+                                                                    <div className="space-y-2">
+                                                                        <Label className="font-black text-xs uppercase tracking-widest text-slate-400 ml-1">Apply For</Label>
+                                                                        <div className="flex gap-2 p-1 bg-slate-50 rounded-2xl border border-slate-100">
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => {
+                                                                                    setApplyForm({
+                                                                                        ...applyForm,
+                                                                                        familyMemberId: '',
+                                                                                        name: user?.name || '',
+                                                                                        age: '',
+                                                                                        occupation: ''
+                                                                                    })
+                                                                                }}
+                                                                                className={`flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${!applyForm.familyMemberId ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+                                                                            >
+                                                                                Myself
+                                                                            </button>
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => {
+                                                                                    if (user?.familyMembers && user.familyMembers.length > 0) {
+                                                                                        const first = user.familyMembers[0]
+                                                                                        setApplyForm({
+                                                                                            ...applyForm,
+                                                                                            familyMemberId: first.id,
+                                                                                            name: first.name,
+                                                                                            age: first.dob ? (new Date().getFullYear() - new Date(first.dob).getFullYear()).toString() : '',
+                                                                                            occupation: first.occupation || ''
+                                                                                        })
+                                                                                    } else {
+                                                                                        toast.error("No family members found", {
+                                                                                            description: "Please add family members in your profile settings first."
+                                                                                        })
+                                                                                    }
+                                                                                }}
+                                                                                className={`flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${applyForm.familyMemberId ? 'bg-white shadow-sm text-slate-900 border border-slate-100' : 'text-slate-400 hover:text-slate-600'}`}
+                                                                            >
+                                                                                Family Member
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {applyForm.familyMemberId && user?.familyMembers && (
+                                                                        <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                                                            <Label htmlFor="familyMember" className="font-black text-xs uppercase tracking-widest text-slate-400 ml-1">Choose Family Member</Label>
+                                                                            <select
+                                                                                id="familyMember"
+                                                                                value={applyForm.familyMemberId}
+                                                                                onChange={(e) => {
+                                                                                    const member = user.familyMembers?.find(m => m.id === e.target.value)
+                                                                                    if (member) {
+                                                                                        setApplyForm({
+                                                                                            ...applyForm,
+                                                                                            familyMemberId: member.id,
+                                                                                            name: member.name,
+                                                                                            age: member.dob ? (new Date().getFullYear() - new Date(member.dob).getFullYear()).toString() : '',
+                                                                                            occupation: member.occupation || ''
+                                                                                        })
+                                                                                    }
+                                                                                }}
+                                                                                className="w-full h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 px-6 font-bold appearance-none cursor-pointer"
+                                                                            >
+                                                                                {user.familyMembers.map(m => (
+                                                                                    <option key={m.id} value={m.id}>{m.name} ({m.relationship})</option>
+                                                                                ))}
+                                                                            </select>
+                                                                        </div>
+                                                                    )}
+
                                                                     <div className="space-y-2">
                                                                         <Label htmlFor="name" className="font-black text-xs uppercase tracking-widest text-slate-400 ml-1">Full Name</Label>
                                                                         <Input id="name" required value={applyForm.name} onChange={e => setApplyForm({ ...applyForm, name: e.target.value })} className="h-14 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 px-6 font-bold" placeholder="Rahul Kumar" />

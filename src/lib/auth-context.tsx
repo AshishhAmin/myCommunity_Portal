@@ -19,6 +19,14 @@ import { auth } from "@/lib/firebase"
 
 type UserRole = "admin" | "member" | "guest"
 
+export interface FamilyMember {
+    id: string
+    name: string
+    relationship: string
+    dob: string | null
+    occupation: string | null
+}
+
 export interface User {
     id: string
     name: string | null
@@ -30,6 +38,7 @@ export interface User {
     bio?: string | null
     profileImage?: string | null
     status?: string // 'pending' | 'approved' | 'rejected'
+    familyMembers?: FamilyMember[]
 }
 
 interface AuthContextType {

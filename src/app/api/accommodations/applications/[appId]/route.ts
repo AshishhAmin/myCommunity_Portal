@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { adminAuth } from "@/lib/firebase-admin";
+import { getAuthUser } from "@/lib/auth";
 
 // Update the status of an application
 export async function PATCH(
@@ -9,25 +9,10 @@ export async function PATCH(
 ) {
     try {
         const { appId } = await params;
-        const authHeader = request.headers.get("Authorization");
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        const token = authHeader.split(" ")[1];
-        let decodedToken;
-        try {
-            decodedToken = await adminAuth.verifyIdToken(token);
-        } catch (error) {
-            return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-        }
-
-        const user = await prisma.user.findUnique({
-            where: { firebaseUid: decodedToken.uid },
-        });
+        const user = await getAuthUser(request);
 
         if (!user) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const applicationId = appId;
@@ -54,10 +39,26 @@ export async function PATCH(
             return NextResponse.json({ error: "Forbidden: You are not the owner" }, { status: 403 });
         }
 
-        const updatedApplication = await prisma.accommodationApplication.update({
+        const updatedApplication = await (prisma.accommodationApplication as any).update({
             where: { id: applicationId },
             data: { status }
         });
+
+        // Create notification for the applicant
+        try {
+            await (prisma.notification as any).create({
+                data: {
+                    userId: application.userId,
+                    title: `Application ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+                    message: `Your application for ${application.accommodation.name} has been ${status}.`,
+                    type: 'system',
+                    link: `/accommodations/${application.accommodationId}`
+                }
+            });
+        } catch (notifError) {
+            console.error("Failed to create notification:", notifError);
+            // Don't fail the whole request if notification fails
+        }
 
         return NextResponse.json(updatedApplication);
     } catch (error) {

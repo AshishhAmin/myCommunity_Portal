@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Navbar } from "@/components/layout/navbar"
-import { Loader2, Camera, MapPin, Phone, Briefcase, Calendar, Store, GraduationCap, Users, Edit, Trophy, ShieldCheck } from "lucide-react"
+import { Loader2, Camera, MapPin, Phone, Briefcase, Calendar, Store, GraduationCap, Users, Edit, Trophy, ShieldCheck, Plus, Trash2, Heart, Baby, User as UserIcon } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Footer } from "@/components/layout/footer"
 import Link from "next/link"
@@ -45,6 +45,7 @@ export default function ProfilePage() {
         location: "",
         gotra: "",
         bio: "",
+        familyMembers: [] as any[],
     })
 
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -57,9 +58,37 @@ export default function ProfilePage() {
                 location: user.location || "",
                 gotra: user.gotra || "",
                 bio: user.bio || "",
+                familyMembers: user.familyMembers || [],
             })
         }
     }, [user])
+
+    const addFamilyMember = () => {
+        setFormData(prev => ({
+            ...prev,
+            familyMembers: [
+                ...prev.familyMembers,
+                { name: "", relationship: "", dob: "", occupation: "" }
+            ]
+        }))
+    }
+
+    const removeFamilyMember = (index: number) => {
+        setFormData(prev => ({
+            ...prev,
+            familyMembers: prev.familyMembers.filter((_, i) => i !== index)
+        }))
+    }
+
+    const updateFamilyMember = (index: number, field: string, value: string) => {
+        setFormData(prev => {
+            const updated = [...prev.familyMembers]
+            updated[index] = { ...updated[index], [field]: value }
+            return { ...prev, familyMembers: updated }
+        })
+    }
+
+    // Add validation for family members later if needed, but we'll focus on the core flow first.
 
     useEffect(() => {
         const fetchActivity = async () => {
@@ -266,6 +295,56 @@ export default function ProfilePage() {
                                             "{user.bio}"
                                         </div>
                                     )}
+
+                                    {/* Family Details View */}
+                                    {user.status === 'approved' && user.familyMembers && user.familyMembers.length > 0 && (
+                                        <div className="mt-12 w-full max-w-2xl mx-auto text-left">
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <div className="p-2 bg-secondary/10 rounded-xl">
+                                                    <Heart className="h-5 w-5 text-secondary" />
+                                                </div>
+                                                <h3 className="text-xl font-black text-slate-900 tracking-tight uppercase">Family Members</h3>
+                                            </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                {user.familyMembers.map((member: any) => (
+                                                    <div key={member.id} className="p-5 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+                                                        <div className="flex items-start gap-4">
+                                                            <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-secondary/10 transition-colors">
+                                                                {['Son', 'Daughter', 'Child'].includes(member.relationship) ? (
+                                                                    <Baby className="h-6 w-6 text-secondary" />
+                                                                ) : (
+                                                                    <UserIcon className="h-6 w-6 text-slate-400 group-hover:text-secondary transition-colors" />
+                                                                )}
+                                                            </div>
+                                                            <div>
+                                                                <h4 className="font-black text-slate-900 leading-tight">{member.name}</h4>
+                                                                <p className="text-[10px] font-black uppercase tracking-widest text-secondary mt-0.5">{member.relationship}</p>
+                                                                {member.occupation && (
+                                                                    <p className="text-xs text-slate-500 font-medium mt-2 flex items-center gap-1.5">
+                                                                        <Briefcase className="h-3 w-3" /> {member.occupation}
+                                                                    </p>
+                                                                )}
+                                                                {member.dob && (
+                                                                    <p className="text-xs text-slate-500 font-medium mt-1 flex items-center gap-1.5">
+                                                                        <Calendar className="h-3 w-3" /> {new Date(member.dob).toLocaleDateString()}
+                                                                    </p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {user.status !== 'approved' && (
+                                        <div className="mt-10 p-6 bg-amber-50 rounded-[2rem] border border-amber-100 max-w-2xl mx-auto flex items-center gap-4 text-amber-800">
+                                            <ShieldCheck className="h-6 w-6 shrink-0 opacity-50" />
+                                            <p className="text-sm font-bold leading-relaxed">
+                                                Verify your account to add family details and unlock more community features.
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -301,6 +380,105 @@ export default function ProfilePage() {
                                     <Textarea id="bio" name="bio" value={formData.bio} onChange={handleChange} placeholder="Share a brief introduction about yourself..." rows={4} className={`rounded-[2rem] border-slate-100 bg-slate-50 focus:bg-white focus:ring-secondary/20 px-6 py-4 font-bold resize-none ${errors.bio ? 'border-red-500' : ''}`} />
                                     {errors.bio && <p className="text-red-500 text-xs mt-1 font-bold ml-1">{errors.bio}</p>}
                                 </div>
+                                {user.status === 'approved' && (
+                                    <div className="space-y-6 pt-6 border-t border-slate-100">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-secondary/10 rounded-xl">
+                                                    <Heart className="h-4 w-4 text-secondary" />
+                                                </div>
+                                                <Label className="text-slate-900 font-black text-xs uppercase tracking-widest ml-1">Family Details</Label>
+                                            </div>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={addFamilyMember}
+                                                className="rounded-xl border-slate-100 font-bold text-[10px] uppercase tracking-widest h-10 px-4 hover:bg-slate-50 transition-all"
+                                            >
+                                                <Plus className="h-3.5 w-3.5 mr-2" /> Add Member
+                                            </Button>
+                                        </div>
+
+                                        <div className="grid gap-6">
+                                            {formData.familyMembers.map((member, index) => (
+                                                <div key={index} className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 relative group animate-in fade-in slide-in-from-right-4 duration-300">
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => removeFamilyMember(index)}
+                                                        className="absolute top-4 right-4 h-8 w-8 rounded-full text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</Label>
+                                                            <Input
+                                                                value={member.name}
+                                                                onChange={(e) => updateFamilyMember(index, 'name', e.target.value)}
+                                                                placeholder="Member Name"
+                                                                className="h-12 rounded-xl border-slate-200 bg-white focus:ring-secondary/20 px-4 font-bold text-sm"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Relationship</Label>
+                                                            <Select
+                                                                value={member.relationship}
+                                                                onValueChange={(val) => updateFamilyMember(index, 'relationship', val)}
+                                                            >
+                                                                <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-white focus:ring-secondary/20 px-4 font-bold text-sm">
+                                                                    <SelectValue placeholder="Select Relation" />
+                                                                </SelectTrigger>
+                                                                <SelectContent className="rounded-xl border-slate-100 shadow-xl">
+                                                                    {['Spouse', 'Son', 'Daughter', 'Father', 'Mother', 'Brother', 'Sister', 'Other'].map(rel => (
+                                                                        <SelectItem key={rel} value={rel} className="font-bold py-2">{rel}</SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Date of Birth</Label>
+                                                            <Input
+                                                                type="date"
+                                                                value={member.dob ? new Date(member.dob).toISOString().split('T')[0] : ""}
+                                                                onChange={(e) => updateFamilyMember(index, 'dob', e.target.value)}
+                                                                className="h-12 rounded-xl border-slate-200 bg-white focus:ring-secondary/20 px-4 font-bold text-sm"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Occupation</Label>
+                                                            <Input
+                                                                value={member.occupation || ""}
+                                                                onChange={(e) => updateFamilyMember(index, 'occupation', e.target.value)}
+                                                                placeholder="e.g. Student, Engineer"
+                                                                className="h-12 rounded-xl border-slate-200 bg-white focus:ring-secondary/20 px-4 font-bold text-sm"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            {formData.familyMembers.length === 0 && (
+                                                <div className="py-10 text-center bg-white rounded-[2rem] border border-dashed border-slate-200">
+                                                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">No family members added yet</p>
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={addFamilyMember}
+                                                        className="rounded-xl"
+                                                    >
+                                                        Add First Member
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="flex justify-center pt-4">
                                     <Button type="submit" className="w-full h-16 bg-slate-900 hover:bg-secondary text-white rounded-2xl font-black text-lg shadow-xl shadow-slate-200 transition-all uppercase tracking-widest" disabled={loading}>
                                         {loading ? <Loader2 className="h-6 w-6 mr-2 animate-spin" /> : "Save Changes"}

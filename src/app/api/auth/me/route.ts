@@ -25,7 +25,8 @@ export async function GET(req: Request) {
                 location: true,
                 bio: true,
                 profileImage: true,
-            }
+                familyMembers: true,
+            } as any
         })
 
         if (!user) {

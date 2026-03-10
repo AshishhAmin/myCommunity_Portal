@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { adminAuth } from "@/lib/firebase-admin";
+import { getAuthUser } from "@/lib/auth";
 
 // Get all applications for a specific accommodation
 export async function GET(
@@ -9,25 +9,10 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-        const authHeader = request.headers.get("Authorization");
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        const token = authHeader.split(" ")[1];
-        let decodedToken;
-        try {
-            decodedToken = await adminAuth.verifyIdToken(token);
-        } catch (error) {
-            return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-        }
-
-        const user = await prisma.user.findUnique({
-            where: { firebaseUid: decodedToken.uid },
-        });
+        const user = await getAuthUser(request);
 
         if (!user) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const accommodationId = id;
@@ -45,7 +30,7 @@ export async function GET(
             return NextResponse.json({ error: "Forbidden: You are not the owner" }, { status: 403 });
         }
 
-        const applications = await prisma.accommodationApplication.findMany({
+        const applications = await (prisma.accommodationApplication as any).findMany({
             where: { accommodationId },
             include: {
                 user: {
@@ -56,7 +41,8 @@ export async function GET(
                         mobile: true,
                         profileImage: true
                     }
-                }
+                },
+                familyMember: true
             },
             orderBy: { createdAt: "desc" }
         });

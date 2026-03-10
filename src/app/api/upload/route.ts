@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
-import { adminAuth } from "@/lib/firebase-admin"
+import { getAuthUser } from "@/lib/auth"
 import cloudinary, { configureCloudinary } from "@/lib/cloudinary"
 
 export async function POST(req: NextRequest) {
     try {
-        // Enforce Authentication via Firebase token
-        const authHeader = req.headers.get('Authorization')
-        if (!authHeader?.startsWith('Bearer ')) {
-            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-        }
-
-        const token = authHeader.split('Bearer ')[1]
-        const decodedToken = await adminAuth.verifyIdToken(token)
-        if (!decodedToken) {
+        // Unified Authentication (Firebase or Legacy Cookie)
+        const user = await getAuthUser(req)
+        if (!user) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
         }
 

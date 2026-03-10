@@ -44,7 +44,21 @@ model User {
   accommodationApps  AccommodationApplication[]
   businessCollabs    BusinessCollaboration[]
   newsletters        Newsletter[]        @relation("UserNewsletters")
+  familyMembers      FamilyMember[]
   unsubscribed       Boolean             @default(false)
+}
+
+model FamilyMember {
+  id           String   @id @default(cuid())
+  name         String
+  relationship String   // e.g., Spouse, Child, Parent
+  dob          DateTime?
+  occupation   String?
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications AccommodationApplication[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Newsletter {
@@ -322,6 +336,7 @@ model AccommodationApplication {
   id              String   @id @default(cuid())
   accommodationId String
   userId          String
+  familyMemberId  String?
   name            String
   age             String
   occupation      String
@@ -332,8 +347,9 @@ model AccommodationApplication {
 
   accommodation   Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
   user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMember    FamilyMember? @relation(fields: [familyMemberId], references: [id], onDelete: Cascade)
 
-  @@unique([accommodationId, userId])
+  @@unique([accommodationId, userId, familyMemberId])
 }
 
 model BusinessCollaboration {

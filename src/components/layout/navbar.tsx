@@ -154,11 +154,6 @@ export function Navbar() {
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild className="cursor-pointer focus:bg-secondary/10 focus:text-secondary rounded-xl transition-colors py-2.5">
-                                        <Link href="/blood" className="w-full px-3 text-sm font-bold text-slate-600 transition-colors hover:text-secondary">
-                                            Blood
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-secondary/10 focus:text-secondary rounded-xl transition-colors py-2.5">
                                         <Link href="/accommodations" className="w-full px-3 text-sm font-bold text-slate-600 transition-colors hover:text-secondary">
                                             Hostels
                                         </Link>

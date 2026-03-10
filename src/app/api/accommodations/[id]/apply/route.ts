@@ -29,7 +29,7 @@ export async function POST(
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        const { name, age, occupation, message } = await request.json();
+        const { name, age, occupation, message, familyMemberId } = await request.json();
 
         if (!name || !age || !occupation) {
             return NextResponse.json(
@@ -40,27 +40,29 @@ export async function POST(
 
         const accommodationId = id;
 
-        // Check if already applied
+        // Check if already applied (for self or specific family member)
         const existingApp = await prisma.accommodationApplication.findUnique({
             where: {
-                accommodationId_userId: {
+                accommodationId_userId_familyMemberId: {
                     accommodationId,
-                    userId: user.id
+                    userId: user.id,
+                    familyMemberId: familyMemberId || null
                 }
-            }
+            } as any
         });
 
         if (existingApp) {
             return NextResponse.json(
-                { error: "You have already applied for this accommodation" },
+                { error: familyMemberId ? "This family member has already applied for this accommodation" : "You have already applied for this accommodation" },
                 { status: 400 }
             );
         }
 
-        const application = await prisma.accommodationApplication.create({
+        const application = await (prisma.accommodationApplication as any).create({
             data: {
                 accommodationId,
                 userId: user.id,
+                familyMemberId: familyMemberId || null,
                 name,
                 age: age.toString(),
                 occupation,
